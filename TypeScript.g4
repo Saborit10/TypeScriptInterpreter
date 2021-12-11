@@ -1,7 +1,92 @@
 grammar TypeScript;
 
 compilationUnit
-	: expression EOF
+	: variableStatement EOF
+	;
+
+variableStatement
+	: accessModifier? varModifier? TK_READ_ONLY? variableDeclList TK_SEMICOLON?
+	;
+
+variableDeclList
+	: variableDecl (',' variableDecl)*
+	;
+
+variableDecl
+	// : (TK_IDENT | arrayLiteral | objectLiteral ) typeAnnotation?; // Nasty stuff
+	: TK_IDENT typeAnnotation? initializer?
+	;
+
+initializer
+	: TK_EQ expression
+	;
+
+arrayLiteral
+	: TK_LBRACKET TK_RBRACKET
+	| TK_LBRACKET arrayElement (TK_COMMA arrayElement)* TK_RBRACKET
+	;
+
+arrayElement
+	: expression
+	| TK_IDENT
+	;
+
+objectLiteral
+	: TK_LCURLY TK_RCURLY
+	| TK_LCURLY propertyAssign (TK_COMMA propertyAssign)* TK_RCURLY
+	;
+
+propertyAssign
+	: propertyName (TK_COLON | TK_EQ) expression
+	| TK_LBRACKET expression TK_RBRACKET TK_COLON expression
+ 	;
+
+propertyName
+	: TK_IDENT
+	| STRING_LITERAL
+	| NUMERIC_LITERAL
+	;
+
+typeAnnotation
+	: TK_COLON simpleType
+	| TK_COLON arrayType
+	| TK_COLON TK_IDENT //Tipo_Declarado_por_el_usuario 
+	;
+
+simpleType
+	: TK_STRING
+	| TK_ANY
+	| TK_BOOLEAN
+	| TK_NUMBER
+	// | TK_SYMBOL
+	;
+
+arrayType
+	: simpleType TK_LBRACKET TK_RBRACKET
+	| TK_IDENT TK_LBRACKET TK_RBRACKET
+	;
+
+accessModifier
+	: TK_PUBLIC
+	| TK_PRIVATE
+	| TK_PROTECTED
+	;
+
+varModifier
+	: TK_VAR
+	| TK_LET
+	| TK_CONST
+	;
+
+assignment
+	: TK_IDENT TK_EQ expression
+	| TK_IDENT TK_PLUS_ASIGN expression
+	| TK_IDENT TK_MINUS_ASIGN expression
+	| TK_IDENT TK_STAR_ASIGN expression
+	| TK_IDENT TK_SLASH_ASIGN expression
+	| TK_IDENT TK_PERCENT_ASIGN expression
+	| TK_IDENT TK_AND_ASIGN expression
+	| TK_IDENT TK_OR_ASIGN expression
 	;
 
 expression
@@ -21,6 +106,9 @@ expression
     | expression TK_LOGIC_OR expression
 	| expression TK_QMARK expression TK_COLON expression
 	| TK_LPARENT expression TK_RPARENT
+	| assignment
+	| arrayLiteral
+	| objectLiteral
 	| literal
 	;
 
@@ -28,14 +116,38 @@ expression
 literal
 	: NULL_LITERAL
 	| BOOLEAN_LITERAL
-	| DECIMAL_INTEGER_LITERAL
-	| DECIMAL_LITERAL
+	| NUMERIC_LITERAL
+	| STRING_LITERAL
+	;
+
+NUMERIC_LITERAL
+	: DECIMAL_LITERAL
 	| BINARY_INTEGER_LITERAL
 	| OCTAL_INTEGER_LITERAL
 	| OCTAL_INTEGER_LITERAL2
 	| HEX_INTEGER_LITERAL
-	| STRING_LITERAL
 	;
+
+/*
+	Lexer
+**/
+
+// Skip spaces, tabs, newlines, \r (Windows).
+WS: [ \t\r\n]+ -> skip;
+
+// Reserved Words
+TK_PUBLIC: 'public';
+TK_PRIVATE: 'private';
+TK_PROTECTED: 'protected';
+TK_VAR: 'var';
+TK_LET: 'let';
+TK_CONST: 'const';
+TK_READ_ONLY: 'readonly';
+TK_STRING: 'string';
+TK_ANY: 'any';
+TK_BOOLEAN: 'boolean';
+TK_NUMBER: 'number';
+
 
 NULL_LITERAL
 	: 'null'
@@ -82,7 +194,15 @@ TK_NOT: '!';
 TK_BINNOT: '~';
 TK_PLUSPLUS: '++';
 TK_MINUSMINUS: '--';
+TK_PLUS_ASIGN: '+=';
+TK_MINUS_ASIGN: '-=';
+TK_STAR_ASIGN: '*=';
+TK_SLASH_ASIGN: '/=';
+TK_AND_ASIGN: '&=';
+TK_OR_ASIGN: '|=';
+TK_PERCENT_ASIGN: '%=';
 
+TK_EQ: '=';
 TK_EQEQ: '==';
 TK_NOTEQ: '!=';
 TK_IDENTEQ: '===';
@@ -98,17 +218,26 @@ TK_GREATEQ: '>=';
 
 
 TK_POINT: '.';
+TK_COMMA: ',';
 TK_QMARK: '?';
 TK_COLON: ':';
 TK_SEMICOLON: ';';
 
 TK_LPARENT: '(';
 TK_RPARENT: ')';
+TK_LBRACKET: '[';
+TK_RBRACKET: ']';
 
 TK_DCUOTE: '"';
 TK_SCUOTE: '\'';
 TK_LCURLY: '{';
 TK_RCURLY: '}';
+
+
+// Identifierss
+TK_IDENT
+	: [$_A-Za-z] [$_A-Za-z0-9]*
+	;
 
 DOUBLE_STRING_CHARACTER
 	: ~["\\\r\n]
@@ -149,6 +278,3 @@ NON_ESCAPE_CHARACTER: ~['"\\bfnrtv0-9xu\r\n];
 LINE_CONTINUATION: '\\' [\r\n\u2028\u2029];
 
 HEX_DIGIT: [0-9a-fA-F];
-
-// Skip spaces, tabs, newlines, \r (Windows).
-WS: [ \t\r\n]+ -> skip;

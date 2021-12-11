@@ -1,1 +1,5 @@
-!(5<6)
+let mesa = {
+    patas: 4,
+    color: 'beig',
+        [2+3/2]: 5
+}
