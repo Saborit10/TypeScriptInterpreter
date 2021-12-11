@@ -27,13 +27,13 @@ public class TypeScriptBaseListener implements TypeScriptListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArithmeticExpr(TypeScriptParser.ArithmeticExprContext ctx) { }
+	@Override public void enterExpression(TypeScriptParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArithmeticExpr(TypeScriptParser.ArithmeticExprContext ctx) { }
+	@Override public void exitExpression(TypeScriptParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

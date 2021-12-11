@@ -13,6 +13,7 @@ expression
     | TK_NOT expression
 	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression
 	| expression (TK_PLUS | TK_MINUS) expression
+	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression
 	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression
     | expression TK_BIN_AND expression
     | expression TK_BIN_OR expression
@@ -90,6 +91,11 @@ TK_BIN_AND: '&';
 TK_BIN_OR: '|';
 TK_LOGIC_AND: '&&';
 TK_LOGIC_OR: '||';
+TK_LESS: '<';
+TK_GREAT: '>';
+TK_LESSEQ: '<=';
+TK_GREATEQ: '>=';
+
 
 TK_POINT: '.';
 TK_QMARK: '?';

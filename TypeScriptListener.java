@@ -17,15 +17,15 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 */
 	void exitCompilationUnit(TypeScriptParser.CompilationUnitContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TypeScriptParser#arithmeticExpr}.
+	 * Enter a parse tree produced by {@link TypeScriptParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterArithmeticExpr(TypeScriptParser.ArithmeticExprContext ctx);
+	void enterExpression(TypeScriptParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TypeScriptParser#arithmeticExpr}.
+	 * Exit a parse tree produced by {@link TypeScriptParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitArithmeticExpr(TypeScriptParser.ArithmeticExprContext ctx);
+	void exitExpression(TypeScriptParser.ExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#literal}.
 	 * @param ctx the parse tree
