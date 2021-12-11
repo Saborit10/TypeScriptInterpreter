@@ -1,0 +1,131 @@
+grammar TypeScript;
+
+compilationUnit
+	: arithmeticExpr EOF
+	;
+
+arithmeticExpr
+	: TK_PLUSPLUS arithmeticExpr
+	| TK_MINUSMINUS arithmeticExpr
+	| TK_PLUS arithmeticExpr
+    | TK_MINUS arithmeticExpr
+    | TK_BINNOT arithmeticExpr
+    | TK_NOT arithmeticExpr
+	| arithmeticExpr (TK_STAR | TK_SLASH | TK_PERCENT) arithmeticExpr
+	| arithmeticExpr (TK_PLUS | TK_MINUS) arithmeticExpr
+	| TK_LPARENT arithmeticExpr TK_RPARENT
+	| literal
+	;
+
+// Literals
+literal
+	: NULL_LITERAL
+	| BOOLEAN_LITERAL
+	| DECIMAL_INTEGER_LITERAL
+	| DECIMAL_LITERAL
+	| BINARY_INTEGER_LITERAL
+	| OCTAL_INTEGER_LITERAL
+	| OCTAL_INTEGER_LITERAL2
+	| HEX_INTEGER_LITERAL
+	| STRING_LITERAL
+	;
+
+NULL_LITERAL
+	: 'null'
+	;
+
+BOOLEAN_LITERAL
+	: 'true'
+	| 'false'
+	;
+
+DECIMAL_INTEGER_LITERAL
+	: '0'
+	| [1-9] [0-9]*
+	;
+
+DECIMAL_LITERAL:
+	[1-9] [0-9]* TK_POINT [0-9]* EXPONENT_PART?
+	| TK_POINT [0-9]+ EXPONENT_PART?
+	| DECIMAL_INTEGER_LITERAL EXPONENT_PART?
+	;
+
+EXPONENT_PART
+	: [eE] [+-]? [0-9]+
+	;
+
+HEX_INTEGER_LITERAL: '0' [xX] HEX_DIGIT+;
+OCTAL_INTEGER_LITERAL: '0' [0-7]+;
+OCTAL_INTEGER_LITERAL2: '0' [oO] [0-7]+;
+BINARY_INTEGER_LITERAL: '0' [bB] [01]+;
+
+
+STRING_LITERAL
+	: TK_DCUOTE DOUBLE_STRING_CHARACTER* TK_DCUOTE
+	| TK_SCUOTE SINGLE_STRING_CHARACTER* TK_SCUOTE
+	;
+
+// Operators
+TK_PLUS: '+';
+TK_MINUS: '-';
+TK_STAR: '*';
+TK_SLASH: '/';
+TK_PERCENT: '%';
+TK_NOT: '!';
+TK_BINNOT: '~';
+TK_PLUSPLUS: '++';
+TK_MINUSMINUS: '--';
+
+TK_POINT: '.';
+
+
+TK_LPARENT: '(';
+TK_RPARENT: ')';
+
+TK_DCUOTE: '"';
+TK_SCUOTE: '\'';
+TK_LCURLY: '{';
+TK_RCURLY: '}';
+
+DOUBLE_STRING_CHARACTER
+	: ~["\\\r\n]
+	| '\\' ESCAPE_SEQUENCE
+	| LINE_CONTINUATION
+	;
+
+SINGLE_STRING_CHARACTER
+	: ~['\\\r\n]
+	| '\\' ESCAPE_SEQUENCE
+	| LINE_CONTINUATION;
+
+ESCAPE_SEQUENCE
+	: CHARACTER_ESCAPE_SEQUENCE
+	// | '0'
+	| HEX_ESCAPE_SEQUENCE
+	| EXTENDED_UNICODE_ESCAPE_SEQUENCE
+	;
+
+CHARACTER_ESCAPE_SEQUENCE
+	: SINGLE_ESCAPE_CHARACTER
+	| NON_ESCAPE_CHARACTER
+	;
+
+HEX_ESCAPE_SEQUENCE
+	: 'x' HEX_DIGIT HEX_DIGIT
+	;
+
+UNICODE_ESCAPE_SEQUENCE
+	: 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+	;
+
+EXTENDED_UNICODE_ESCAPE_SEQUENCE
+	: 'u' TK_LCURLY HEX_DIGIT+ TK_RCURLY;
+
+SINGLE_ESCAPE_CHARACTER: ['"\\bfnrtv];
+NON_ESCAPE_CHARACTER: ~['"\\bfnrtv0-9xu\r\n];
+LINE_CONTINUATION: '\\' [\r\n\u2028\u2029];
+
+HEX_DIGIT: [0-9a-fA-F];
+
+// Skip spaces, tabs, newlines, \r (Windows).
+WS: [ \t\r\n]+ -> skip;

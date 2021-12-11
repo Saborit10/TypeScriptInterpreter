@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "../simulacion"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"my_vector.h": "c"
+		}
+	}
+}
