@@ -1,19 +1,25 @@
 grammar TypeScript;
 
 compilationUnit
-	: arithmeticExpr EOF
+	: expression EOF
 	;
 
-arithmeticExpr
-	: TK_PLUSPLUS arithmeticExpr
-	| TK_MINUSMINUS arithmeticExpr
-	| TK_PLUS arithmeticExpr
-    | TK_MINUS arithmeticExpr
-    | TK_BINNOT arithmeticExpr
-    | TK_NOT arithmeticExpr
-	| arithmeticExpr (TK_STAR | TK_SLASH | TK_PERCENT) arithmeticExpr
-	| arithmeticExpr (TK_PLUS | TK_MINUS) arithmeticExpr
-	| TK_LPARENT arithmeticExpr TK_RPARENT
+expression
+	: TK_PLUSPLUS expression
+	| TK_MINUSMINUS expression
+	| TK_PLUS expression
+    | TK_MINUS expression
+    | TK_BINNOT expression
+    | TK_NOT expression
+	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression
+	| expression (TK_PLUS | TK_MINUS) expression
+	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression
+    | expression TK_BIN_AND expression
+    | expression TK_BIN_OR expression
+    | expression TK_LOGIC_AND expression
+    | expression TK_LOGIC_OR expression
+	| expression TK_QMARK expression TK_COLON expression
+	| TK_LPARENT expression TK_RPARENT
 	| literal
 	;
 
@@ -76,8 +82,19 @@ TK_BINNOT: '~';
 TK_PLUSPLUS: '++';
 TK_MINUSMINUS: '--';
 
-TK_POINT: '.';
+TK_EQEQ: '==';
+TK_NOTEQ: '!=';
+TK_IDENTEQ: '===';
+TK_IDENTNOTEQ: '!==';
+TK_BIN_AND: '&';
+TK_BIN_OR: '|';
+TK_LOGIC_AND: '&&';
+TK_LOGIC_OR: '||';
 
+TK_POINT: '.';
+TK_QMARK: '?';
+TK_COLON: ':';
+TK_SEMICOLON: ';';
 
 TK_LPARENT: '(';
 TK_RPARENT: ')';
