@@ -1,0 +1,7 @@
+if(flag == true)
+    flag = false;
+
+if( 1<2 < 4 )
+    let array: number[];
+else
+    a = 4

@@ -1,8 +1,46 @@
 grammar TypeScript;
 
 compilationUnit
-	: variableStatement EOF
+	: statementList EOF
 	;
+
+statementList
+	: statement+
+	;
+
+block
+	: TK_LCURLY statementList? TK_RCURLY
+	;
+
+statement
+	: block
+	| variableStatement
+	| ifStatement
+	// | forStatement
+	// | whileStatement
+	// | doStatement
+	// | switchStatement
+	// | classStatement
+	// | functionStatement
+	| expressionStatement
+	| emptyStatement
+	;
+
+emptyStatement
+	: TK_SEMICOLON
+	;
+
+ifStatement
+	: TK_IF TK_LPARENT expressionSequence TK_RPARENT statement (TK_ELSE statement)?
+	;
+
+expressionSequence
+	: expression (TK_COMMA expression)*
+	;
+
+expressionStatement
+	: expression TK_SEMICOLON
+	; 
 
 variableStatement
 	: accessModifier? varModifier? TK_READ_ONLY? variableDeclList TK_SEMICOLON?
@@ -48,12 +86,10 @@ propertyName
 	;
 
 typeAnnotation
-	: TK_COLON simpleType
-	| TK_COLON arrayType
-	| TK_COLON TK_IDENT //Tipo_Declarado_por_el_usuario 
+	: TK_COLON typeName
 	;
 
-simpleType
+primitiveType
 	: TK_STRING
 	| TK_ANY
 	| TK_BOOLEAN
@@ -61,9 +97,41 @@ simpleType
 	// | TK_SYMBOL
 	;
 
+typeName
+	: parametricType
+	| simpleType
+	| arrayType
+	;
+
+parametricType
+	: simpleType typeParameters
+	;
+
+simpleType
+	: primitiveType
+	| TK_IDENT
+	;
+
 arrayType
-	: simpleType TK_LBRACKET TK_RBRACKET
-	| TK_IDENT TK_LBRACKET TK_RBRACKET
+	: arrayType TK_LBRACKET TK_RBRACKET
+	| simpleType TK_LBRACKET TK_RBRACKET
+	;
+
+typeParameters
+	: TK_LESS typeParameterList? TK_GREAT
+	;
+
+typeParameterList
+	: typeParameter (TK_COMMA typeParameter)*
+	;
+
+typeParameter
+	: typeName extendsConstraint?
+	// | typeParameters
+	;
+
+extendsConstraint
+	: TK_EXTENDS typeName
 	;
 
 accessModifier
@@ -92,6 +160,8 @@ assignment
 expression
 	: TK_PLUSPLUS expression
 	| TK_MINUSMINUS expression
+	| expression TK_PLUSPLUS
+	| expression TK_MINUSMINUS
 	| TK_PLUS expression
     | TK_MINUS expression
     | TK_BINNOT expression
@@ -100,7 +170,7 @@ expression
 	| expression (TK_PLUS | TK_MINUS) expression
 	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression
 	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression
-    | expression TK_BIN_AND expression
+	| expression TK_BIN_AND expression
     | expression TK_BIN_OR expression
     | expression TK_LOGIC_AND expression
     | expression TK_LOGIC_OR expression
@@ -109,6 +179,7 @@ expression
 	| assignment
 	| arrayLiteral
 	| objectLiteral
+	| TK_IDENT
 	| literal
 	;
 
@@ -147,7 +218,9 @@ TK_STRING: 'string';
 TK_ANY: 'any';
 TK_BOOLEAN: 'boolean';
 TK_NUMBER: 'number';
-
+TK_EXTENDS: 'extends';
+TK_IF: 'if';
+TK_ELSE: 'else';
 
 NULL_LITERAL
 	: 'null'

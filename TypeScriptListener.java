@@ -17,6 +17,76 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 */
 	void exitCompilationUnit(TypeScriptParser.CompilationUnitContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#statementList}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatementList(TypeScriptParser.StatementListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#statementList}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatementList(TypeScriptParser.StatementListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlock(TypeScriptParser.BlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlock(TypeScriptParser.BlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement(TypeScriptParser.StatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement(TypeScriptParser.StatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#emptyStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterEmptyStatement(TypeScriptParser.EmptyStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#emptyStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitEmptyStatement(TypeScriptParser.EmptyStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#ifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStatement(TypeScriptParser.IfStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#ifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStatement(TypeScriptParser.IfStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#expressionSequence}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionSequence(TypeScriptParser.ExpressionSequenceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#expressionSequence}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionSequence(TypeScriptParser.ExpressionSequenceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#expressionStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionStatement(TypeScriptParser.ExpressionStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#expressionStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionStatement(TypeScriptParser.ExpressionStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#variableStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -117,6 +187,36 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 */
 	void exitTypeAnnotation(TypeScriptParser.TypeAnnotationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#primitiveType}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrimitiveType(TypeScriptParser.PrimitiveTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#primitiveType}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrimitiveType(TypeScriptParser.PrimitiveTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#typeName}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeName(TypeScriptParser.TypeNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#typeName}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeName(TypeScriptParser.TypeNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#parametricType}.
+	 * @param ctx the parse tree
+	 */
+	void enterParametricType(TypeScriptParser.ParametricTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#parametricType}.
+	 * @param ctx the parse tree
+	 */
+	void exitParametricType(TypeScriptParser.ParametricTypeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#simpleType}.
 	 * @param ctx the parse tree
 	 */
@@ -136,6 +236,46 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArrayType(TypeScriptParser.ArrayTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#typeParameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeParameters(TypeScriptParser.TypeParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#typeParameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeParameters(TypeScriptParser.TypeParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#typeParameterList}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeParameterList(TypeScriptParser.TypeParameterListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#typeParameterList}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeParameterList(TypeScriptParser.TypeParameterListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#typeParameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeParameter(TypeScriptParser.TypeParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#typeParameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeParameter(TypeScriptParser.TypeParameterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#extendsConstraint}.
+	 * @param ctx the parse tree
+	 */
+	void enterExtendsConstraint(TypeScriptParser.ExtendsConstraintContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#extendsConstraint}.
+	 * @param ctx the parse tree
+	 */
+	void exitExtendsConstraint(TypeScriptParser.ExtendsConstraintContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#accessModifier}.
 	 * @param ctx the parse tree
