@@ -21,11 +21,66 @@ statement
 	// | doStatement
 	// | switchStatement
 	// | classStatement
-	// | functionStatement
+	| continueStatement
+    | breakStatement
+    | returnStatement 
+	| functionStatement
 	| expressionStatement
 	| emptyStatement
 	;
 
+functionStatement
+	: TK_FUNCTION TK_IDENT callSignature ( TK_LCURLY functionBody TK_RCURLY | TK_SEMICOLON)
+	;
+
+continueStatement
+	: TK_CONTINUE TK_SEMICOLON
+	;
+
+breakStatement
+	: TK_BREAK TK_SEMICOLON
+	;
+
+returnStatement
+	: TK_RETURN (expressionSequence)? TK_SEMICOLON
+	;
+
+
+callSignature
+	: typeParameters? TK_LPARENT parameterList? TK_RPARENT typeAnnotation?
+	;
+
+parameterList
+	: parameter (TK_COMMA parameter)*;
+
+parameter
+	: requiredParameter
+	| optionalParameter
+	;
+
+requiredParameter
+	: accessModifier? identifierOrPattern typeAnnotation?
+	;
+
+optionalParameter
+	: ( accessModifier? identifierOrPattern (TK_QMARK typeAnnotation? | typeAnnotation? initializer)) 
+	;
+
+identifierOrPattern
+	: identifierOrReservedWord
+	| arrayLiteral
+	| objectLiteral
+	;
+
+identifierOrReservedWord
+	: TK_IDENT
+	// | reservedWord
+	;
+
+// reservedWord
+// 	: NULL_LITERAL
+// 	| BOOLEAN_LITERAL
+// 	;
 emptyStatement
 	: TK_SEMICOLON
 	;
@@ -157,8 +212,12 @@ assignment
 	| TK_IDENT TK_OR_ASIGN expression
 	;
 
+functionExpressionDecl
+	: TK_FUNCTION TK_IDENT? TK_LPARENT formalParameterList? TK_RPARENT typeAnnotation? TK_LCURLY functionBody TK_RCURLY
+	;
 expression
-	: TK_PLUSPLUS expression
+	: functionExpressionDecl
+	| TK_PLUSPLUS expression
 	| TK_MINUSMINUS expression
 	| expression TK_PLUSPLUS
 	| expression TK_MINUSMINUS
@@ -182,6 +241,29 @@ expression
 	| TK_IDENT
 	| literal
 	;
+
+formalParameterList
+	: formalParameterArg (TK_COMMA formalParameterArg)*
+	;
+
+functionBody
+	: sourceElem*
+	;
+
+sourceElem
+	: TK_EXPORT? statement
+	;
+
+formalParameterArg
+	: accessModifier? identifierOrKeyword TK_QMARK? typeAnnotation? (TK_EQ expression)? 
+	;
+
+identifierOrKeyword
+	: TK_IDENT
+	| TK_TYPE
+	| TK_REQUIRE
+	;
+
 
 // Literals
 literal
@@ -221,6 +303,13 @@ TK_NUMBER: 'number';
 TK_EXTENDS: 'extends';
 TK_IF: 'if';
 TK_ELSE: 'else';
+TK_FUNCTION: 'function';
+TK_TYPE: 'type';
+TK_REQUIRE: 'require';
+TK_EXPORT: 'export';
+TK_RETURN: 'return';
+TK_CONTINUE: 'continue';
+TK_BREAK: 'break';
 
 NULL_LITERAL
 	: 'null'

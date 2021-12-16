@@ -1,7 +1,7 @@
-if( luis ){
-     a = 5;
-     --a;
-}
-else{
-     varName++;
-}
+var myObject = {
+    value: 0,
+    increment: function (inc) {
+        this.value += inc > 0 ? inc : 1;
+    }
+};
+
