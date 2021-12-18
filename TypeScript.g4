@@ -98,7 +98,8 @@ expressionStatement
 	; 
 
 variableStatement
-	: accessModifier? varModifier? TK_READ_ONLY? variableDeclList TK_SEMICOLON?
+	// : accessModifier? varModifier? TK_READ_ONLY? variableDeclList TK_SEMICOLON?
+	: accessModifier? varModifier TK_READ_ONLY? variableDeclList TK_SEMICOLON?
 	;
 
 variableDeclList
@@ -202,14 +203,30 @@ varModifier
 	;
 
 assignment
-	: TK_IDENT TK_EQ expression
-	| TK_IDENT TK_PLUS_ASIGN expression
-	| TK_IDENT TK_MINUS_ASIGN expression
-	| TK_IDENT TK_STAR_ASIGN expression
-	| TK_IDENT TK_SLASH_ASIGN expression
-	| TK_IDENT TK_PERCENT_ASIGN expression
-	| TK_IDENT TK_AND_ASIGN expression
-	| TK_IDENT TK_OR_ASIGN expression
+	: identifier TK_EQ expression
+	| identifier TK_PLUS_ASIGN expression
+	| identifier TK_MINUS_ASIGN expression
+	| identifier TK_STAR_ASIGN expression
+	| identifier TK_SLASH_ASIGN expression
+	| identifier TK_PERCENT_ASIGN expression
+	| identifier TK_AND_ASIGN expression
+	| identifier TK_OR_ASIGN expression
+	;
+
+identifier
+	: TK_IDENT
+	| identifier attribute
+	| identifier TK_POINT functionCall
+	;
+
+attribute
+	: TK_LBRACKET expressionSequence TK_RBRACKET 
+	| TK_POINT TK_IDENT
+	;
+
+functionCall
+	: TK_IDENT TK_LPARENT expressionSequence TK_RPARENT
+	| TK_IDENT TK_LPARENT TK_RPARENT
 	;
 
 functionExpressionDecl
@@ -236,9 +253,10 @@ expression
 	| expression TK_QMARK expression TK_COLON expression
 	| TK_LPARENT expression TK_RPARENT
 	| assignment
+	| identifier
+	| functionCall
 	| arrayLiteral
 	| objectLiteral
-	| TK_IDENT
 	| literal
 	;
 

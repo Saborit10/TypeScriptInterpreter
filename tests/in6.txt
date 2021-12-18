@@ -4,4 +4,4 @@ if(flag == true)
 if( 1<2 < 4 )
     let array: number[];
 else
-    a = 4
+    a = 4;

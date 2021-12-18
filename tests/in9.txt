@@ -1,0 +1,5 @@
+a = this.call(0).name['primero'].first();
+a.method += 3;
+f(luis);
+g();
+object.call_funtion() %= 2;

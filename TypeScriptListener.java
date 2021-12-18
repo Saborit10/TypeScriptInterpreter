@@ -417,6 +417,36 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 */
 	void exitAssignment(TypeScriptParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(TypeScriptParser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(TypeScriptParser.IdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#attribute}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttribute(TypeScriptParser.AttributeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#attribute}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttribute(TypeScriptParser.AttributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCall(TypeScriptParser.FunctionCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCall(TypeScriptParser.FunctionCallContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#functionExpressionDecl}.
 	 * @param ctx the parse tree
 	 */

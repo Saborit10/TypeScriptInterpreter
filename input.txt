@@ -1,7 +1,7 @@
-var myObject = {
-    value: 0,
-    increment: function (inc) {
-        this.value += inc > 0 ? inc : 1;
-    }
-};
+if(flag == true)
+    flag = false;
 
+if( 1<2 < 4 )
+    let array: number[];
+else
+    a = 4;
