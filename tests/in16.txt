@@ -1,0 +1,26 @@
+class Car {
+    constructor(year) {
+        this.year = year;
+    }
+}
+console.log();
+
+class Car2 {
+    constructor(year) {
+        this.year = year;
+        this.miles = 0;
+    }
+    drive(distance) {
+        this.miles += distance;
+    }
+}
+
+class Holidays {
+    constructor() {
+        this[NYD] = 'January 1';
+        this["Valentine's Day"] = 'February 14';
+    }
+    list_holidays() {
+        return Object.keys(this);
+    }
+}

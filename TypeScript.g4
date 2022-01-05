@@ -1,26 +1,31 @@
 grammar TypeScript;
 
+
+/* Representa un codigo en typescript */
 compilationUnit
 	: statementList EOF
 	;
 
+/* Lista de Sentencias */
 statementList
 	: statement+
 	;
 
+/* Bloque */
 block
 	: TK_LCURLY statementList? TK_RCURLY
 	;
 
+/* Sentencia */
 statement
 	: block
 	| variableStatement
 	| ifStatement
-	// | forStatement
-	// | whileStatement
-	// | doStatement
+	| forStatement
+	| whileStatement
+	| doStatement
 	// | switchStatement
-	// | classStatement
+	| classStatement
 	| continueStatement
     | breakStatement
     | returnStatement 
@@ -29,43 +34,146 @@ statement
 	| emptyStatement
 	;
 
+/* Sentencia For */
+forStatement
+	: TK_FOR TK_LPARENT expressionSequence? TK_SEMICOLON expressionSequence? TK_SEMICOLON expressionSequence? TK_RPARENT statement
+	| TK_FOR TK_LPARENT varModifier variableDeclList TK_SEMICOLON expressionSequence? TK_SEMICOLON expressionSequence? TK_RPARENT statement
+    | TK_FOR TK_LPARENT expression (TK_IN | TK_OF) expressionSequence TK_RPARENT statement
+    | TK_FOR TK_LPARENT varModifier variableDecl (TK_IN | TK_OF) expressionSequence TK_RPARENT statement
+	;
+
+/* Sentencia While */
+whileStatement
+	: TK_WHILE TK_LPARENT expressionSequence TK_RPARENT statement 
+	;
+
+/* Sentencia Do-While */
+doStatement
+	: TK_DO statement TK_WHILE TK_LPARENT expressionSequence TK_RPARENT
+	;
+
+/* Sentencia Switch */
+// switchStatement
+// 	: Switch '(' expressionSequence ')' caseBlock
+// 	;
+
+/* Sentencia para Declarar un Clase */
+classStatement
+	: TK_ABSTRACT? TK_CLASS TK_IDENT typeParameters? classHeritage classBody
+	;
+
+/* Clausula de Herencia de una Clase (extends A, implements B) */
+classHeritage
+	: classExtendsClause? implementsClause?
+	;
+
+/* Clausula Extends de una Clase (extends A) */
+classExtendsClause
+	: TK_EXTENDS referenceType
+	;
+
+/* Clausula Implements de una Clase (implements A) */
+implementsClause
+	: TK_IMPLEMENTS referenceType
+	;
+
+/* Cuerpo de una Clase */
+classBody
+	: TK_LCURLY classElement* TK_RCURLY
+	;
+
+/* Elemento de una Clase */
+classElement
+	: constructorDeclaration
+	| memberDecl
+	| indexMemberDecl
+	| statement
+	;
+
+/* Declaracio de un Mienbro de una Clase */
+memberDecl
+	: propertyMemberBase propertyName TK_QMARK? typeAnnotation? initializer? TK_SEMICOLON
+	| propertyMemberBase propertyName callSignature ( (TK_LCURLY functionBody TK_RCURLY) | TK_SEMICOLON)
+    | propertyMemberBase (getter | setter)
+    | abstractDecl
+    ;
+
+/* Getter */
+getter
+    : TK_GET propertyName TK_LPARENT TK_RPARENT typeAnnotation? TK_LCURLY functionBody TK_RCURLY
+    ;
+
+/* Setter */
+setter
+    : TK_SET propertyName TK_LPARENT ( TK_IDENT | arrayLiteral | objectLiteral) typeAnnotation? TK_RPARENT TK_LCURLY functionBody TK_RCURLY
+    ;
+
+/* Declaracio de un Miembro Abstracto de una Clase */
+abstractDecl
+	: TK_ABSTRACT (TK_IDENT callSignature | variableStatement)
+	;
+
+/*  */
+indexMemberDecl
+	: TK_LBRACKET TK_IDENT TK_COLON (TK_NUMBER|TK_STRING) TK_RBRACKET typeAnnotation TK_SEMICOLON
+	;
+
+/* Primera Parte de la Declaracion de un Miembro de una Clase. Tiene os Modificadores de Acceso */
+propertyMemberBase
+	: TK_ASYNC? accessModifier? TK_STATIC? TK_READ_ONLY?
+	;
+
+/* Declaracion de un Constructor de una Clase*/
+constructorDeclaration
+	: accessModifier? TK_CONSTRUCTOR TK_LPARENT formalParameterList? TK_RPARENT TK_LCURLY functionBody TK_RCURLY
+	;
+
+/* Declaracion de uan Funcion */
 functionStatement
 	: TK_FUNCTION TK_IDENT callSignature ( TK_LCURLY functionBody TK_RCURLY | TK_SEMICOLON)
 	;
 
+/* Sentencia Continue */
 continueStatement
 	: TK_CONTINUE TK_SEMICOLON
 	;
 
+/* Sentencia Break */
 breakStatement
 	: TK_BREAK TK_SEMICOLON
 	;
 
+/* Sentencia Return */
 returnStatement
 	: TK_RETURN (expressionSequence)? TK_SEMICOLON
 	;
 
-
+/* Signatura de la Llamada a una Funcion */
 callSignature
 	: typeParameters? TK_LPARENT parameterList? TK_RPARENT typeAnnotation?
 	;
 
+/* Lista de Parametros */
 parameterList
 	: parameter (TK_COMMA parameter)*;
 
+/* Parametro de una Funcion */
 parameter
 	: requiredParameter
 	| optionalParameter
 	;
 
+/* Parametro Requerido */
 requiredParameter
 	: accessModifier? identifierOrPattern typeAnnotation?
 	;
 
+/* Parametro Opcional */
 optionalParameter
 	: ( accessModifier? identifierOrPattern (TK_QMARK typeAnnotation? | typeAnnotation? initializer)) 
 	;
 
+/* Identificador, Palabra Reservada, Literal de Objeto o Literal de Arreglo */
 identifierOrPattern
 	: identifierOrReservedWord
 	| arrayLiteral
@@ -81,6 +189,7 @@ identifierOrReservedWord
 // 	: NULL_LITERAL
 // 	| BOOLEAN_LITERAL
 // 	;
+
 emptyStatement
 	: TK_SEMICOLON
 	;
@@ -98,12 +207,11 @@ expressionStatement
 	; 
 
 variableStatement
-	// : accessModifier? varModifier? TK_READ_ONLY? variableDeclList TK_SEMICOLON?
 	: accessModifier? varModifier TK_READ_ONLY? variableDeclList TK_SEMICOLON?
 	;
 
 variableDeclList
-	: variableDecl (',' variableDecl)*
+	: variableDecl (TK_COMMA variableDecl)*
 	;
 
 variableDecl
@@ -165,7 +273,11 @@ parametricType
 
 simpleType
 	: primitiveType
-	| TK_IDENT
+	| referenceType
+	;
+
+referenceType
+	: TK_IDENT
 	;
 
 arrayType
@@ -227,11 +339,13 @@ attribute
 functionCall
 	: TK_IDENT TK_LPARENT expressionSequence TK_RPARENT
 	| TK_IDENT TK_LPARENT TK_RPARENT
+	| TK_LPARENT functionExpressionDecl	TK_RPARENT TK_LPARENT expressionSequence? TK_RPARENT
 	;
 
 functionExpressionDecl
 	: TK_FUNCTION TK_IDENT? TK_LPARENT formalParameterList? TK_RPARENT typeAnnotation? TK_LCURLY functionBody TK_RCURLY
 	;
+
 expression
 	: functionExpressionDecl
 	| TK_PLUSPLUS expression
@@ -251,10 +365,11 @@ expression
     | expression TK_LOGIC_AND expression
     | expression TK_LOGIC_OR expression
 	| expression TK_QMARK expression TK_COLON expression
+	| functionCall
 	| TK_LPARENT expression TK_RPARENT
 	| assignment
+	| TK_NEW expression callSignature
 	| identifier
-	| functionCall
 	| arrayLiteral
 	| objectLiteral
 	| literal
@@ -328,6 +443,20 @@ TK_EXPORT: 'export';
 TK_RETURN: 'return';
 TK_CONTINUE: 'continue';
 TK_BREAK: 'break';
+TK_FOR: 'for';
+TK_IN: 'in';
+TK_OF: 'of';
+TK_DO: 'do';
+TK_WHILE: 'while';
+TK_CLASS: 'class';
+TK_IMPLEMENTS: 'implements';
+TK_ABSTRACT: 'abstract';
+TK_CONSTRUCTOR: 'constructor';
+TK_ASYNC: 'async';
+TK_STATIC: 'static';
+TK_GET: 'get';
+TK_SET: 'set';
+TK_NEW: 'new';
 
 NULL_LITERAL
 	: 'null'
@@ -458,3 +587,8 @@ NON_ESCAPE_CHARACTER: ~['"\\bfnrtv0-9xu\r\n];
 LINE_CONTINUATION: '\\' [\r\n\u2028\u2029];
 
 HEX_DIGIT: [0-9a-fA-F];
+
+
+TK_MULTILINE_COMMENT:               '/*' .*? '*/'             -> channel(HIDDEN);
+TK_SINGLELINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> channel(HIDDEN);
+

@@ -47,6 +47,166 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 */
 	void exitStatement(TypeScriptParser.StatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#forStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterForStatement(TypeScriptParser.ForStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#forStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitForStatement(TypeScriptParser.ForStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#whileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStatement(TypeScriptParser.WhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#whileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStatement(TypeScriptParser.WhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#doStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoStatement(TypeScriptParser.DoStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#doStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoStatement(TypeScriptParser.DoStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#classStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassStatement(TypeScriptParser.ClassStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#classStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassStatement(TypeScriptParser.ClassStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#classHeritage}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassHeritage(TypeScriptParser.ClassHeritageContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#classHeritage}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassHeritage(TypeScriptParser.ClassHeritageContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#classExtendsClause}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassExtendsClause(TypeScriptParser.ClassExtendsClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#classExtendsClause}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassExtendsClause(TypeScriptParser.ClassExtendsClauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#implementsClause}.
+	 * @param ctx the parse tree
+	 */
+	void enterImplementsClause(TypeScriptParser.ImplementsClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#implementsClause}.
+	 * @param ctx the parse tree
+	 */
+	void exitImplementsClause(TypeScriptParser.ImplementsClauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#classBody}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassBody(TypeScriptParser.ClassBodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#classBody}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassBody(TypeScriptParser.ClassBodyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#classElement}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassElement(TypeScriptParser.ClassElementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#classElement}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassElement(TypeScriptParser.ClassElementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#memberDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterMemberDecl(TypeScriptParser.MemberDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#memberDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitMemberDecl(TypeScriptParser.MemberDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#getter}.
+	 * @param ctx the parse tree
+	 */
+	void enterGetter(TypeScriptParser.GetterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#getter}.
+	 * @param ctx the parse tree
+	 */
+	void exitGetter(TypeScriptParser.GetterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#setter}.
+	 * @param ctx the parse tree
+	 */
+	void enterSetter(TypeScriptParser.SetterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#setter}.
+	 * @param ctx the parse tree
+	 */
+	void exitSetter(TypeScriptParser.SetterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#abstractDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterAbstractDecl(TypeScriptParser.AbstractDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#abstractDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitAbstractDecl(TypeScriptParser.AbstractDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#indexMemberDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndexMemberDecl(TypeScriptParser.IndexMemberDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#indexMemberDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndexMemberDecl(TypeScriptParser.IndexMemberDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#propertyMemberBase}.
+	 * @param ctx the parse tree
+	 */
+	void enterPropertyMemberBase(TypeScriptParser.PropertyMemberBaseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#propertyMemberBase}.
+	 * @param ctx the parse tree
+	 */
+	void exitPropertyMemberBase(TypeScriptParser.PropertyMemberBaseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#constructorDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstructorDeclaration(TypeScriptParser.ConstructorDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#constructorDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstructorDeclaration(TypeScriptParser.ConstructorDeclarationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#functionStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -336,6 +496,16 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSimpleType(TypeScriptParser.SimpleTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#referenceType}.
+	 * @param ctx the parse tree
+	 */
+	void enterReferenceType(TypeScriptParser.ReferenceTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#referenceType}.
+	 * @param ctx the parse tree
+	 */
+	void exitReferenceType(TypeScriptParser.ReferenceTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#arrayType}.
 	 * @param ctx the parse tree

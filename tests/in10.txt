@@ -1,0 +1,26 @@
+
+class B{
+
+}
+
+class C{
+
+}
+
+class A extends B implements C{
+    privateMember: Number;
+
+    constructor (var1: Number){
+        super();
+
+        this.privateMember = var1;
+    }
+
+    // myFunct = function(a: Number, b: Number){
+
+    // }
+
+    myFunct(a: Number, b: Number): Number{
+        return a + b;
+    }
+}

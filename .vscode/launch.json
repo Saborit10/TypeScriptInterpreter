@@ -5,7 +5,7 @@
             "name": "Debug ANTLR4 grammar",
             "type": "antlr-debug",
             "request": "launch",
-            "input": "input.txt",
+            "input": "input.ts",
             "grammar": "TypeScript.g4",
             // "startRule": "",
             "printParseTree": true,
