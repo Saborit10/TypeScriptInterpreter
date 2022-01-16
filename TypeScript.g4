@@ -24,7 +24,7 @@ statement
 	| forStatement
 	| whileStatement
 	| doStatement
-	// | switchStatement
+	| switchStatement
 	| classStatement
 	| continueStatement
     | breakStatement
@@ -53,9 +53,21 @@ doStatement
 	;
 
 /* Sentencia Switch */
-// switchStatement
-// 	: Switch '(' expressionSequence ')' caseBlock
-// 	;
+switchStatement
+	: TK_SWITCH '(' expressionSequence ')' caseBlock
+	;
+
+caseBlock
+	: TK_LCURLY (caseClause+)? (defaultClause (caseClause+)?)? TK_RCURLY
+	;
+
+caseClause
+	: TK_CASE expressionSequence TK_COLON statementList?
+	;
+
+defaultClause
+	: TK_DEFAULT ':' statementList?
+	;
 
 /* Sentencia para Declarar un Clase */
 classStatement
@@ -118,7 +130,7 @@ indexMemberDecl
 	: TK_LBRACKET TK_IDENT TK_COLON (TK_NUMBER|TK_STRING) TK_RBRACKET typeAnnotation TK_SEMICOLON
 	;
 
-/* Primera Parte de la Declaracion de un Miembro de una Clase. Tiene os Modificadores de Acceso */
+/* Primera Parte de la Declaracion de un Miembro de una Clase. Tiene los Modificadores de Acceso */
 propertyMemberBase
 	: TK_ASYNC? accessModifier? TK_STATIC? TK_READ_ONLY?
 	;
@@ -314,26 +326,8 @@ varModifier
 	| TK_CONST
 	;
 
-assignment
-	: identifier TK_EQ expression
-	| identifier TK_PLUS_ASIGN expression
-	| identifier TK_MINUS_ASIGN expression
-	| identifier TK_STAR_ASIGN expression
-	| identifier TK_SLASH_ASIGN expression
-	| identifier TK_PERCENT_ASIGN expression
-	| identifier TK_AND_ASIGN expression
-	| identifier TK_OR_ASIGN expression
-	;
-
 identifier
 	: TK_IDENT
-	| identifier attribute
-	| identifier TK_POINT functionCall
-	;
-
-attribute
-	: TK_LBRACKET expressionSequence TK_RBRACKET 
-	| TK_POINT TK_IDENT
 	;
 
 functionCall
@@ -346,8 +340,22 @@ functionExpressionDecl
 	: TK_FUNCTION TK_IDENT? TK_LPARENT formalParameterList? TK_RPARENT typeAnnotation? TK_LCURLY functionBody TK_RCURLY
 	;
 
+assignmentOperator
+	: TK_EQ
+	| TK_PLUS_ASIGN
+	| TK_MINUS_ASIGN
+	| TK_STAR_ASIGN
+	| TK_SLASH_ASIGN
+	| TK_PERCENT_ASIGN
+	| TK_AND_ASIGN
+	| TK_OR_ASIGN
+	;
+
 expression
 	: functionExpressionDecl
+	| expression '[' expressionSequence ']'
+    | expression '.' identifier
+    | expression '.' functionCall
 	| TK_PLUSPLUS expression
 	| TK_MINUSMINUS expression
 	| expression TK_PLUSPLUS
@@ -367,12 +375,19 @@ expression
 	| expression TK_QMARK expression TK_COLON expression
 	| functionCall
 	| TK_LPARENT expression TK_RPARENT
-	| assignment
-	| TK_NEW expression callSignature
-	| identifier
+	| expression TK_EQ expression
+	| expression TK_PLUS_ASIGN expression
+	| expression TK_MINUS_ASIGN expression
+	| expression TK_STAR_ASIGN expression
+	| expression TK_SLASH_ASIGN expression
+	| expression TK_PERCENT_ASIGN expression
+	| expression TK_AND_ASIGN expression
+	| expression TK_OR_ASIGN expression
+	| TK_NEW functionCall
 	| arrayLiteral
 	| objectLiteral
 	| literal
+	| TK_IDENT
 	;
 
 formalParameterList
@@ -457,6 +472,9 @@ TK_STATIC: 'static';
 TK_GET: 'get';
 TK_SET: 'set';
 TK_NEW: 'new';
+TK_SWITCH: 'switch';
+TK_CASE: 'case';
+TK_DEFAULT: 'default';
 
 NULL_LITERAL
 	: 'null'
@@ -591,4 +609,3 @@ HEX_DIGIT: [0-9a-fA-F];
 
 TK_MULTILINE_COMMENT:               '/*' .*? '*/'             -> channel(HIDDEN);
 TK_SINGLELINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> channel(HIDDEN);
-

@@ -77,6 +77,46 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 */
 	void exitDoStatement(TypeScriptParser.DoStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#switchStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitchStatement(TypeScriptParser.SwitchStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#switchStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitchStatement(TypeScriptParser.SwitchStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#caseBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterCaseBlock(TypeScriptParser.CaseBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#caseBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitCaseBlock(TypeScriptParser.CaseBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#caseClause}.
+	 * @param ctx the parse tree
+	 */
+	void enterCaseClause(TypeScriptParser.CaseClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#caseClause}.
+	 * @param ctx the parse tree
+	 */
+	void exitCaseClause(TypeScriptParser.CaseClauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#defaultClause}.
+	 * @param ctx the parse tree
+	 */
+	void enterDefaultClause(TypeScriptParser.DefaultClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#defaultClause}.
+	 * @param ctx the parse tree
+	 */
+	void exitDefaultClause(TypeScriptParser.DefaultClauseContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#classStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -577,16 +617,6 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 */
 	void exitVarModifier(TypeScriptParser.VarModifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TypeScriptParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssignment(TypeScriptParser.AssignmentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TypeScriptParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssignment(TypeScriptParser.AssignmentContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#identifier}.
 	 * @param ctx the parse tree
 	 */
@@ -596,16 +626,6 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIdentifier(TypeScriptParser.IdentifierContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TypeScriptParser#attribute}.
-	 * @param ctx the parse tree
-	 */
-	void enterAttribute(TypeScriptParser.AttributeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TypeScriptParser#attribute}.
-	 * @param ctx the parse tree
-	 */
-	void exitAttribute(TypeScriptParser.AttributeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#functionCall}.
 	 * @param ctx the parse tree
@@ -626,6 +646,16 @@ public interface TypeScriptListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionExpressionDecl(TypeScriptParser.FunctionExpressionDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TypeScriptParser#assignmentOperator}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignmentOperator(TypeScriptParser.AssignmentOperatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TypeScriptParser#assignmentOperator}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignmentOperator(TypeScriptParser.AssignmentOperatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TypeScriptParser#expression}.
 	 * @param ctx the parse tree

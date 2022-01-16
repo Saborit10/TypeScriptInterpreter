@@ -1,0 +1,11 @@
+
+switch (ch) {
+    case 't':
+        return true;
+    case 'f':
+        break;
+    case 'n':
+        return null;
+}
+
+new Date().getDate().functionCall().member['indice'];

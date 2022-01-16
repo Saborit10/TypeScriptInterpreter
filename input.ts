@@ -1,7 +1,3 @@
-class Person{
-    year: number;
-
-    get age() {
-        return new Date().getFullYear() - this.year;
-    }
-}
+do{
+    var a = function(){ return "ere"; }
+}while(true);
