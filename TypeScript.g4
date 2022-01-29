@@ -364,7 +364,7 @@ expression
     | TK_MINUS expression
     | TK_BINNOT expression
     | TK_NOT expression
-	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression
+	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression						//#ExprToMultDivPerc
 	| expression (TK_PLUS | TK_MINUS) expression
 	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression
 	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression

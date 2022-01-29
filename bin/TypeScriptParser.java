@@ -188,12 +188,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_compilationUnit; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterCompilationUnit(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitCompilationUnit(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitCompilationUnit(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -232,12 +229,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_statementList; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterStatementList(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitStatementList(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitStatementList(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -286,12 +280,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_block; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterBlock(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitBlock(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitBlock(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -377,12 +368,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_statement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -540,12 +528,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_forStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterForStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitForStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitForStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -729,12 +714,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_whileStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterWhileStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitWhileStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitWhileStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -783,12 +765,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_doStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterDoStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitDoStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitDoStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -838,12 +817,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_switchStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterSwitchStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitSwitchStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitSwitchStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -893,12 +869,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_caseBlock; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterCaseBlock(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitCaseBlock(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitCaseBlock(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -994,12 +967,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_caseClause; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterCaseClause(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitCaseClause(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitCaseClause(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1050,12 +1020,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_defaultClause; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterDefaultClause(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitDefaultClause(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitDefaultClause(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1111,12 +1078,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_classStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterClassStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitClassStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitClassStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1180,12 +1144,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_classHeritage; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterClassHeritage(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitClassHeritage(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitClassHeritage(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1239,12 +1200,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_classExtendsClause; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterClassExtendsClause(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitClassExtendsClause(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitClassExtendsClause(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1281,12 +1239,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_implementsClause; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterImplementsClause(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitImplementsClause(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitImplementsClause(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1327,12 +1282,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_classBody; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterClassBody(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitClassBody(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitClassBody(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1392,12 +1344,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_classElement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterClassElement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitClassElement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitClassElement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1486,12 +1435,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_memberDecl; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterMemberDecl(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitMemberDecl(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitMemberDecl(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1644,12 +1590,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_getter; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterGetter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitGetter(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitGetter(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1724,12 +1667,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_setter; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterSetter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitSetter(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitSetter(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1815,12 +1755,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_abstractDecl; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterAbstractDecl(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitAbstractDecl(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitAbstractDecl(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1886,12 +1823,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_indexMemberDecl; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterIndexMemberDecl(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitIndexMemberDecl(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitIndexMemberDecl(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1949,12 +1883,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_propertyMemberBase; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterPropertyMemberBase(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitPropertyMemberBase(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitPropertyMemberBase(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2038,12 +1969,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_constructorDeclaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterConstructorDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitConstructorDeclaration(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitConstructorDeclaration(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2116,12 +2044,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_functionStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterFunctionStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitFunctionStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitFunctionStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2180,12 +2105,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_continueStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterContinueStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitContinueStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitContinueStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2220,12 +2142,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_breakStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterBreakStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitBreakStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitBreakStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2263,12 +2182,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_returnStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterReturnStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitReturnStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitReturnStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2323,12 +2239,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_callSignature; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterCallSignature(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitCallSignature(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitCallSignature(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2402,12 +2315,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_parameterList; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterParameterList(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitParameterList(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitParameterList(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2461,12 +2371,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_parameter; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterParameter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitParameter(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitParameter(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2519,12 +2426,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_requiredParameter; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterRequiredParameter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitRequiredParameter(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitRequiredParameter(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2589,12 +2493,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_optionalParameter; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterOptionalParameter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitOptionalParameter(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitOptionalParameter(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2686,12 +2587,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_identifierOrPattern; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterIdentifierOrPattern(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitIdentifierOrPattern(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitIdentifierOrPattern(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2745,12 +2643,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_identifierOrReservedWord; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterIdentifierOrReservedWord(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitIdentifierOrReservedWord(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitIdentifierOrReservedWord(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2782,12 +2677,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_emptyStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterEmptyStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitEmptyStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitEmptyStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2831,12 +2723,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_ifStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterIfStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitIfStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitIfStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2897,12 +2786,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expressionSequence; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterExpressionSequence(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitExpressionSequence(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitExpressionSequence(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2954,12 +2840,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expressionStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterExpressionStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitExpressionStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitExpressionStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3003,12 +2886,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_variableStatement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterVariableStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitVariableStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitVariableStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3082,12 +2962,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_variableDeclList; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterVariableDeclList(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitVariableDeclList(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitVariableDeclList(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3142,12 +3019,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_variableDecl; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterVariableDecl(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitVariableDecl(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitVariableDecl(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3203,12 +3077,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_initializer; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterInitializer(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitInitializer(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitInitializer(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3253,12 +3124,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_arrayLiteral; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterArrayLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitArrayLiteral(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitArrayLiteral(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3329,12 +3197,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_arrayElement; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterArrayElement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitArrayElement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitArrayElement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3390,12 +3255,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_objectLiteral; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterObjectLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitObjectLiteral(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitObjectLiteral(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3475,12 +3337,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_propertyAssign; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterPropertyAssign(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitPropertyAssign(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitPropertyAssign(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3552,12 +3411,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_propertyName; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterPropertyName(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitPropertyName(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitPropertyName(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3601,12 +3457,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_typeAnnotation; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterTypeAnnotation(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitTypeAnnotation(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitTypeAnnotation(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3643,12 +3496,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_primitiveType; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterPrimitiveType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitPrimitiveType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitPrimitiveType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3697,12 +3547,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_typeName; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterTypeName(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitTypeName(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitTypeName(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3759,12 +3606,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_parametricType; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterParametricType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitParametricType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitParametricType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3803,12 +3647,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_simpleType; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterSimpleType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitSimpleType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitSimpleType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3858,12 +3699,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_referenceType; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterReferenceType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitReferenceType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitReferenceType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3902,12 +3740,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_arrayType; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterArrayType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitArrayType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitArrayType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3983,12 +3818,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_typeParameters; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterTypeParameters(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitTypeParameters(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitTypeParameters(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4042,12 +3874,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_typeParameterList; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterTypeParameterList(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitTypeParameterList(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitTypeParameterList(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4101,12 +3930,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_typeParameter; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterTypeParameter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitTypeParameter(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitTypeParameter(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4152,12 +3978,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_extendsConstraint; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterExtendsConstraint(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitExtendsConstraint(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitExtendsConstraint(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4193,12 +4016,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_accessModifier; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterAccessModifier(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitAccessModifier(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitAccessModifier(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4241,12 +4061,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_varModifier; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterVarModifier(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitVarModifier(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitVarModifier(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4287,12 +4104,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_identifier; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterIdentifier(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitIdentifier(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitIdentifier(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4338,12 +4152,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_functionCall; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterFunctionCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitFunctionCall(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitFunctionCall(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4438,12 +4249,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_functionExpressionDecl; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterFunctionExpressionDecl(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitFunctionExpressionDecl(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitFunctionExpressionDecl(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4523,12 +4331,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_assignmentOperator; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterAssignmentOperator(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitAssignmentOperator(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitAssignmentOperator(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4633,12 +4438,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5110,12 +4912,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_formalParameterList; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterFormalParameterList(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitFormalParameterList(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitFormalParameterList(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5169,12 +4968,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_functionBody; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterFunctionBody(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitFunctionBody(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitFunctionBody(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5222,12 +5018,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_sourceElem; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterSourceElem(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitSourceElem(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitSourceElem(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5283,12 +5076,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_formalParameterArg; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterFormalParameterArg(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitFormalParameterArg(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitFormalParameterArg(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5365,12 +5155,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_identifierOrKeyword; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterIdentifierOrKeyword(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitIdentifierOrKeyword(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitIdentifierOrKeyword(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5414,12 +5201,9 @@ public class TypeScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_literal; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).enterLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptListener ) ((TypeScriptListener)listener).exitLiteral(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitLiteral(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 

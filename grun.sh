@@ -1,5 +1,5 @@
 
-java -jar /usr/local/lib/antlr-4.7.2-complete.jar -o ./bin TypeScript.g4
+java -jar /usr/local/lib/antlr-4.7.2-complete.jar -no-listener -visitor -o ./bin TypeScript.g4
 
 javac ./bin/TypeScript*.java
 javac Main.java -d ./bin -sourcepath ./bin
