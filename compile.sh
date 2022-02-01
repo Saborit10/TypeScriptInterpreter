@@ -1,12 +1,14 @@
 
 # Generate ANTLR4 Archives
 echo 'Generating ANTLR4 Archives...'
-java -jar /usr/local/lib/antlr-4.7.2-complete.jar -no-listener -visitor -o ./gen TypeScript.g4
+java -jar /usr/local/lib/antlr-4.7.2-complete.jar -no-listener -visitor ./src/grammar/TypeScript.g4
+mv ./src/grammar/*.interp ./src/gen
+mv ./src/grammar/*.tokens ./src/gen
+mv ./src/grammar/*.java ./src/gen
+python script/package.py src/gen src.gen
 
 # Compile the .java
 echo 'Compiling the java files...'
-javac symbols/*.java -d ./bin
-javac gen/*.java -d ./bin
-javac interp/*.java -d ./bin
+javac src/symbols/*.java src/gen/*.java src/interp/*.java
 
 echo 'Done.'

@@ -1,8 +1,11 @@
-package interp;
+package src.interp;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
+
+import java.io.IOException;
 import java.util.*;
+import src.gen.*;
 
 class VerboseListener extends BaseErrorListener {
 	@Override
@@ -24,7 +27,7 @@ class VerboseListener extends BaseErrorListener {
  */
 public class Interpreter {
 
-	public void process(){
+	public void process() throws IOException{
 		// create a CharStream that reads from standard input
 		ANTLRInputStream input = new ANTLRInputStream(System.in);
 		
@@ -42,7 +45,7 @@ public class Interpreter {
 
 		// ParseTree tree = parser.compilationUnit(); // begin parsing at init rule
 		
-		ParseTree tree = parser.prog(); // begin parsing at init rule
+		ParseTree tree = parser.compilationUnit(); // begin parsing at init rule
 
 		TSVisitor v = new TSVisitor();
 		v.visit(tree);

@@ -1,3 +1,4 @@
+package src.symbols;
 
 public class SyntacticError extends Exception{
 	private String reason;

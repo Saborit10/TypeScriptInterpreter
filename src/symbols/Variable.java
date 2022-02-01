@@ -1,3 +1,4 @@
+package src.symbols;
 
 public class Variable extends NamedSymbol{
 	private int modifiers;

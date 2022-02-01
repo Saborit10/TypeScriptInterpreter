@@ -1,3 +1,5 @@
+package src.symbols;
+
 import java.util.HashMap;
 
 // 1 - El nombre ya existe

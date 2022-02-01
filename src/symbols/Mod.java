@@ -1,3 +1,4 @@
+package src.symbols;
 
 public final class Mod{
     public static final int CONST   	= (1<<1); 

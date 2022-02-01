@@ -1,3 +1,7 @@
+package src.interp;
+
+
+import src.gen.TypeScriptBaseVisitor;
 
 /**
  * TSVisitor

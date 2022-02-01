@@ -1,3 +1,4 @@
+package src.symbols;
 
 public class StringValue extends Value{
 	private String value;

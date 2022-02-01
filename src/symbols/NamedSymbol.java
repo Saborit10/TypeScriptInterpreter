@@ -1,3 +1,4 @@
+package src.symbols;
 
 public class NamedSymbol extends Entry{
     private String identifier;

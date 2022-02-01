@@ -1,3 +1,4 @@
+package src.symbols;
 
 public class ObjectValue extends Value{
 	private String classIdentifier;
