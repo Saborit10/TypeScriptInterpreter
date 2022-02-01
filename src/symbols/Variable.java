@@ -10,8 +10,8 @@ public class Variable extends NamedSymbol{
 		this.type = type;
 	}
 
-	public Variable(String ident, int modifiers, Value init){
-		this(ident, modifiers);
+	public Variable(String ident, int modifiers, String type, Value init){
+		this(ident, modifiers, type);
 		this.value = init;
 	}
 

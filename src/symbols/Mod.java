@@ -1,5 +1,5 @@
 
-public static class Mod{
+public final class Mod{
     public static final int CONST   	= (1<<1); 
     public static final int LET     	= (1<<2);
     public static final int VAR     	= (1<<3);
