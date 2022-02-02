@@ -1,7 +1,7 @@
 package src.symbols;
 
 public class NamedSymbol extends Entry{
-    private String identifier;
+    protected String identifier;
 
     NamedSymbol(String ident){
         this.identifier = ident;

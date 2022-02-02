@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.*;
 import java.io.IOException;
 import java.util.*;
 import src.gen.*;
+import src.symbols.SyntacticError;
 
 class VerboseListener extends BaseErrorListener {
 	@Override
@@ -50,5 +51,14 @@ public class Interpreter {
 		TSVisitor v = new TSVisitor();
 		v.visit(tree);
 
+		System.out.println(v.getScope());
+
+		if( v.getSyntacticErrors().size() > 0 ){
+			System.out.println("Errors:");
+
+			for(SyntacticError e: v.getSyntacticErrors())
+				System.out.println(e);
+		}
+		
 	}
 }

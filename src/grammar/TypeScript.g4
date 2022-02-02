@@ -227,7 +227,6 @@ variableDeclList
 	;
 
 variableDecl
-	// : (TK_IDENT | arrayLiteral | objectLiteral ) typeAnnotation?; // Nasty stuff
 	: TK_IDENT typeAnnotation? initializer?
 	;
 

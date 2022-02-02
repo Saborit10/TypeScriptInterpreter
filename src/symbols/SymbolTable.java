@@ -11,22 +11,22 @@ public class SymbolTable{
 	private static final int INITIAL_CAPACITY = 5;
 
 	private HashMap<String, Entry> symbols;
+	private SymbolTable parent;
 
 	public SymbolTable(){
 		symbols = new HashMap<>(INITIAL_CAPACITY);    
 	}
 
-	void addNamedSymbol(NamedSymbol e) throws SyntacticError{
+	public SymbolTable(SymbolTable parent){
+		this();
+		this.parent = parent;
+	}
+
+	void declareVariable(Variable e) throws SyntacticError{
+		/* Comprobar si el identficador ya esta reservado */
 		if( symbols.containsKey(e.getIdentifier()) )
 			throw new SyntacticError("El identificador ya esta reservado");
 
-		if( e instanceof Variable )
-			addVariable((Variable)e);
-
-		
-	}
-
-	void addVariable(Variable e) throws SyntacticError{
 		int mod = e.getModifiers();
 
 		/* Si es una constante, debe tener un valor inicial */
@@ -51,6 +51,19 @@ public class SymbolTable{
 			}
 		}
 
-		
+		symbols.put(e.getIdentifier(), e);		
 	}
+
+
+	@Override
+	public String toString() {
+		String ans = "================\n";
+
+		for(String entryName: symbols.keySet())
+			ans += symbols.get(entryName).toString() + "\n";
+
+		ans += "================\n";
+		return ans;
+	}
+
 }

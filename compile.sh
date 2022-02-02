@@ -1,3 +1,4 @@
+#! /bin/bash
 
 # Generate ANTLR4 Archives
 echo 'Generating ANTLR4 Archives...'
@@ -9,6 +10,6 @@ python script/package.py src/gen src.gen
 
 # Compile the .java
 echo 'Compiling the java files...'
-javac src/symbols/*.java src/gen/*.java src/interp/*.java
+javac src/symbols/*.java src/gen/*.java src/interp/*.java Main.java
 
 echo 'Done.'
