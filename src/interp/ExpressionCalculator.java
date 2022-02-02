@@ -1,6 +1,6 @@
 package src.interp;
 
-import src.symbols.Value;
+import src.values.Value;
 
 public class ExpressionCalculator {
 	public ExpressionCalculator() {

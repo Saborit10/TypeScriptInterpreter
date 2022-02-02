@@ -1,7 +1,7 @@
 package src.types;
 
-import src.symbols.StringValue;
-import src.symbols.Value;
+import src.values.StringValue;
+import src.values.Value;
 
 public class StringType extends PrimitiveType{
 

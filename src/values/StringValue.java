@@ -1,4 +1,4 @@
-package src.symbols;
+package src.values;
 
 public class StringValue extends Value{
 	private String value;

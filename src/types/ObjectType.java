@@ -2,8 +2,8 @@ package src.types;
 
 import java.util.ArrayList;
 
-import src.symbols.ObjectValue;
-import src.symbols.Value;
+import src.values.ObjectValue;
+import src.values.Value;
 
 public class ObjectType extends Type{
 	private ObjectType superType;

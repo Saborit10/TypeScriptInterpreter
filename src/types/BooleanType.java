@@ -1,7 +1,7 @@
 package src.types;
 
-import src.symbols.BooleanValue;
-import src.symbols.Value;
+import src.values.BooleanValue;
+import src.values.Value;
 
 public class BooleanType extends PrimitiveType{
 

@@ -3,6 +3,7 @@ package src.symbols;
 import java.util.ArrayList;
 
 import src.types.Type;
+import src.values.Value;
 
 public class Variable extends NamedSymbol{
 	private int modifiers;

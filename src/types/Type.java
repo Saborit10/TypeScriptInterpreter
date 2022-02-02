@@ -1,7 +1,7 @@
 package src.types;
 
-import src.symbols.Value;
 import src.symbols.Variable;
+import src.values.Value;
 
 public abstract class Type {
 	protected String typeName;

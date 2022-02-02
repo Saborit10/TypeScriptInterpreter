@@ -3,19 +3,15 @@ package src.interp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.print.event.PrintJobListener;
-
-import org.antlr.v4.codegen.SourceGenTriggers;
-
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
 import src.gen.TypeScriptParser.VariableDeclContext;
 import src.symbols.Mod;
 import src.symbols.SymbolTableStack;
 import src.symbols.SyntacticError;
-import src.symbols.Value;
 import src.symbols.Variable;
 import src.types.Type;
+import src.values.Value;
 
 /**
  * TSVisitor
@@ -29,8 +25,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		syntacticErrors = new ArrayList<>();
 	}
 
-
-
 	@Override
 	public Object visitVariableStatement(TypeScriptParser.VariableStatementContext ctx) {
 		int accessModifiers = 0;
@@ -41,11 +35,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		int varModifiers = (Integer)visit(ctx.varModifier());
 		int readonlyModifiers = ctx.TK_READ_ONLY() != null ? Mod.READONLY : 0;
 		
-		// System.out.println(accessModifiers);
-		// System.out.println(varModifiers);
-		// System.out.println(readonlyModifiers);
-		// System.out.println(accessModifiers | varModifiers | readonlyModifiers);
-
 		List<VariableDeclContext> declList = ctx.variableDeclList().variableDecl();
 
 		for(VariableDeclContext c: declList){
@@ -97,7 +86,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		
 		return null;
 	}
-
 
 	// Getters-Setters
 

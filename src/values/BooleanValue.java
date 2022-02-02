@@ -1,4 +1,4 @@
-package src.symbols;
+package src.values;
 
 public class BooleanValue extends Value{
 	private boolean value;

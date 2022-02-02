@@ -1,7 +1,7 @@
 package src.types;
 
-import src.symbols.NumberValue;
-import src.symbols.Value;
+import src.values.NumberValue;
+import src.values.Value;
 
 public class NumberType extends PrimitiveType{
 
