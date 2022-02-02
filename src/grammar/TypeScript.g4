@@ -351,42 +351,42 @@ assignmentOperator
 	;
 
 expression
-	: functionExpressionDecl
-	| expression '[' expressionSequence ']'
-    | expression '.' identifier
-    | expression '.' functionCall
-	| TK_PLUSPLUS expression
-	| TK_MINUSMINUS expression
-	| expression TK_PLUSPLUS
-	| expression TK_MINUSMINUS
-	| TK_PLUS expression
-    | TK_MINUS expression
-    | TK_BINNOT expression
-    | TK_NOT expression
-	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression						//#ExprToMultDivPerc
-	| expression (TK_PLUS | TK_MINUS) expression
-	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression
-	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression
-	| expression TK_BIN_AND expression
-    | expression TK_BIN_OR expression
-    | expression TK_LOGIC_AND expression
-    | expression TK_LOGIC_OR expression
-	| expression TK_QMARK expression TK_COLON expression
-	| functionCall
-	| TK_LPARENT expression TK_RPARENT
-	| expression TK_EQ expression
-	| expression TK_PLUS_ASIGN expression
-	| expression TK_MINUS_ASIGN expression
-	| expression TK_STAR_ASIGN expression
-	| expression TK_SLASH_ASIGN expression
-	| expression TK_PERCENT_ASIGN expression
-	| expression TK_AND_ASIGN expression
-	| expression TK_OR_ASIGN expression
-	| TK_NEW functionCall
-	| arrayLiteral
-	| objectLiteral
-	| literal
-	| TK_IDENT
+	: functionExpressionDecl														#ExprFuncionObject 
+	| expression '[' expressionSequence ']'											#ExprObjectIndex
+    | expression '.' identifier														#ExprDotIdent
+    | expression '.' functionCall													#ExprDotFunctionCall
+	| TK_PLUSPLUS expression														#ExprPlusPlusOp
+	| TK_MINUSMINUS expression														#ExprMinusMinusOp
+	| expression TK_PLUSPLUS														#ExprOpPlusPlus
+	| expression TK_MINUSMINUS														#ExprOpMinusMinus
+	| TK_PLUS expression															#ExprPlusOp
+    | TK_MINUS expression															#ExprMinusOp
+    | TK_BINNOT expression															#ExprBinaryNot
+    | TK_NOT expression																#ExprNot
+	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression						#ExprMultDivPerc
+	| expression (TK_PLUS | TK_MINUS) expression									#ExprSumSubs
+	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression			#ExprComparator
+	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression		#ExprEquality
+	| expression TK_BIN_AND expression												#ExprBinAnd
+    | expression TK_BIN_OR expression												#ExprBinOr
+    | expression TK_LOGIC_AND expression											#ExprLogicAnd
+    | expression TK_LOGIC_OR expression												#ExprLogicOr
+	| expression TK_QMARK expression TK_COLON expression							#ExprTernaryOperator
+	| functionCall																	#ExprFunctionCall
+	| TK_LPARENT expression TK_RPARENT												#ExprParent
+	| expression TK_EQ expression													#ExprAsig
+	| expression TK_PLUS_ASIGN expression											#ExprPlusAsig
+	| expression TK_MINUS_ASIGN expression											#ExprMinusAsig
+	| expression TK_STAR_ASIGN expression											#ExprMultAsig
+	| expression TK_SLASH_ASIGN expression											#ExprDivAsig
+	| expression TK_PERCENT_ASIGN expression										#ExprPercentAsig
+	| expression TK_AND_ASIGN expression											#ExprAndAsig
+	| expression TK_OR_ASIGN expression												#ExprOrAsig
+	| TK_NEW functionCall															#ExprNew
+	| arrayLiteral																	#ExprArrayLiteral
+	| objectLiteral																	#ExprObjectLiteral
+	| literal																		#ExprPrimitiveLiteral
+	| TK_IDENT																		#ExprIdentifier
 	;
 
 formalParameterList

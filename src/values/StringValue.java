@@ -3,11 +3,17 @@ package src.values;
 public class StringValue extends Value{
 	private String value;
 
-	StringValue(String value){
+	public StringValue(String value){
 		this.value = value;
 	}
 
-	String getValue(){
+	public String getValue(){
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return value;		
+	}
+
 }

@@ -19,4 +19,7 @@ public class BooleanType extends PrimitiveType{
 		return v instanceof BooleanValue;
 	}
 
+	public static boolean isOfThisType(Value v){
+		return v instanceof BooleanValue;
+	}
 }

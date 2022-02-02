@@ -19,4 +19,7 @@ public class StringType extends PrimitiveType{
 		return v instanceof StringValue;
 	}
 	
+	public static boolean isOfThisType(Value v){
+		return v instanceof StringValue;
+	}
 }

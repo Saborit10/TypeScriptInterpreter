@@ -4043,75 +4043,331 @@ public class TypeScriptParser extends Parser {
 	}
 
 	public static class ExpressionContext extends ParserRuleContext {
-		public FunctionExpressionDeclContext functionExpressionDecl() {
-			return getRuleContext(FunctionExpressionDeclContext.class,0);
+		public ExpressionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
 		}
-		public TerminalNode TK_PLUSPLUS() { return getToken(TypeScriptParser.TK_PLUSPLUS, 0); }
+		@Override public int getRuleIndex() { return RULE_expression; }
+	 
+		public ExpressionContext() { }
+		public void copyFrom(ExpressionContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class ExprBinAndContext extends ExpressionContext {
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public TerminalNode TK_MINUSMINUS() { return getToken(TypeScriptParser.TK_MINUSMINUS, 0); }
-		public TerminalNode TK_PLUS() { return getToken(TypeScriptParser.TK_PLUS, 0); }
-		public TerminalNode TK_MINUS() { return getToken(TypeScriptParser.TK_MINUS, 0); }
-		public TerminalNode TK_BINNOT() { return getToken(TypeScriptParser.TK_BINNOT, 0); }
-		public TerminalNode TK_NOT() { return getToken(TypeScriptParser.TK_NOT, 0); }
-		public FunctionCallContext functionCall() {
-			return getRuleContext(FunctionCallContext.class,0);
-		}
-		public TerminalNode TK_LPARENT() { return getToken(TypeScriptParser.TK_LPARENT, 0); }
-		public TerminalNode TK_RPARENT() { return getToken(TypeScriptParser.TK_RPARENT, 0); }
-		public TerminalNode TK_NEW() { return getToken(TypeScriptParser.TK_NEW, 0); }
-		public ArrayLiteralContext arrayLiteral() {
-			return getRuleContext(ArrayLiteralContext.class,0);
-		}
+		public TerminalNode TK_BIN_AND() { return getToken(TypeScriptParser.TK_BIN_AND, 0); }
+		public ExprBinAndContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprIdentifierContext extends ExpressionContext {
+		public TerminalNode TK_IDENT() { return getToken(TypeScriptParser.TK_IDENT, 0); }
+		public ExprIdentifierContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprObjectLiteralContext extends ExpressionContext {
 		public ObjectLiteralContext objectLiteral() {
 			return getRuleContext(ObjectLiteralContext.class,0);
 		}
-		public LiteralContext literal() {
-			return getRuleContext(LiteralContext.class,0);
+		public ExprObjectLiteralContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprPlusOpContext extends ExpressionContext {
+		public TerminalNode TK_PLUS() { return getToken(TypeScriptParser.TK_PLUS, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode TK_IDENT() { return getToken(TypeScriptParser.TK_IDENT, 0); }
-		public TerminalNode TK_STAR() { return getToken(TypeScriptParser.TK_STAR, 0); }
-		public TerminalNode TK_SLASH() { return getToken(TypeScriptParser.TK_SLASH, 0); }
-		public TerminalNode TK_PERCENT() { return getToken(TypeScriptParser.TK_PERCENT, 0); }
-		public TerminalNode TK_LESS() { return getToken(TypeScriptParser.TK_LESS, 0); }
-		public TerminalNode TK_GREAT() { return getToken(TypeScriptParser.TK_GREAT, 0); }
-		public TerminalNode TK_LESSEQ() { return getToken(TypeScriptParser.TK_LESSEQ, 0); }
-		public TerminalNode TK_GREATEQ() { return getToken(TypeScriptParser.TK_GREATEQ, 0); }
+		public ExprPlusOpContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprNotContext extends ExpressionContext {
+		public TerminalNode TK_NOT() { return getToken(TypeScriptParser.TK_NOT, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public ExprNotContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprDivAsigContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_SLASH_ASIGN() { return getToken(TypeScriptParser.TK_SLASH_ASIGN, 0); }
+		public ExprDivAsigContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprOrAsigContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_OR_ASIGN() { return getToken(TypeScriptParser.TK_OR_ASIGN, 0); }
+		public ExprOrAsigContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprLogicAndContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_LOGIC_AND() { return getToken(TypeScriptParser.TK_LOGIC_AND, 0); }
+		public ExprLogicAndContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprMinusAsigContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_MINUS_ASIGN() { return getToken(TypeScriptParser.TK_MINUS_ASIGN, 0); }
+		public ExprMinusAsigContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprPlusPlusOpContext extends ExpressionContext {
+		public TerminalNode TK_PLUSPLUS() { return getToken(TypeScriptParser.TK_PLUSPLUS, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public ExprPlusPlusOpContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprEqualityContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
 		public TerminalNode TK_EQEQ() { return getToken(TypeScriptParser.TK_EQEQ, 0); }
 		public TerminalNode TK_NOTEQ() { return getToken(TypeScriptParser.TK_NOTEQ, 0); }
 		public TerminalNode TK_IDENTEQ() { return getToken(TypeScriptParser.TK_IDENTEQ, 0); }
 		public TerminalNode TK_IDENTNOTEQ() { return getToken(TypeScriptParser.TK_IDENTNOTEQ, 0); }
-		public TerminalNode TK_BIN_AND() { return getToken(TypeScriptParser.TK_BIN_AND, 0); }
-		public TerminalNode TK_BIN_OR() { return getToken(TypeScriptParser.TK_BIN_OR, 0); }
-		public TerminalNode TK_LOGIC_AND() { return getToken(TypeScriptParser.TK_LOGIC_AND, 0); }
-		public TerminalNode TK_LOGIC_OR() { return getToken(TypeScriptParser.TK_LOGIC_OR, 0); }
-		public TerminalNode TK_QMARK() { return getToken(TypeScriptParser.TK_QMARK, 0); }
-		public TerminalNode TK_COLON() { return getToken(TypeScriptParser.TK_COLON, 0); }
-		public TerminalNode TK_EQ() { return getToken(TypeScriptParser.TK_EQ, 0); }
-		public TerminalNode TK_PLUS_ASIGN() { return getToken(TypeScriptParser.TK_PLUS_ASIGN, 0); }
-		public TerminalNode TK_MINUS_ASIGN() { return getToken(TypeScriptParser.TK_MINUS_ASIGN, 0); }
-		public TerminalNode TK_STAR_ASIGN() { return getToken(TypeScriptParser.TK_STAR_ASIGN, 0); }
-		public TerminalNode TK_SLASH_ASIGN() { return getToken(TypeScriptParser.TK_SLASH_ASIGN, 0); }
-		public TerminalNode TK_PERCENT_ASIGN() { return getToken(TypeScriptParser.TK_PERCENT_ASIGN, 0); }
+		public ExprEqualityContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprAndAsigContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
 		public TerminalNode TK_AND_ASIGN() { return getToken(TypeScriptParser.TK_AND_ASIGN, 0); }
-		public TerminalNode TK_OR_ASIGN() { return getToken(TypeScriptParser.TK_OR_ASIGN, 0); }
+		public ExprAndAsigContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprBinOrContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_BIN_OR() { return getToken(TypeScriptParser.TK_BIN_OR, 0); }
+		public ExprBinOrContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprMinusMinusOpContext extends ExpressionContext {
+		public TerminalNode TK_MINUSMINUS() { return getToken(TypeScriptParser.TK_MINUSMINUS, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public ExprMinusMinusOpContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprAsigContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_EQ() { return getToken(TypeScriptParser.TK_EQ, 0); }
+		public ExprAsigContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprMultAsigContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_STAR_ASIGN() { return getToken(TypeScriptParser.TK_STAR_ASIGN, 0); }
+		public ExprMultAsigContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprMinusOpContext extends ExpressionContext {
+		public TerminalNode TK_MINUS() { return getToken(TypeScriptParser.TK_MINUS, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public ExprMinusOpContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprPrimitiveLiteralContext extends ExpressionContext {
+		public LiteralContext literal() {
+			return getRuleContext(LiteralContext.class,0);
+		}
+		public ExprPrimitiveLiteralContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprDotIdentContext extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode TK_POINT() { return getToken(TypeScriptParser.TK_POINT, 0); }
+		public IdentifierContext identifier() {
+			return getRuleContext(IdentifierContext.class,0);
+		}
+		public ExprDotIdentContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprParentContext extends ExpressionContext {
+		public TerminalNode TK_LPARENT() { return getToken(TypeScriptParser.TK_LPARENT, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode TK_RPARENT() { return getToken(TypeScriptParser.TK_RPARENT, 0); }
+		public ExprParentContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprObjectIndexContext extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
 		public TerminalNode TK_LBRACKET() { return getToken(TypeScriptParser.TK_LBRACKET, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
 		public TerminalNode TK_RBRACKET() { return getToken(TypeScriptParser.TK_RBRACKET, 0); }
+		public ExprObjectIndexContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprLogicOrContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_LOGIC_OR() { return getToken(TypeScriptParser.TK_LOGIC_OR, 0); }
+		public ExprLogicOrContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprFuncionObjectContext extends ExpressionContext {
+		public FunctionExpressionDeclContext functionExpressionDecl() {
+			return getRuleContext(FunctionExpressionDeclContext.class,0);
+		}
+		public ExprFuncionObjectContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprArrayLiteralContext extends ExpressionContext {
+		public ArrayLiteralContext arrayLiteral() {
+			return getRuleContext(ArrayLiteralContext.class,0);
+		}
+		public ExprArrayLiteralContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprOpMinusMinusContext extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode TK_MINUSMINUS() { return getToken(TypeScriptParser.TK_MINUSMINUS, 0); }
+		public ExprOpMinusMinusContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprComparatorContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_LESS() { return getToken(TypeScriptParser.TK_LESS, 0); }
+		public TerminalNode TK_GREAT() { return getToken(TypeScriptParser.TK_GREAT, 0); }
+		public TerminalNode TK_LESSEQ() { return getToken(TypeScriptParser.TK_LESSEQ, 0); }
+		public TerminalNode TK_GREATEQ() { return getToken(TypeScriptParser.TK_GREATEQ, 0); }
+		public ExprComparatorContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprTernaryOperatorContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_QMARK() { return getToken(TypeScriptParser.TK_QMARK, 0); }
+		public TerminalNode TK_COLON() { return getToken(TypeScriptParser.TK_COLON, 0); }
+		public ExprTernaryOperatorContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprMultDivPercContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_STAR() { return getToken(TypeScriptParser.TK_STAR, 0); }
+		public TerminalNode TK_SLASH() { return getToken(TypeScriptParser.TK_SLASH, 0); }
+		public TerminalNode TK_PERCENT() { return getToken(TypeScriptParser.TK_PERCENT, 0); }
+		public ExprMultDivPercContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprSumSubsContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_PLUS() { return getToken(TypeScriptParser.TK_PLUS, 0); }
+		public TerminalNode TK_MINUS() { return getToken(TypeScriptParser.TK_MINUS, 0); }
+		public ExprSumSubsContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprFunctionCallContext extends ExpressionContext {
+		public FunctionCallContext functionCall() {
+			return getRuleContext(FunctionCallContext.class,0);
+		}
+		public ExprFunctionCallContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprPercentAsigContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_PERCENT_ASIGN() { return getToken(TypeScriptParser.TK_PERCENT_ASIGN, 0); }
+		public ExprPercentAsigContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprPlusAsigContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode TK_PLUS_ASIGN() { return getToken(TypeScriptParser.TK_PLUS_ASIGN, 0); }
+		public ExprPlusAsigContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprBinaryNotContext extends ExpressionContext {
+		public TerminalNode TK_BINNOT() { return getToken(TypeScriptParser.TK_BINNOT, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public ExprBinaryNotContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprOpPlusPlusContext extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode TK_PLUSPLUS() { return getToken(TypeScriptParser.TK_PLUSPLUS, 0); }
+		public ExprOpPlusPlusContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprDotFunctionCallContext extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
 		public TerminalNode TK_POINT() { return getToken(TypeScriptParser.TK_POINT, 0); }
-		public IdentifierContext identifier() {
-			return getRuleContext(IdentifierContext.class,0);
+		public FunctionCallContext functionCall() {
+			return getRuleContext(FunctionCallContext.class,0);
 		}
-		public ExpressionContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
+		public ExprDotFunctionCallContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
+	public static class ExprNewContext extends ExpressionContext {
+		public TerminalNode TK_NEW() { return getToken(TypeScriptParser.TK_NEW, 0); }
+		public FunctionCallContext functionCall() {
+			return getRuleContext(FunctionCallContext.class,0);
 		}
-		@Override public int getRuleIndex() { return RULE_expression; }
+		public ExprNewContext(ExpressionContext ctx) { copyFrom(ctx); }
 	}
 
 	public final ExpressionContext expression() throws RecognitionException {
@@ -4135,12 +4391,19 @@ public class TypeScriptParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,77,_ctx) ) {
 			case 1:
 				{
+				_localctx = new ExprFuncionObjectContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+
 				setState(677);
 				functionExpressionDecl();
 				}
 				break;
 			case 2:
 				{
+				_localctx = new ExprPlusPlusOpContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(678);
 				match(TK_PLUSPLUS);
 				setState(679);
@@ -4149,6 +4412,9 @@ public class TypeScriptParser extends Parser {
 				break;
 			case 3:
 				{
+				_localctx = new ExprMinusMinusOpContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(680);
 				match(TK_MINUSMINUS);
 				setState(681);
@@ -4157,6 +4423,9 @@ public class TypeScriptParser extends Parser {
 				break;
 			case 4:
 				{
+				_localctx = new ExprPlusOpContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(682);
 				match(TK_PLUS);
 				setState(683);
@@ -4165,6 +4434,9 @@ public class TypeScriptParser extends Parser {
 				break;
 			case 5:
 				{
+				_localctx = new ExprMinusOpContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(684);
 				match(TK_MINUS);
 				setState(685);
@@ -4173,6 +4445,9 @@ public class TypeScriptParser extends Parser {
 				break;
 			case 6:
 				{
+				_localctx = new ExprBinaryNotContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(686);
 				match(TK_BINNOT);
 				setState(687);
@@ -4181,6 +4456,9 @@ public class TypeScriptParser extends Parser {
 				break;
 			case 7:
 				{
+				_localctx = new ExprNotContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(688);
 				match(TK_NOT);
 				setState(689);
@@ -4189,12 +4467,18 @@ public class TypeScriptParser extends Parser {
 				break;
 			case 8:
 				{
+				_localctx = new ExprFunctionCallContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(690);
 				functionCall();
 				}
 				break;
 			case 9:
 				{
+				_localctx = new ExprParentContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(691);
 				match(TK_LPARENT);
 				setState(692);
@@ -4205,6 +4489,9 @@ public class TypeScriptParser extends Parser {
 				break;
 			case 10:
 				{
+				_localctx = new ExprNewContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(695);
 				match(TK_NEW);
 				setState(696);
@@ -4213,24 +4500,36 @@ public class TypeScriptParser extends Parser {
 				break;
 			case 11:
 				{
+				_localctx = new ExprArrayLiteralContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(697);
 				arrayLiteral();
 				}
 				break;
 			case 12:
 				{
+				_localctx = new ExprObjectLiteralContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(698);
 				objectLiteral();
 				}
 				break;
 			case 13:
 				{
+				_localctx = new ExprPrimitiveLiteralContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(699);
 				literal();
 				}
 				break;
 			case 14:
 				{
+				_localctx = new ExprIdentifierContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(700);
 				match(TK_IDENT);
 				}
@@ -4250,7 +4549,7 @@ public class TypeScriptParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,78,_ctx) ) {
 					case 1:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprMultDivPercContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(703);
 						if (!(precpred(_ctx, 24))) throw new FailedPredicateException(this, "precpred(_ctx, 24)");
@@ -4270,7 +4569,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 2:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprSumSubsContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(706);
 						if (!(precpred(_ctx, 23))) throw new FailedPredicateException(this, "precpred(_ctx, 23)");
@@ -4290,7 +4589,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 3:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprComparatorContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(709);
 						if (!(precpred(_ctx, 22))) throw new FailedPredicateException(this, "precpred(_ctx, 22)");
@@ -4310,7 +4609,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 4:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprEqualityContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(712);
 						if (!(precpred(_ctx, 21))) throw new FailedPredicateException(this, "precpred(_ctx, 21)");
@@ -4330,7 +4629,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 5:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprBinAndContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(715);
 						if (!(precpred(_ctx, 20))) throw new FailedPredicateException(this, "precpred(_ctx, 20)");
@@ -4342,7 +4641,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 6:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprBinOrContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(718);
 						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
@@ -4354,7 +4653,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 7:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprLogicAndContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(721);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
@@ -4366,7 +4665,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 8:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprLogicOrContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(724);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
@@ -4378,7 +4677,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 9:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprTernaryOperatorContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(727);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
@@ -4394,7 +4693,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 10:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprAsigContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(733);
 						if (!(precpred(_ctx, 13))) throw new FailedPredicateException(this, "precpred(_ctx, 13)");
@@ -4406,7 +4705,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 11:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprPlusAsigContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(736);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
@@ -4418,7 +4717,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 12:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprMinusAsigContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(739);
 						if (!(precpred(_ctx, 11))) throw new FailedPredicateException(this, "precpred(_ctx, 11)");
@@ -4430,7 +4729,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 13:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprMultAsigContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(742);
 						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
@@ -4442,7 +4741,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 14:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprDivAsigContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(745);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
@@ -4454,7 +4753,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 15:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprPercentAsigContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(748);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
@@ -4466,7 +4765,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 16:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprAndAsigContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(751);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
@@ -4478,7 +4777,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 17:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprOrAsigContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(754);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
@@ -4490,7 +4789,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 18:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprObjectIndexContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(757);
 						if (!(precpred(_ctx, 35))) throw new FailedPredicateException(this, "precpred(_ctx, 35)");
@@ -4504,7 +4803,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 19:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprDotIdentContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(762);
 						if (!(precpred(_ctx, 34))) throw new FailedPredicateException(this, "precpred(_ctx, 34)");
@@ -4516,7 +4815,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 20:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprDotFunctionCallContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(765);
 						if (!(precpred(_ctx, 33))) throw new FailedPredicateException(this, "precpred(_ctx, 33)");
@@ -4528,7 +4827,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 21:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprOpPlusPlusContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(768);
 						if (!(precpred(_ctx, 30))) throw new FailedPredicateException(this, "precpred(_ctx, 30)");
@@ -4538,7 +4837,7 @@ public class TypeScriptParser extends Parser {
 						break;
 					case 22:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprOpMinusMinusContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(770);
 						if (!(precpred(_ctx, 29))) throw new FailedPredicateException(this, "precpred(_ctx, 29)");

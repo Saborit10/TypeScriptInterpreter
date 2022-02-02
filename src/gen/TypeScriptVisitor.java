@@ -401,11 +401,257 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignmentOperator(TypeScriptParser.AssignmentOperatorContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link TypeScriptParser#expression}.
+	 * Visit a parse tree produced by the {@code ExprBinAnd}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(TypeScriptParser.ExpressionContext ctx);
+	T visitExprBinAnd(TypeScriptParser.ExprBinAndContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprIdentifier}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprIdentifier(TypeScriptParser.ExprIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprObjectLiteral}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprObjectLiteral(TypeScriptParser.ExprObjectLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPlusOp}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPlusOp(TypeScriptParser.ExprPlusOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprNot}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprNot(TypeScriptParser.ExprNotContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprDivAsig}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprDivAsig(TypeScriptParser.ExprDivAsigContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprOrAsig}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprOrAsig(TypeScriptParser.ExprOrAsigContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprLogicAnd}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprLogicAnd(TypeScriptParser.ExprLogicAndContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprMinusAsig}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMinusAsig(TypeScriptParser.ExprMinusAsigContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPlusPlusOp}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPlusPlusOp(TypeScriptParser.ExprPlusPlusOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprEquality}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprEquality(TypeScriptParser.ExprEqualityContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprAndAsig}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprAndAsig(TypeScriptParser.ExprAndAsigContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprBinOr}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprBinOr(TypeScriptParser.ExprBinOrContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprMinusMinusOp}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMinusMinusOp(TypeScriptParser.ExprMinusMinusOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprAsig}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprAsig(TypeScriptParser.ExprAsigContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprMultAsig}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMultAsig(TypeScriptParser.ExprMultAsigContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprMinusOp}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMinusOp(TypeScriptParser.ExprMinusOpContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPrimitiveLiteral}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPrimitiveLiteral(TypeScriptParser.ExprPrimitiveLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprDotIdent}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprDotIdent(TypeScriptParser.ExprDotIdentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprParent}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprParent(TypeScriptParser.ExprParentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprObjectIndex}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprObjectIndex(TypeScriptParser.ExprObjectIndexContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprLogicOr}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprLogicOr(TypeScriptParser.ExprLogicOrContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprFuncionObject}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprFuncionObject(TypeScriptParser.ExprFuncionObjectContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprArrayLiteral}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprArrayLiteral(TypeScriptParser.ExprArrayLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprOpMinusMinus}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprOpMinusMinus(TypeScriptParser.ExprOpMinusMinusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprComparator}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprComparator(TypeScriptParser.ExprComparatorContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprTernaryOperator}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprTernaryOperator(TypeScriptParser.ExprTernaryOperatorContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprMultDivPerc}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMultDivPerc(TypeScriptParser.ExprMultDivPercContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprSumSubs}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprSumSubs(TypeScriptParser.ExprSumSubsContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprFunctionCall}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprFunctionCall(TypeScriptParser.ExprFunctionCallContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPercentAsig}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPercentAsig(TypeScriptParser.ExprPercentAsigContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPlusAsig}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPlusAsig(TypeScriptParser.ExprPlusAsigContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprBinaryNot}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprBinaryNot(TypeScriptParser.ExprBinaryNotContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprOpPlusPlus}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprOpPlusPlus(TypeScriptParser.ExprOpPlusPlusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprDotFunctionCall}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprDotFunctionCall(TypeScriptParser.ExprDotFunctionCallContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprNew}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprNew(TypeScriptParser.ExprNewContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#formalParameterList}.
 	 * @param ctx the parse tree

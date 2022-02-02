@@ -5,12 +5,20 @@ import java.util.List;
 
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
+import src.gen.TypeScriptParser.ExprMultDivPercContext;
+import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
+import src.gen.TypeScriptParser.ExpressionContext;
+import src.gen.TypeScriptParser.LiteralContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
 import src.symbols.Mod;
 import src.symbols.SymbolTableStack;
 import src.symbols.SyntacticError;
 import src.symbols.Variable;
+import src.types.NumberType;
 import src.types.Type;
+import src.values.BooleanValue;
+import src.values.NumberValue;
+import src.values.StringValue;
 import src.values.Value;
 
 /**
@@ -86,6 +94,73 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		
 		return null;
 	}
+	
+	@Override
+	public Object visitLiteral(LiteralContext ctx) {
+		try {
+			if( ctx.BOOLEAN_LITERAL() != null ){
+				return new BooleanValue(Boolean.parseBoolean(ctx.getText()));
+			}
+			else if( ctx.STRING_LITERAL() != null ){
+				String stringLiteral = ctx.STRING_LITERAL().getText();
+				StringBuilder value = new StringBuilder(); 
+
+				for(int i=1; i < stringLiteral.length()-1; i++)
+					value.append(stringLiteral.charAt(i));
+				return new StringValue(value.toString());
+			}
+			else if( ctx.NULL_LITERAL() != null )
+				return new NumberValue(0);
+			else{
+				
+				double value = Double.parseDouble(ctx.NUMERIC_LITERAL().getText());
+				return new NumberValue(value);
+			}
+		
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprMultDivPerc(ExprMultDivPercContext ctx) {
+		try{
+			Value value1 = (Value)visit(ctx.expression().get(0));
+			Value value2 = (Value)visit(ctx.expression().get(1));
+
+			if( !NumberType.isOfThisType(value1) || 
+				!NumberType.isOfThisType(value2) ){
+					SyntacticError error = new SyntacticError(
+						"Operador no aplicable a los tipos " +
+						value1.getType().getTypeName() +
+						" y " +
+						value2.getType().getTypeName()
+					);
+					syntacticErrors.add(error);
+				}
+
+			// if( ctx.TK_PERCENT() != null ){
+			// 	if(  )
+			// }
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprPrimitiveLiteral(ExprPrimitiveLiteralContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.literal());
+			System.out.println("value = " + value);
+			return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+
+
 
 	// Getters-Setters
 

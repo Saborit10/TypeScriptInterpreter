@@ -3,11 +3,17 @@ package src.values;
 public class NumberValue extends Value{
 	private double value;
 
-	NumberValue(double value){
+	public NumberValue(double value){
 		this.value = value;
 	}
 
-	double getValue(){
+	public double getValue(){
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return Double.valueOf(value).toString();		
+	}
+
 }

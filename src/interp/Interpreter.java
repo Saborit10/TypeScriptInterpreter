@@ -15,11 +15,10 @@ class VerboseListener extends BaseErrorListener {
 		Collections.reverse(stack);
 		
 		System.err.println("<ERROR>");
+
+		System.err.println("rule stack: "+stack);
+		System.err.println("line "+line+":"+charPositionInLine+" at "+ offendingSymbol+": "+msg);
 		System.exit(0);
-		// System.err.println("rule stack: "+stack);
-		// System.err.println("line "+line+":"+charPositionInLine+" at "+
-		
-		// offendingSymbol+": "+msg);
 	}
 }
 
