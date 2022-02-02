@@ -33,22 +33,14 @@ public class SymbolTable{
 		if( ((mod & Mod.CONST) > 0) && e.getValue() == null )
 			throw new SyntacticError("Constante " + e.getIdentifier() + " no inicializada");
 
-		/* Comprobacion de que el tipo sea igual al del valor */
-		if( e.getValue() != null ){
-			if( e.getValue() instanceof NumberValue && !e.getType().equals("number") )
-				throw new SyntacticError("El tipo de la variable no coincide con el del valor");
-			else if( e.getValue() instanceof BooleanValue && !e.getType().equals("boolean") )
-				throw new SyntacticError("El tipo de la variable no coincide con el del valor");
-			else if( e.getValue() instanceof StringValue && !e.getType().equals("string") )
-				throw new SyntacticError("El tipo de la variable no coincide con el del valor");
-			else{
-				assert( e.getValue() instanceof ObjectValue ); // QUITAR DESPUES
-				
-				ObjectValue obj = (ObjectValue)e.getValue();
+		/* Comprobar que si la variable no tiene tipo, debe tener un valor inicial para deducirlo */
+		if( e.getType() == null && e.getValue() == null )
+				throw new SyntacticError("No se ha especificado un tipo para la variable " + e.getIdentifier());
 
-				if( obj.getClassIdentifier() != null && !obj.getClassIdentifier().equals(e.getType()) )
-					throw new SyntacticError("El tipo de la variable no coincide con el del valor");
-			}
+		/* Comprobacion de que el tipo sea igual al del valor */
+		if( e.getValue() != null && e.getType() != null ){
+			if( e.getType().isInstanceOfThisType(e.getValue()) )
+				throw new SyntacticError("El tipo de la variable " + e.getIdentifier() + " no coincide con el del valor");
 		}
 
 		symbols.put(e.getIdentifier(), e);		

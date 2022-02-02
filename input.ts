@@ -1,5 +1,5 @@
 
-// public var a = 5;
+var a: number;
 
 let casa  = {
 	cuartos: 2

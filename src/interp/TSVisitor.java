@@ -3,6 +3,10 @@ package src.interp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.event.PrintJobListener;
+
+import org.antlr.v4.codegen.SourceGenTriggers;
+
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
 import src.gen.TypeScriptParser.VariableDeclContext;
@@ -11,6 +15,7 @@ import src.symbols.SymbolTableStack;
 import src.symbols.SyntacticError;
 import src.symbols.Value;
 import src.symbols.Variable;
+import src.types.Type;
 
 /**
  * TSVisitor
@@ -39,28 +44,34 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		// System.out.println(accessModifiers);
 		// System.out.println(varModifiers);
 		// System.out.println(readonlyModifiers);
-		System.out.println(accessModifiers | varModifiers | readonlyModifiers);
+		// System.out.println(accessModifiers | varModifiers | readonlyModifiers);
 
 		List<VariableDeclContext> declList = ctx.variableDeclList().variableDecl();
 
 		for(VariableDeclContext c: declList){
 			String identifier = c.TK_IDENT().getText();
+			Type type = null;
+
+			if( c.typeAnnotation() != null )
+				type = (Type)visit(c.typeAnnotation());
 
 			Variable var = new Variable(
 				identifier,
 				accessModifiers | varModifiers | readonlyModifiers,
-				(Type)visit(c.typeAnnotation())
+				type
 			);
 
-			if( c.initializer() != null )
+			if( c.initializer() != null ){
+				System.out.println("Si hay init");   ////////////////BORRAR Y ARREGLAR
 				var.setValue((Value)visit(c.initializer()));
 			}
+			
 			try{
 				scope.declareVariable(var);
 			} catch (SyntacticError e) {
 				syntacticErrors.add(e);
 			}
-		}		
+		}
 
 		return visitChildren(ctx);
 	}

@@ -2,6 +2,8 @@ package src.symbols;
 
 import java.util.ArrayList;
 
+import src.types.Type;
+
 public class Variable extends NamedSymbol{
 	private int modifiers;
 	private Type type;
@@ -26,7 +28,7 @@ public class Variable extends NamedSymbol{
 		return value;
 	}
 
-	public String getType(){
+	public Type getType(){
 		return type;
 	}
 

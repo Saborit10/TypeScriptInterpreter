@@ -1,11 +1,13 @@
 package src.symbols;
 
+import src.types.ObjectType;
+
 public class ObjectValue extends Value{
-	private String classIdentifier;
+	private ObjectType type;
 	
 	//
 
-	String getClassIdentifier(){
-		return classIdentifier;
+	public ObjectType getType(){
+		return type;
 	}
 }
