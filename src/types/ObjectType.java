@@ -47,4 +47,9 @@ public class ObjectType extends Type{
 		}
 		return false;
 	}
+
+	@Override
+	public boolean isEqualType(Type v) {
+		return true; // ARREGLAR ESTO PARA COMPROBRA EL NOMBRE DEL TIPO O SI NO TIENE, QUE LAS PROPIEDADES SEAN LAS MISMAS
+	}
 }

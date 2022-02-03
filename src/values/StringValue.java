@@ -16,4 +16,13 @@ public class StringValue extends Value{
 		return value;		
 	}
 
+	@Override
+	public boolean isEqualValue(Value v) {
+		if( v instanceof StringValue ){
+			StringValue stringValue = (StringValue)v;
+			return stringValue.getValue() == value;
+		}
+		return false;
+	}
+
 }

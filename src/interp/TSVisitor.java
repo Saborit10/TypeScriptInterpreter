@@ -5,6 +5,8 @@ import java.util.List;
 
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
+import src.gen.TypeScriptParser.ExprComparatorContext;
+import src.gen.TypeScriptParser.ExprEqualityContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
 import src.gen.TypeScriptParser.ExprParentContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
@@ -15,6 +17,7 @@ import src.symbols.Mod;
 import src.symbols.SymbolTableStack;
 import src.symbols.SyntacticError;
 import src.symbols.Variable;
+import src.types.BooleanType;
 import src.types.NumberType;
 import src.types.StringType;
 import src.types.Type;
@@ -33,6 +36,16 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	public TSVisitor() {
 		scope = new SymbolTableStack();
 		syntacticErrors = new ArrayList<>();
+	}
+
+	private void addOperatorError(Value value1, Value value2){
+		SyntacticError error = new SyntacticError(
+			"Operador no aplicable a los tipos " +
+			value1.getType().getTypeName() +
+			" y " +
+			value2.getType().getTypeName()
+		);
+		syntacticErrors.add(error);
 	}
 
 	@Override
@@ -74,7 +87,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		return visitChildren(ctx);
 	}
 
-	@Override public Object visitVarModifier(TypeScriptParser.VarModifierContext ctx) {
+	@Override
+	public Object visitVarModifier(TypeScriptParser.VarModifierContext ctx) {
 		if( ctx.TK_CONST() != null )
 			return Mod.CONST;
 		else if( ctx.TK_LET() != null )
@@ -134,6 +148,10 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		}
 	}
 
+	
+/**
+ *	Expression	 
+ **/	
 	@Override
 	public Object visitExprMultDivPerc(ExprMultDivPercContext ctx) {
 		try{
@@ -142,13 +160,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 
 			if( !NumberType.isOfThisType(value1) || 
 				!NumberType.isOfThisType(value2) ){
-					SyntacticError error = new SyntacticError(
-						"Operador no aplicable a los tipos " +
-						value1.getType().getTypeName() +
-						" y " +
-						value2.getType().getTypeName()
-					);
-					syntacticErrors.add(error);
+					addOperatorError(value1, value2);
 					return null;
 			}
 			
@@ -186,6 +198,83 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 
 
 	
+	
+	@Override
+	public Object visitExprEquality(ExprEqualityContext ctx) {
+		try {
+			Value value1 = (Value)visit(ctx.expression().get(0));
+			Value value2 = (Value)visit(ctx.expression().get(1));
+
+			if( ctx.TK_EQEQ() != null ){
+				return new BooleanValue(value1.isEqualValue(value2));
+			}
+			else if( ctx.TK_IDENTEQ() != null )
+				return new BooleanValue(value1.isEqualValue(value2));
+			else if( ctx.TK_NOTEQ() != null ){
+				return new BooleanValue(!value1.isEqualValue(value2));
+			}
+			else if( ctx.TK_IDENTNOTEQ() != null )
+				return new BooleanValue(value1.isEqualValue(value2));
+			return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprComparator(ExprComparatorContext ctx) {
+		try {
+			Value value1 = (Value)visit(ctx.expression().get(0));
+			Value value2 = (Value)visit(ctx.expression().get(1));
+
+			if( BooleanType.isOfThisType(value1) && BooleanType.isOfThisType(value2) ){
+				int booleanValue1 = ((BooleanValue)value1).getValue() ? 1 : 0;
+				int booleanValue2 = ((BooleanValue)value2).getValue() ? 1 : 0;
+
+				if( ctx.TK_GREAT() != null )
+					return new BooleanValue(booleanValue1 > booleanValue2);
+				else if( ctx.TK_GREATEQ() != null )
+					return new BooleanValue(booleanValue1 >= booleanValue2);
+				else if( ctx.TK_LESS() != null )
+					return new BooleanValue(booleanValue1 < booleanValue2);
+				else
+					return new BooleanValue(booleanValue1 <= booleanValue2);
+			}
+			else if( NumberType.isOfThisType(value1) && NumberType.isOfThisType(value2) ){
+				double numberValue1 = ((NumberValue)value1).getValue();
+				double numberValue2 = ((NumberValue)value2).getValue();
+
+				if( ctx.TK_GREAT() != null )
+					return new BooleanValue(numberValue1 > numberValue2);
+				else if( ctx.TK_GREATEQ() != null )
+					return new BooleanValue(numberValue1 >= numberValue2);
+				else if( ctx.TK_LESS() != null )
+					return new BooleanValue(numberValue1 < numberValue2);
+				else
+					return new BooleanValue(numberValue1 <= numberValue2);
+			}
+			else if( StringType.isOfThisType(value1) && StringType.isOfThisType(value2) ){
+				String stringValue1 = ((StringValue)value1).getValue();
+				String stringValue2 = ((StringValue)value2).getValue();
+
+				if( ctx.TK_GREAT() != null )
+					return new BooleanValue(stringValue1.compareTo(stringValue2) > 0);
+				else if( ctx.TK_GREATEQ() != null )
+					return new BooleanValue(stringValue1.compareTo(stringValue2) >= 0);
+				else if( ctx.TK_LESS() != null )
+					return new BooleanValue(stringValue1.compareTo(stringValue2) < 0);
+				else
+					return new BooleanValue(stringValue1.compareTo(stringValue2) <= 0);
+			}
+			else{
+				addOperatorError(value1, value2);
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	@Override
 	public Object visitExprSumSubs(ExprSumSubsContext ctx) {
 		try{
@@ -206,13 +295,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 					return new StringValue(value1.toString() + value2.toString());
 			}
 			else{
-				SyntacticError error = new SyntacticError(
-					"Operador no aplicable a los tipos " +
-					value1.getType().getTypeName() +
-					" y " +
-					value2.getType().getTypeName()
-				);
-				syntacticErrors.add(error);
+				addOperatorError(value1, value2);
 				return null;
 			}
 		} catch(NullPointerException e){
@@ -245,6 +328,5 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	public void setSyntacticErrors(ArrayList<SyntacticError> syntacticErrors) {
 		this.syntacticErrors = syntacticErrors;
 	}
-
 
 }

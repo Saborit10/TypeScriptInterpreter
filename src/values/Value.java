@@ -5,7 +5,7 @@ import src.types.NumberType;
 import src.types.StringType;
 import src.types.Type;
 
-public class Value{
+public abstract class Value{
 	
 	public Type getType(){
 		if( this instanceof BooleanValue )
@@ -17,4 +17,7 @@ public class Value{
 		else
 			return ((ObjectValue)this).getType();
 	}
+
+	/* Devuelve true si los valores son del mismo tipo y ademas iguales */
+	public abstract boolean isEqualValue(Value v);
 }

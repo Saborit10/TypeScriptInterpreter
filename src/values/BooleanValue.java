@@ -22,4 +22,13 @@ public class BooleanValue extends Value{
 	public String toString() {
 		return Boolean.valueOf(value).toString();	
 	}
+
+	@Override
+	public boolean isEqualValue(Value v) {
+		if( v instanceof BooleanValue ){
+			BooleanValue booleanValue = (BooleanValue)v;
+			return booleanValue.getValue() == value;
+		}
+		return false;
+	}
 }

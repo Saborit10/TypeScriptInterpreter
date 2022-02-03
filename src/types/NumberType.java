@@ -22,5 +22,10 @@ public class NumberType extends PrimitiveType{
 	public static boolean isOfThisType(Value v){
 		return v instanceof NumberValue;
 	}
+
+	@Override
+	public boolean isEqualType(Type v) {
+		return v instanceof NumberType;
+	}
 	
 }

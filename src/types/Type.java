@@ -16,16 +16,14 @@ public abstract class Type {
 
 	public abstract boolean isInstanceOfThisType(Value v);
 	
+	public abstract boolean isEqualType(Type v);
+
 	/* Devuelve si t es un tipo descendiente o igual al tipo this */
 	public abstract boolean isExtendedType(Type t);
-
 
 	public String getTypeName() {
 		return this.typeName;
 	}
 
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
-	}
 
 }

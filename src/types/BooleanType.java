@@ -22,4 +22,9 @@ public class BooleanType extends PrimitiveType{
 	public static boolean isOfThisType(Value v){
 		return v instanceof BooleanValue;
 	}
+
+	@Override
+	public boolean isEqualType(Type v) {
+		return v instanceof BooleanType;
+	}
 }

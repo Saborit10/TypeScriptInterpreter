@@ -22,4 +22,9 @@ public class StringType extends PrimitiveType{
 	public static boolean isOfThisType(Value v){
 		return v instanceof StringValue;
 	}
+
+	@Override
+	public boolean isEqualType(Type v) {
+		return v instanceof StringType;
+	}
 }

@@ -1,6 +1,5 @@
 package src.values;
 
-
 public class NumberValue extends Value{
 	private double value;
 	private static double EPS = 1e-15;
@@ -19,7 +18,7 @@ public class NumberValue extends Value{
 		else
 			return new BooleanValue(true);
 	}
-
+	
 	@Override
 	public String toString() {
 		int intPart = Double.valueOf(value).intValue();
@@ -28,6 +27,15 @@ public class NumberValue extends Value{
 			return Integer.valueOf(intPart).toString();
 		else
 			return Double.valueOf(value).toString();		
+	}
+
+	@Override
+	public boolean isEqualValue(Value v) {
+		if( v instanceof NumberValue ){
+			NumberValue numberValue = (NumberValue)v;
+			return numberValue.getValue() == value;
+		}
+		return false;
 	}
 
 }
