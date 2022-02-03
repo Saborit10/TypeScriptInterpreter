@@ -6,8 +6,9 @@ import java.util.List;
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
+import src.gen.TypeScriptParser.ExprParentContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
-import src.gen.TypeScriptParser.ExpressionContext;
+import src.gen.TypeScriptParser.ExprSumSubsContext;
 import src.gen.TypeScriptParser.LiteralContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
 import src.symbols.Mod;
@@ -15,6 +16,7 @@ import src.symbols.SymbolTableStack;
 import src.symbols.SyntacticError;
 import src.symbols.Variable;
 import src.types.NumberType;
+import src.types.StringType;
 import src.types.Type;
 import src.values.BooleanValue;
 import src.values.NumberValue;
@@ -69,7 +71,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 				syntacticErrors.add(e);
 			}
 		}
-
 		return visitChildren(ctx);
 	}
 
@@ -112,9 +113,20 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			else if( ctx.NULL_LITERAL() != null )
 				return new NumberValue(0);
 			else{
-				
-				double value = Double.parseDouble(ctx.NUMERIC_LITERAL().getText());
-				return new NumberValue(value);
+				String literal = ctx.NUMERIC_LITERAL().getText();
+
+				if( literal.startsWith("0x") || literal.startsWith("0X") )
+					return new NumberValue(Integer.parseInt(literal.substring(2), 16));
+				else if( literal.startsWith("0o") || literal.startsWith("0O") )
+					return new NumberValue(Integer.parseInt(literal.substring(2), 8));
+				else if( literal.startsWith("0b") || literal.startsWith("0B") )
+					return new NumberValue(Integer.parseInt(literal.substring(2), 2));
+				else if( literal.startsWith("0") )
+					return new NumberValue(Integer.parseInt(literal.substring(1), 8));
+				else{
+					double value = Double.parseDouble(literal);
+					return new NumberValue(value);
+				}
 			}
 		
 		} catch (NullPointerException e) {
@@ -137,13 +149,25 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 						value2.getType().getTypeName()
 					);
 					syntacticErrors.add(error);
-				}
+					return null;
+			}
+			
+			double a = ((NumberValue)value1).getValue();
+			double b = ((NumberValue)value2).getValue();
 
-			// if( ctx.TK_PERCENT() != null ){
-			// 	if(  )
-			// }
-			return null;
+			if( ctx.TK_PERCENT() != null ){
+				long k = Double.valueOf(a / b).longValue();
+
+				return new NumberValue(a - k * b);
+			}
+			else if( ctx.TK_STAR() != null ){
+				return new NumberValue(a * b);
+			}
+			else
+				return new NumberValue(a / b);
+			
 		} catch(NullPointerException e){
+			// e.printStackTrace();
 			return null;
 		}
 	}
@@ -152,21 +176,63 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	public Object visitExprPrimitiveLiteral(ExprPrimitiveLiteralContext ctx) {
 		try {
 			Value value = (Value)visit(ctx.literal());
-			System.out.println("value = " + value);
-			return null;
+			return value;
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
+	
 
 
+	
+	@Override
+	public Object visitExprSumSubs(ExprSumSubsContext ctx) {
+		try{
+			Value value1 = (Value)visit(ctx.expression().get(0));
+			Value value2 = (Value)visit(ctx.expression().get(1));
 
-	// Getters-Setters
+			if( NumberType.isOfThisType(value1) && NumberType.isOfThisType(value2) ){
+				double a = ((NumberValue)value1).getValue();
+				double b = ((NumberValue)value2).getValue();
+				
+				if( ctx.TK_PLUS() != null )
+					return new NumberValue(a + b);
+				else
+					return new NumberValue(a - b);
+			}
+			else if( ctx.TK_PLUS() != null && 
+				(StringType.isOfThisType(value1) || StringType.isOfThisType(value2)) ){
+					return new StringValue(value1.toString() + value2.toString());
+			}
+			else{
+				SyntacticError error = new SyntacticError(
+					"Operador no aplicable a los tipos " +
+					value1.getType().getTypeName() +
+					" y " +
+					value2.getType().getTypeName()
+				);
+				syntacticErrors.add(error);
+				return null;
+			}
+		} catch(NullPointerException e){
+			// e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprParent(ExprParentContext ctx) {
+		Value value = (Value)visit(ctx.expression());
+		System.out.println(value);
+		return value;
+	}
 
 	public SymbolTableStack getScope() {
 		return this.scope;
 	}
+
+	// Getters-Setters
 
 	public void setScope(SymbolTableStack scope) {
 		this.scope = scope;
