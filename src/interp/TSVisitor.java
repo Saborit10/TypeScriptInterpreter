@@ -8,8 +8,10 @@ import src.gen.TypeScriptParser;
 import src.gen.TypeScriptParser.ExprComparatorContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
+import src.gen.TypeScriptParser.ExprMinusOpContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
 import src.gen.TypeScriptParser.ExprParentContext;
+import src.gen.TypeScriptParser.ExprPlusOpContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
 import src.gen.TypeScriptParser.InitializerContext;
@@ -46,6 +48,13 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			value1.getType().getTypeName() +
 			" y " +
 			value2.getType().getTypeName()
+		);
+		syntacticErrors.add(error);
+	}
+	
+	private void addOperatorError(Value value){
+		SyntacticError error = new SyntacticError(
+			"Operador no aplicable al tipo " + value.getType().getTypeName()
 		);
 		syntacticErrors.add(error);
 	}
@@ -153,7 +162,49 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		}
 	}
 
+	@Override
+	public Object visitExprMinusOp(ExprMinusOpContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.expression());
 		
+			if( BooleanType.isOfThisType(value) ){
+				int intValue = ((BooleanValue)value).getValue() ? 1 : 0;
+				return new NumberValue(-intValue);
+			}
+			else if( NumberType.isOfThisType(value) ){
+				double numberValue = ((NumberValue)value).getValue();
+				return new NumberValue(-numberValue);
+			}
+			else{
+				addOperatorError(value);
+				return null;
+			}	
+		} catch (NullPointerException e) {
+			return null;
+		} 
+	}
+
+	@Override
+	public Object visitExprPlusOp(ExprPlusOpContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.expression());
+		
+			if( BooleanType.isOfThisType(value) ){
+				int intValue = ((BooleanValue)value).getValue() ? 1 : 0;
+				return new NumberValue(intValue);
+			}
+			else if( NumberType.isOfThisType(value) ){
+				double numberValue = ((NumberValue)value).getValue();
+				return new NumberValue(numberValue);
+			}
+			else{
+				addOperatorError(value);
+				return null;
+			}	
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
 
 	@Override
 	public Object visitInitializer(InitializerContext ctx) {

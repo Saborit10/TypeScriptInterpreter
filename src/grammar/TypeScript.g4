@@ -359,8 +359,8 @@ expression
 	| TK_MINUSMINUS expression														#ExprMinusMinusOp
 	| expression TK_PLUSPLUS														#ExprOpPlusPlus
 	| expression TK_MINUSMINUS														#ExprOpMinusMinus
-	| TK_PLUS expression															#ExprPlusOp
-    | TK_MINUS expression															#ExprMinusOp
+	| TK_PLUS expression															#ExprPlusOp //
+    | TK_MINUS expression															#ExprMinusOp //
     | TK_BINNOT expression															#ExprBinaryNot
     | TK_NOT expression																#ExprNot
 	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression						#ExprMultDivPerc //
