@@ -153,7 +153,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		}
 	}
 
-	
+		
 
 	@Override
 	public Object visitInitializer(InitializerContext ctx) {
