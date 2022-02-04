@@ -5,11 +5,13 @@ import java.util.List;
 
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
+import src.gen.TypeScriptParser.ExprBinaryNotContext;
 import src.gen.TypeScriptParser.ExprComparatorContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprMinusOpContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
+import src.gen.TypeScriptParser.ExprNotContext;
 import src.gen.TypeScriptParser.ExprParentContext;
 import src.gen.TypeScriptParser.ExprPlusOpContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
@@ -178,10 +180,10 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			else{
 				addOperatorError(value);
 				return null;
-			}	
+			}
 		} catch (NullPointerException e) {
 			return null;
-		} 
+		}
 	}
 
 	@Override
@@ -201,6 +203,51 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 				addOperatorError(value);
 				return null;
 			}	
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprBinaryNot(ExprBinaryNotContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.expression());
+		
+			if( BooleanType.isOfThisType(value) ){
+				int intValue = ((BooleanValue)value).getValue() ? 1 : 0;
+				return new NumberValue(~intValue);
+			}
+			else if( NumberType.isOfThisType(value) ){
+				int intValue = Double.valueOf(((NumberValue)value).getValue()).intValue();
+				return new NumberValue(~intValue);
+			}
+			else{
+				addOperatorError(value);
+				return null;
+			}
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprNot(ExprNotContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.expression());
+		
+			if( BooleanType.isOfThisType(value) ){
+				boolean booleanValue = ((BooleanValue)value).getValue();
+				return new BooleanValue(!booleanValue);
+			}
+			else if( NumberType.isOfThisType(value) ){
+				double doubleValue = ((NumberValue)value).getValue();
+				boolean booleanValue = Math.abs(doubleValue) > 0;
+				return new BooleanValue(!booleanValue);
+			}
+			else{
+				addOperatorError(value);
+				return null;
+			}
 		} catch (NullPointerException e) {
 			return null;
 		}
