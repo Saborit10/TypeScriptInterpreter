@@ -363,17 +363,17 @@ expression
     | TK_MINUS expression															#ExprMinusOp
     | TK_BINNOT expression															#ExprBinaryNot
     | TK_NOT expression																#ExprNot
-	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression						#ExprMultDivPerc
-	| expression (TK_PLUS | TK_MINUS) expression									#ExprSumSubs
-	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression			#ExprComparator
-	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression		#ExprEquality
+	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression						#ExprMultDivPerc //
+	| expression (TK_PLUS | TK_MINUS) expression									#ExprSumSubs //
+	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression			#ExprComparator //
+	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression		#ExprEquality //
 	| expression TK_BIN_AND expression												#ExprBinAnd
     | expression TK_BIN_OR expression												#ExprBinOr
     | expression TK_LOGIC_AND expression											#ExprLogicAnd
     | expression TK_LOGIC_OR expression												#ExprLogicOr
 	| expression TK_QMARK expression TK_COLON expression							#ExprTernaryOperator
 	| functionCall																	#ExprFunctionCall
-	| TK_LPARENT expression TK_RPARENT												#ExprParent
+	| TK_LPARENT expression TK_RPARENT												#ExprParent //
 	| expression TK_EQ expression													#ExprAsig
 	| expression TK_PLUS_ASIGN expression											#ExprPlusAsig
 	| expression TK_MINUS_ASIGN expression											#ExprMinusAsig
@@ -385,8 +385,8 @@ expression
 	| TK_NEW functionCall															#ExprNew
 	| arrayLiteral																	#ExprArrayLiteral
 	| objectLiteral																	#ExprObjectLiteral
-	| literal																		#ExprPrimitiveLiteral
-	| TK_IDENT																		#ExprIdentifier
+	| literal																		#ExprPrimitiveLiteral //
+	| TK_IDENT																		#ExprIdentifier //
 	;
 
 formalParameterList

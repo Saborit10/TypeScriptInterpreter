@@ -2,6 +2,8 @@ package src.symbols;
 
 import java.util.ArrayList;
 
+import src.values.Value;
+
 public class SymbolTableStack {
 	ArrayList<SymbolTable> stack;
 
@@ -24,7 +26,9 @@ public class SymbolTableStack {
 		top().declareVariable(e);
 	}
 
-	
+	public Value getValueOf(String name) throws SyntacticError{
+		return top().getValueOf(name);	
+	}	
 
 
 	@Override
@@ -34,5 +38,4 @@ public class SymbolTableStack {
 			ans += stack.get(i).toString();
 		return ans;
 	}
-
 }

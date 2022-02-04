@@ -7,10 +7,12 @@ import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
 import src.gen.TypeScriptParser.ExprComparatorContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
+import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
 import src.gen.TypeScriptParser.ExprParentContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
+import src.gen.TypeScriptParser.InitializerContext;
 import src.gen.TypeScriptParser.LiteralContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
 import src.symbols.Mod;
@@ -74,8 +76,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			);
 
 			if( c.initializer() != null ){
-				System.out.println("Si hay init");   ////////////////BORRAR Y ARREGLAR
-				var.setValue((Value)visit(c.initializer()));
+				Value init = (Value)visit(c.initializer());
+				var.setValue(init);
+				
+				if( var.getType() == null )
+					var.setType(init.getType());
 			}
 			
 			try{
@@ -149,6 +154,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	}
 
 	
+
+	@Override
+	public Object visitInitializer(InitializerContext ctx) {
+		return visit(ctx.expression());
+	}
+
 /**
  *	Expression	 
  **/	
@@ -195,10 +206,21 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	}
 
 	
+	
 
 
 	
-	
+	@Override
+	public Object visitExprIdentifier(ExprIdentifierContext ctx) {
+		try {
+			return scope.getValueOf(ctx.getText());
+
+		} catch (SyntacticError e) {
+			syntacticErrors.add(e);
+			return null;
+		}
+	}
+
 	@Override
 	public Object visitExprEquality(ExprEqualityContext ctx) {
 		try {
@@ -211,10 +233,10 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			else if( ctx.TK_IDENTEQ() != null )
 				return new BooleanValue(value1.isEqualValue(value2));
 			else if( ctx.TK_NOTEQ() != null ){
-				return new BooleanValue(!value1.isEqualValue(value2));
+				return new BooleanValue(value1.isNotEqualValue(value2));
 			}
 			else if( ctx.TK_IDENTNOTEQ() != null )
-				return new BooleanValue(value1.isEqualValue(value2));
+				return new BooleanValue(value1.isNotEqualValue(value2));
 			return null;
 		} catch (Exception e) {
 			return null;

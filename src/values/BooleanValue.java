@@ -31,4 +31,13 @@ public class BooleanValue extends Value{
 		}
 		return false;
 	}
+
+	@Override
+	public boolean isNotEqualValue(Value v) {
+		if( v instanceof BooleanValue ){
+			BooleanValue booleanValue = (BooleanValue)v;
+			return booleanValue.getValue() != value;
+		}
+		return true;
+	}
 }

@@ -2,6 +2,8 @@ package src.symbols;
 
 import java.util.HashMap;
 
+import src.values.Value;
+
 // 1 - El nombre ya existe
 // 2 - El tipo declarado no es el del valor
 // 3 - El const no tiene valor
@@ -39,11 +41,26 @@ public class SymbolTable{
 
 		/* Comprobacion de que el tipo sea igual al del valor */
 		if( e.getValue() != null && e.getType() != null ){
-			if( e.getType().isInstanceOfThisType(e.getValue()) )
+			if( !e.getType().isInstanceOfThisType(e.getValue()) )
 				throw new SyntacticError("El tipo de la variable " + e.getIdentifier() + " no coincide con el del valor");
 		}
 
 		symbols.put(e.getIdentifier(), e);		
+	}
+
+	Value getValueOf(String name) throws SyntacticError{
+		if( !symbols.containsKey(name) ){
+			if( parent == null )
+				throw new SyntacticError("El nombre " + name + " no se ha definido");
+			return parent.getValueOf(name);
+		}
+			
+		Entry e = symbols.get(name); 
+		if( !(e instanceof Variable) )
+			throw new SyntacticError(name + " no es una vairable");
+		
+		Variable variable = (Variable)e;
+		return variable.getValue();
 	}
 
 

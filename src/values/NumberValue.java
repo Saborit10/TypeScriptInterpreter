@@ -38,4 +38,13 @@ public class NumberValue extends Value{
 		return false;
 	}
 
+	@Override
+	public boolean isNotEqualValue(Value v) {
+		if( v instanceof NumberValue ){
+			NumberValue numberValue = (NumberValue)v;
+			return numberValue.getValue() != value;
+		}
+		return true;
+	}
+
 }

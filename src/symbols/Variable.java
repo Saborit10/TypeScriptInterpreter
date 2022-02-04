@@ -33,6 +33,10 @@ public class Variable extends NamedSymbol{
 		return type;
 	}
 
+	public void setType(Type type){
+		this.type = type;
+	}
+
 	public void setValue(Value v){
 		value = v;
 	}
@@ -52,6 +56,6 @@ public class Variable extends NamedSymbol{
 		if( (modifiers & Mod.ASYNC) > 0 ) mods.add("ASYNC");
 		if( (modifiers & Mod.STATIC) > 0 ) mods.add("STATIC");
 		
-		return mods + " " + identifier;
+		return mods + " {type: " + type + "} " + identifier;
 	}
 }

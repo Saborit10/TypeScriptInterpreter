@@ -25,5 +25,9 @@ public abstract class Type {
 		return this.typeName;
 	}
 
+	@Override
+	public String toString() {
+		return getTypeName();
+	}
 
 }

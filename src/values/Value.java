@@ -20,4 +20,7 @@ public abstract class Value{
 
 	/* Devuelve true si los valores son del mismo tipo y ademas iguales */
 	public abstract boolean isEqualValue(Value v);
+
+	/* Devuelve true si los valores son de tipo diferente o son diferentes */
+	public abstract boolean isNotEqualValue(Value v);
 }
