@@ -14,6 +14,8 @@ public abstract class Type {
 		return isExtendedType(v.getType());
 	}
 
+	public abstract Value undefinedValue();
+
 	public abstract boolean isInstanceOfThisType(Value v);
 	
 	public abstract boolean isEqualType(Type v);

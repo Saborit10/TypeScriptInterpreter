@@ -5,6 +5,8 @@ import src.values.Value;
 
 public class StringType extends PrimitiveType{
 
+	private static StringValue UNDEFINED = new StringValue();
+
 	public StringType() {
 		super("string");
 	}
@@ -26,5 +28,10 @@ public class StringType extends PrimitiveType{
 	@Override
 	public boolean isEqualType(Type v) {
 		return v instanceof StringType;
+	}
+
+	@Override
+	public Value undefinedValue() {
+		return UNDEFINED;
 	}
 }

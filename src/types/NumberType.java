@@ -5,6 +5,8 @@ import src.values.Value;
 
 public class NumberType extends PrimitiveType{
 
+	private static NumberValue UNDEFINED = new NumberValue();
+
 	public NumberType() {
 		super("number");
 	}
@@ -27,5 +29,9 @@ public class NumberType extends PrimitiveType{
 	public boolean isEqualType(Type v) {
 		return v instanceof NumberType;
 	}
-	
+
+	@Override
+	public Value undefinedValue() {
+		return UNDEFINED;
+	}
 }

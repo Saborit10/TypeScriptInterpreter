@@ -102,7 +102,7 @@ classElement
 	| statement
 	;
 
-/* Declaracio de un Mienbro de una Clase */
+/* Declaracio de un Miembro de una Clase */
 memberDecl
 	: propertyMemberBase propertyName TK_QMARK? typeAnnotation? initializer? TK_SEMICOLON
 	| propertyMemberBase propertyName callSignature ( (TK_LCURLY functionBody TK_RCURLY) | TK_SEMICOLON)
@@ -361,8 +361,8 @@ expression
 	| expression TK_MINUSMINUS														#ExprOpMinusMinus
 	| TK_PLUS expression															#ExprPlusOp //
     | TK_MINUS expression															#ExprMinusOp //
-    | TK_BINNOT expression															#ExprBinaryNot
-    | TK_NOT expression																#ExprNot
+    | TK_BINNOT expression															#ExprBinaryNot //
+    | TK_NOT expression																#ExprNot //
 	| expression (TK_STAR | TK_SLASH | TK_PERCENT) expression						#ExprMultDivPerc //
 	| expression (TK_PLUS | TK_MINUS) expression									#ExprSumSubs //
 	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression			#ExprComparator //

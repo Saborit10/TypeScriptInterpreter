@@ -1,9 +1,13 @@
 package src.types;
 
+import java.lang.reflect.UndeclaredThrowableException;
+
 import src.values.BooleanValue;
 import src.values.Value;
 
 public class BooleanType extends PrimitiveType{
+
+	private static BooleanValue UNDEFINED = new BooleanValue();
 
 	public BooleanType() {
 		super("boolean");
@@ -26,5 +30,10 @@ public class BooleanType extends PrimitiveType{
 	@Override
 	public boolean isEqualType(Type v) {
 		return v instanceof BooleanType;
+	}
+
+	@Override
+	public Value undefinedValue() {
+		return UNDEFINED;
 	}
 }

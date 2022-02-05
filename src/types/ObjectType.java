@@ -8,15 +8,29 @@ import src.values.Value;
 public class ObjectType extends Type{
 	private ObjectType superType;
 	private ArrayList<Type> templateArgs;
-	
+	private Type[] propertiesTypes;
+
 	public ObjectType(String typeName) {
 		super(typeName);
 		templateArgs = new ArrayList<>();
+		propertiesTypes = new Type[0];
 	}
 	
 	public ObjectType(String typeName, ObjectType superType){
-		this(typeName);
+		super(typeName);
+		templateArgs = new ArrayList<>();
 		this.superType = superType;
+		propertiesTypes = new Type[0];
+	}
+
+	public ObjectType(String typeName, ObjectType superType, ArrayList<Type> propertiesTypes){
+		super(typeName);
+		templateArgs = new ArrayList<>();
+		this.superType = superType;
+		this.propertiesTypes = new Type[propertiesTypes.size()];
+
+		for(int i=0; i < propertiesTypes.size(); i++)
+			this.propertiesTypes[i] = propertiesTypes.get(i);
 	}
 
 	@Override
@@ -38,6 +52,10 @@ public class ObjectType extends Type{
 		return this.superType;
 	}
 
+	public Type[] getPropertiesTypes() {
+		return this.propertiesTypes;
+	}
+
 	@Override
 	public boolean isInstanceOfThisType(Value v) {
 		if( v instanceof ObjectValue ){
@@ -51,5 +69,11 @@ public class ObjectType extends Type{
 	@Override
 	public boolean isEqualType(Type v) {
 		return true; // ARREGLAR ESTO PARA COMPROBRA EL NOMBRE DEL TIPO O SI NO TIENE, QUE LAS PROPIEDADES SEAN LAS MISMAS
+	}
+
+	@Override
+	public Value undefinedValue() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

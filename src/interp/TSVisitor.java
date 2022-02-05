@@ -93,6 +93,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 				if( var.getType() == null )
 					var.setType(init.getType());
 			}
+			else
+				var.setValue(var.getType().undefinedValue());
 			
 			try{
 				scope.declareVariable(var);
@@ -144,14 +146,14 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 				return new NumberValue(0);
 			else{
 				String literal = ctx.NUMERIC_LITERAL().getText();
-
+				
 				if( literal.startsWith("0x") || literal.startsWith("0X") )
 					return new NumberValue(Integer.parseInt(literal.substring(2), 16));
 				else if( literal.startsWith("0o") || literal.startsWith("0O") )
 					return new NumberValue(Integer.parseInt(literal.substring(2), 8));
 				else if( literal.startsWith("0b") || literal.startsWith("0B") )
 					return new NumberValue(Integer.parseInt(literal.substring(2), 2));
-				else if( literal.startsWith("0") )
+				else if( literal.startsWith("0") && !literal.startsWith("0") )
 					return new NumberValue(Integer.parseInt(literal.substring(1), 8));
 				else{
 					double value = Double.parseDouble(literal);
@@ -169,19 +171,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		try {
 			Value value = (Value)visit(ctx.expression());
 		
-			if( BooleanType.isOfThisType(value) ){
-				int intValue = ((BooleanValue)value).getValue() ? 1 : 0;
-				return new NumberValue(-intValue);
-			}
-			else if( NumberType.isOfThisType(value) ){
-				double numberValue = ((NumberValue)value).getValue();
-				return new NumberValue(-numberValue);
-			}
-			else{
-				addOperatorError(value);
-				return null;
-			}
-		} catch (NullPointerException e) {
+			return value.minus();	
+		} catch (SyntacticError e) {
 			return null;
 		}
 	}
@@ -191,19 +182,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		try {
 			Value value = (Value)visit(ctx.expression());
 		
-			if( BooleanType.isOfThisType(value) ){
-				int intValue = ((BooleanValue)value).getValue() ? 1 : 0;
-				return new NumberValue(intValue);
-			}
-			else if( NumberType.isOfThisType(value) ){
-				double numberValue = ((NumberValue)value).getValue();
-				return new NumberValue(numberValue);
-			}
-			else{
-				addOperatorError(value);
-				return null;
-			}	
-		} catch (NullPointerException e) {
+			return value.plus();	
+		} catch (SyntacticError e) {
 			return null;
 		}
 	}
@@ -213,19 +193,9 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		try {
 			Value value = (Value)visit(ctx.expression());
 		
-			if( BooleanType.isOfThisType(value) ){
-				int intValue = ((BooleanValue)value).getValue() ? 1 : 0;
-				return new NumberValue(~intValue);
-			}
-			else if( NumberType.isOfThisType(value) ){
-				int intValue = Double.valueOf(((NumberValue)value).getValue()).intValue();
-				return new NumberValue(~intValue);
-			}
-			else{
-				addOperatorError(value);
-				return null;
-			}
-		} catch (NullPointerException e) {
+			return value.binNot();
+		} catch (SyntacticError e) {
+			syntacticErrors.add(e);
 			return null;
 		}
 	}
@@ -235,20 +205,9 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		try {
 			Value value = (Value)visit(ctx.expression());
 		
-			if( BooleanType.isOfThisType(value) ){
-				boolean booleanValue = ((BooleanValue)value).getValue();
-				return new BooleanValue(!booleanValue);
-			}
-			else if( NumberType.isOfThisType(value) ){
-				double doubleValue = ((NumberValue)value).getValue();
-				boolean booleanValue = Math.abs(doubleValue) > 0;
-				return new BooleanValue(!booleanValue);
-			}
-			else{
-				addOperatorError(value);
-				return null;
-			}
-		} catch (NullPointerException e) {
+			return value.logicNot();
+		} catch (SyntacticError e) {
+			syntacticErrors.add(e);
 			return null;
 		}
 	}
@@ -267,28 +226,15 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			Value value1 = (Value)visit(ctx.expression().get(0));
 			Value value2 = (Value)visit(ctx.expression().get(1));
 
-			if( !NumberType.isOfThisType(value1) || 
-				!NumberType.isOfThisType(value2) ){
-					addOperatorError(value1, value2);
-					return null;
-			}
-			
-			double a = ((NumberValue)value1).getValue();
-			double b = ((NumberValue)value2).getValue();
-
-			if( ctx.TK_PERCENT() != null ){
-				long k = Double.valueOf(a / b).longValue();
-
-				return new NumberValue(a - k * b);
-			}
-			else if( ctx.TK_STAR() != null ){
-				return new NumberValue(a * b);
-			}
+			if( ctx.TK_PERCENT() != null )
+				return value1.mod(value2);	
+			else if( ctx.TK_STAR() != null )
+				return value1.prod(value2);
 			else
-				return new NumberValue(a / b);
+				return value1.div(value2);
 			
-		} catch(NullPointerException e){
-			// e.printStackTrace();
+		} catch(SyntacticError e){
+			syntacticErrors.add(e);
 			return null;
 		}
 	}
@@ -325,18 +271,18 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			Value value1 = (Value)visit(ctx.expression().get(0));
 			Value value2 = (Value)visit(ctx.expression().get(1));
 
-			if( ctx.TK_EQEQ() != null ){
-				return new BooleanValue(value1.isEqualValue(value2));
-			}
+			if( ctx.TK_EQEQ() != null )
+				return value1.equals(value2);
 			else if( ctx.TK_IDENTEQ() != null )
-				return new BooleanValue(value1.isEqualValue(value2));
+				return value1.strictEquals(value2);
 			else if( ctx.TK_NOTEQ() != null ){
-				return new BooleanValue(value1.isNotEqualValue(value2));
+				return value1.notEquals(value2);
 			}
 			else if( ctx.TK_IDENTNOTEQ() != null )
-				return new BooleanValue(value1.isNotEqualValue(value2));
+				return value1.notStrictEquals(value2);
 			return null;
-		} catch (Exception e) {
+		} catch (SyntacticError e) {
+			syntacticErrors.add(e);
 			return null;
 		}
 	}
@@ -347,50 +293,16 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			Value value1 = (Value)visit(ctx.expression().get(0));
 			Value value2 = (Value)visit(ctx.expression().get(1));
 
-			if( BooleanType.isOfThisType(value1) && BooleanType.isOfThisType(value2) ){
-				int booleanValue1 = ((BooleanValue)value1).getValue() ? 1 : 0;
-				int booleanValue2 = ((BooleanValue)value2).getValue() ? 1 : 0;
-
-				if( ctx.TK_GREAT() != null )
-					return new BooleanValue(booleanValue1 > booleanValue2);
-				else if( ctx.TK_GREATEQ() != null )
-					return new BooleanValue(booleanValue1 >= booleanValue2);
-				else if( ctx.TK_LESS() != null )
-					return new BooleanValue(booleanValue1 < booleanValue2);
-				else
-					return new BooleanValue(booleanValue1 <= booleanValue2);
-			}
-			else if( NumberType.isOfThisType(value1) && NumberType.isOfThisType(value2) ){
-				double numberValue1 = ((NumberValue)value1).getValue();
-				double numberValue2 = ((NumberValue)value2).getValue();
-
-				if( ctx.TK_GREAT() != null )
-					return new BooleanValue(numberValue1 > numberValue2);
-				else if( ctx.TK_GREATEQ() != null )
-					return new BooleanValue(numberValue1 >= numberValue2);
-				else if( ctx.TK_LESS() != null )
-					return new BooleanValue(numberValue1 < numberValue2);
-				else
-					return new BooleanValue(numberValue1 <= numberValue2);
-			}
-			else if( StringType.isOfThisType(value1) && StringType.isOfThisType(value2) ){
-				String stringValue1 = ((StringValue)value1).getValue();
-				String stringValue2 = ((StringValue)value2).getValue();
-
-				if( ctx.TK_GREAT() != null )
-					return new BooleanValue(stringValue1.compareTo(stringValue2) > 0);
-				else if( ctx.TK_GREATEQ() != null )
-					return new BooleanValue(stringValue1.compareTo(stringValue2) >= 0);
-				else if( ctx.TK_LESS() != null )
-					return new BooleanValue(stringValue1.compareTo(stringValue2) < 0);
-				else
-					return new BooleanValue(stringValue1.compareTo(stringValue2) <= 0);
-			}
-			else{
-				addOperatorError(value1, value2);
-				return null;
-			}
-		} catch (Exception e) {
+			if( ctx.TK_GREAT() != null )
+				return value1.greater(value2);
+			else if( ctx.TK_GREATEQ() != null )
+				return value1.greaterOrEq(value2);
+			else if( ctx.TK_LESS() != null )
+				return value1.less(value2);
+			else
+				return value1.lessOrEq(value2);
+		} catch (SyntacticError e) {
+			syntacticErrors.add(e);
 			return null;
 		}
 	}
@@ -401,25 +313,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			Value value1 = (Value)visit(ctx.expression().get(0));
 			Value value2 = (Value)visit(ctx.expression().get(1));
 
-			if( NumberType.isOfThisType(value1) && NumberType.isOfThisType(value2) ){
-				double a = ((NumberValue)value1).getValue();
-				double b = ((NumberValue)value2).getValue();
-				
-				if( ctx.TK_PLUS() != null )
-					return new NumberValue(a + b);
-				else
-					return new NumberValue(a - b);
-			}
-			else if( ctx.TK_PLUS() != null && 
-				(StringType.isOfThisType(value1) || StringType.isOfThisType(value2)) ){
-					return new StringValue(value1.toString() + value2.toString());
-			}
-			else{
-				addOperatorError(value1, value2);
-				return null;
-			}
-		} catch(NullPointerException e){
-			// e.printStackTrace();
+			if( ctx.TK_PLUS() != null )
+				return value1.sum(value2);
+			else
+				return value1.sub(value2);
+		} catch(SyntacticError e){
+			syntacticErrors.add(e);
 			return null;
 		}
 	}

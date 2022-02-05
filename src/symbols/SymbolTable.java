@@ -24,7 +24,7 @@ public class SymbolTable{
 		this.parent = parent;
 	}
 
-	void declareVariable(Variable e) throws SyntacticError{
+	public void declareVariable(Variable e) throws SyntacticError{
 		/* Comprobar si el identficador ya esta reservado */
 		if( symbols.containsKey(e.getIdentifier()) )
 			throw new SyntacticError("El identificador ya esta reservado");
@@ -48,7 +48,7 @@ public class SymbolTable{
 		symbols.put(e.getIdentifier(), e);		
 	}
 
-	Value getValueOf(String name) throws SyntacticError{
+	public Value getValueOf(String name) throws SyntacticError{
 		if( !symbols.containsKey(name) ){
 			if( parent == null )
 				throw new SyntacticError("El nombre " + name + " no se ha definido");
@@ -63,6 +63,20 @@ public class SymbolTable{
 		return variable.getValue();
 	}
 
+	public void setValueOf(String name, Value value) throws SyntacticError{
+		if( !symbols.containsKey(name) ){
+			if( parent == null )
+				throw new SyntacticError("El nombre " + name + " no se ha definido");
+			parent.setValueOf(name, value);
+		}
+			
+		Entry e = symbols.get(name);
+		if( !(e instanceof Variable) )
+			throw new SyntacticError(name + " no es una vairable");
+		
+		Variable variable = (Variable)e;
+		variable.setValue(value);
+	}
 
 	@Override
 	public String toString() {
