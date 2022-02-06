@@ -48,12 +48,12 @@ public class LiteralObjectValue extends ObjectValue{
 
 	@Override
 	public Value notEquals(Value v) throws SyntacticError {
-		return new BooleanValue(false);
+		return new BooleanValue(true);
 	}
 
 	@Override
 	public Value notStrictEquals(Value v) throws SyntacticError {
-		return new BooleanValue(false);
+		return new BooleanValue(true);
 	}
 
 	public String toString() {

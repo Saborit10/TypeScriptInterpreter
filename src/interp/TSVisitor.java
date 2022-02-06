@@ -5,11 +5,15 @@ import java.util.List;
 
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
+import src.gen.TypeScriptParser.ExprBinAndContext;
+import src.gen.TypeScriptParser.ExprBinOrContext;
 import src.gen.TypeScriptParser.ExprBinaryNotContext;
 import src.gen.TypeScriptParser.ExprComparatorContext;
 import src.gen.TypeScriptParser.ExprDotIdentContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
+import src.gen.TypeScriptParser.ExprLogicAndContext;
+import src.gen.TypeScriptParser.ExprLogicOrContext;
 import src.gen.TypeScriptParser.ExprMinusOpContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
 import src.gen.TypeScriptParser.ExprNotContext;
@@ -45,132 +49,117 @@ import src.values.Value;
 /**
  * TSVisitor
  */
-public class TSVisitor extends TypeScriptBaseVisitor<Object>{
+public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	private SymbolTableStack scope;
 	private ArrayList<SyntacticError> syntacticErrors;
-	
+
 	public TSVisitor() {
 		scope = new SymbolTableStack();
 		syntacticErrors = new ArrayList<>();
 	}
 
-	private void addOperatorError(Value value1, Value value2){
-		SyntacticError error = new SyntacticError(
-			"Operador no aplicable a los tipos " +
-			value1.getType().getTypeName() +
-			" y " +
-			value2.getType().getTypeName()
-		);
-		syntacticErrors.add(error);
-	}
-	
-	private void addOperatorError(Value value){
-		SyntacticError error = new SyntacticError(
-			"Operador no aplicable al tipo " + value.getType().getTypeName()
-		);
-		syntacticErrors.add(error);
+	private void addError(SyntacticError e) {
+		addError(e);
 	}
 
 	@Override
 	public Object visitVariableStatement(TypeScriptParser.VariableStatementContext ctx) {
-		int accessModifiers = 0;
-		
-		if( ctx.accessModifier() != null )
-			accessModifiers = (Integer)visit(ctx.accessModifier());
-		
-		int varModifiers = (Integer)visit(ctx.varModifier());
-		int readonlyModifiers = ctx.TK_READ_ONLY() != null ? Mod.READONLY : 0;
-		
-		List<VariableDeclContext> declList = ctx.variableDeclList().variableDecl();
+		try {
+			int accessModifiers = 0;
 
-		for(VariableDeclContext c: declList){
-			String identifier = c.TK_IDENT().getText();
-			Type type = null;
+			if (ctx.accessModifier() != null)
+				accessModifiers = (Integer) visit(ctx.accessModifier());
 
-			if( c.typeAnnotation() != null )
-				type = (Type)visit(c.typeAnnotation());
+			int varModifiers = (Integer) visit(ctx.varModifier());
+			int readonlyModifiers = ctx.TK_READ_ONLY() != null ? Mod.READONLY : 0;
 
-			Variable var = new Variable(
-				identifier,
-				accessModifiers | varModifiers | readonlyModifiers,
-				type
-			);
+			List<VariableDeclContext> declList = ctx.variableDeclList().variableDecl();
 
-			if( c.initializer() != null ){
-				Value init = (Value)visit(c.initializer());
-				var.setValue(init);
+			for (VariableDeclContext c : declList) {
+				String identifier = c.TK_IDENT().getText();
+				Type type = null;
 
-				if( var.getType() == null )
-					var.setType(init.getType());
-			}
-			else
-				var.setValue(var.getType().undefinedValue());
-			
-			try{
+				if (c.typeAnnotation() != null)
+					type = (Type) visit(c.typeAnnotation());
+
+				Variable var = new Variable(
+						identifier,
+						accessModifiers | varModifiers | readonlyModifiers,
+						type);
+
+				if (c.initializer() != null) {
+					Value init = (Value) visit(c.initializer());
+					var.setValue(init);
+
+					if (var.getType() == null)
+						var.setType(init.getType());
+				} else
+					var.setValue(var.getType().undefinedValue());
+
 				scope.declareVariable(var);
-			} catch (SyntacticError e) {
-				syntacticErrors.add(e);
 			}
+		} catch (NullPointerException e) {
+			return null;
+		} catch (SyntacticError e) {
+			addError(e);
 		}
 		return null;
 	}
 
 	@Override
 	public Object visitVarModifier(TypeScriptParser.VarModifierContext ctx) {
-		if( ctx.TK_CONST() != null )
+		if (ctx.TK_CONST() != null)
 			return Mod.CONST;
-		else if( ctx.TK_LET() != null )
+		else if (ctx.TK_LET() != null)
 			return Mod.LET;
-		else if( ctx.TK_VAR() != null )
+		else if (ctx.TK_VAR() != null)
 			return Mod.VAR;
 		return null;
 	}
 
 	@Override
 	public Object visitAccessModifier(TypeScriptParser.AccessModifierContext ctx) {
-		if( ctx.TK_PUBLIC() != null )
+		if (ctx.TK_PUBLIC() != null)
 			return Mod.PUBLIC;
-		else if( ctx.TK_PRIVATE() != null )
+		else if (ctx.TK_PRIVATE() != null)
 			return Mod.PRIVATE;
-		else if( ctx.TK_PROTECTED() != null )
+		else if (ctx.TK_PROTECTED() != null)
 			return Mod.PROTECTED;
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public Object visitLiteral(LiteralContext ctx) {
 		try {
-			if( ctx.BOOLEAN_LITERAL() != null ){
+			if (ctx.BOOLEAN_LITERAL() != null) {
 				return new BooleanValue(Boolean.parseBoolean(ctx.getText()));
-			}
-			else if( ctx.STRING_LITERAL() != null ){
+			} else if (ctx.STRING_LITERAL() != null) {
 				String stringLiteral = ctx.STRING_LITERAL().getText();
-				StringBuilder value = new StringBuilder(); 
+				StringBuilder value = new StringBuilder();
 
-				for(int i=1; i < stringLiteral.length()-1; i++)
+				for (int i = 1; i < stringLiteral.length() - 1; i++)
 					value.append(stringLiteral.charAt(i));
 				return new StringValue(value.toString());
-			}
-			else if( ctx.NULL_LITERAL() != null )
+			} else if (ctx.NULL_LITERAL() != null)
 				return new NumberValue(0);
-			else{
+			else {
 				String literal = ctx.NUMERIC_LITERAL().getText();
-				
-				if( literal.startsWith("0x") || literal.startsWith("0X") )
+
+				if (literal.startsWith("0x") || literal.startsWith("0X"))
 					return new NumberValue(Integer.parseInt(literal.substring(2), 16));
-				else if( literal.startsWith("0o") || literal.startsWith("0O") )
+				else if (literal.startsWith("0o") || literal.startsWith("0O"))
 					return new NumberValue(Integer.parseInt(literal.substring(2), 8));
-				else if( literal.startsWith("0b") || literal.startsWith("0B") )
+				else if (literal.startsWith("0b") || literal.startsWith("0B"))
 					return new NumberValue(Integer.parseInt(literal.substring(2), 2));
-				else if( literal.startsWith("0") && !literal.startsWith("0") )
+				else if (literal.startsWith("0") && !literal.startsWith("0"))
 					return new NumberValue(Integer.parseInt(literal.substring(1), 8));
-				else{
+				else {
 					double value = Double.parseDouble(literal);
 					return new NumberValue(value);
 				}
 			}
-		
+
 		} catch (NullPointerException e) {
 			return null;
 		}
@@ -179,10 +168,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	@Override
 	public Object visitExprMinusOp(ExprMinusOpContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.expression());
-		
-			return value.minus();	
+			Value value = (Value) visit(ctx.expression());
+
+			return value.minus();
 		} catch (SyntacticError e) {
+			return null;
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -190,10 +181,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	@Override
 	public Object visitExprPlusOp(ExprPlusOpContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.expression());
-		
-			return value.plus();	
+			Value value = (Value) visit(ctx.expression());
+
+			return value.plus();
 		} catch (SyntacticError e) {
+			return null;
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -201,11 +194,13 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	@Override
 	public Object visitExprBinaryNot(ExprBinaryNotContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.expression());
-		
+			Value value = (Value) visit(ctx.expression());
+
 			return value.binNot();
 		} catch (SyntacticError e) {
-			syntacticErrors.add(e);
+			addError(e);
+			return null;
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -213,39 +208,47 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	@Override
 	public Object visitExprNot(ExprNotContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.expression());
-		
+			Value value = (Value) visit(ctx.expression());
+
 			return value.logicNot();
 		} catch (SyntacticError e) {
-			syntacticErrors.add(e);
+			addError(e);
+			return null;
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Object visitInitializer(InitializerContext ctx) {
-		Value value = (Value)visit(ctx.expression());
-		return value;
+		try {
+			Value value = (Value) visit(ctx.expression());
+			return value;
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
-/**
- *	Expression	 
- **/	
+	/**
+	 * Expression
+	 **/
 	@Override
 	public Object visitExprMultDivPerc(ExprMultDivPercContext ctx) {
-		try{
-			Value value1 = (Value)visit(ctx.expression().get(0));
-			Value value2 = (Value)visit(ctx.expression().get(1));
+		try {
+			Value value1 = (Value) visit(ctx.expression().get(0));
+			Value value2 = (Value) visit(ctx.expression().get(1));
 
-			if( ctx.TK_PERCENT() != null )
-				return value1.mod(value2);	
-			else if( ctx.TK_STAR() != null )
+			if (ctx.TK_PERCENT() != null)
+				return value1.mod(value2);
+			else if (ctx.TK_STAR() != null)
 				return value1.prod(value2);
 			else
 				return value1.div(value2);
-			
-		} catch(SyntacticError e){
-			syntacticErrors.add(e);
+
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -253,7 +256,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	@Override
 	public Object visitExprPrimitiveLiteral(ExprPrimitiveLiteralContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.literal());
+			Value value = (Value) visit(ctx.literal());
 			return value;
 		} catch (Exception e) {
 			return null;
@@ -266,7 +269,9 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			return scope.getValueOf(ctx.getText());
 
 		} catch (SyntacticError e) {
-			syntacticErrors.add(e);
+			addError(e);
+			return null;
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -274,23 +279,22 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	@Override
 	public Object visitExprEquality(ExprEqualityContext ctx) {
 		try {
-			Value value1 = (Value)visit(ctx.expression().get(0));
-			Value value2 = (Value)visit(ctx.expression().get(1));
+			Value value1 = (Value) visit(ctx.expression().get(0));
+			Value value2 = (Value) visit(ctx.expression().get(1));
 
-			if( ctx.TK_EQEQ() != null )
+			if (ctx.TK_EQEQ() != null)
 				return value1.equals(value2);
-			else if( ctx.TK_IDENTEQ() != null )
+			else if (ctx.TK_IDENTEQ() != null)
 				return value1.strictEquals(value2);
-			else if( ctx.TK_NOTEQ() != null ){
+			else if (ctx.TK_NOTEQ() != null) {
 				return value1.notEquals(value2);
-			}
-			else if( ctx.TK_IDENTNOTEQ() != null )
+			} else if (ctx.TK_IDENTNOTEQ() != null)
 				return value1.notStrictEquals(value2);
 			return null;
 		} catch (SyntacticError e) {
-			syntacticErrors.add(e);
+			addError(e);
 			return null;
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -298,81 +302,143 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	@Override
 	public Object visitExprComparator(ExprComparatorContext ctx) {
 		try {
-			Value value1 = (Value)visit(ctx.expression().get(0));
-			Value value2 = (Value)visit(ctx.expression().get(1));
+			Value value1 = (Value) visit(ctx.expression().get(0));
+			Value value2 = (Value) visit(ctx.expression().get(1));
 
-			if( ctx.TK_GREAT() != null )
+			if (ctx.TK_GREAT() != null)
 				return value1.greater(value2);
-			else if( ctx.TK_GREATEQ() != null )
+			else if (ctx.TK_GREATEQ() != null)
 				return value1.greaterOrEq(value2);
-			else if( ctx.TK_LESS() != null )
+			else if (ctx.TK_LESS() != null)
 				return value1.less(value2);
 			else
 				return value1.lessOrEq(value2);
 		} catch (SyntacticError e) {
-			syntacticErrors.add(e);
+			addError(e);
+			return null;
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Object visitExprSumSubs(ExprSumSubsContext ctx) {
-		try{
-			Value value1 = (Value)visit(ctx.expression().get(0));
-			Value value2 = (Value)visit(ctx.expression().get(1));
+		try {
+			Value value1 = (Value) visit(ctx.expression().get(0));
+			Value value2 = (Value) visit(ctx.expression().get(1));
 
-			if( ctx.TK_PLUS() != null )
+			if (ctx.TK_PLUS() != null)
 				return value1.sum(value2);
 			else
 				return value1.sub(value2);
-		} catch(SyntacticError e){
-			syntacticErrors.add(e);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Object visitExprParent(ExprParentContext ctx) {
-		Value value = (Value)visit(ctx.expression());
+		Value value = (Value) visit(ctx.expression());
 		System.out.println(value);
 		return value;
 	}
 
 	@Override
 	public Object visitExprObjectLiteral(ExprObjectLiteralContext ctx) {
-		Value value = (Value)visit(ctx.objectLiteral());
+		Value value = (Value) visit(ctx.objectLiteral());
 		return value;
 	}
 
 	@Override
 	public Object visitObjLiteral(ObjLiteralContext ctx) {
-		List<PropertyAssignContext> propList = ctx.propertyAssign();
+		try {
+			List<PropertyAssignContext> propList = ctx.propertyAssign();
 
-		ArrayList<Value> values = new ArrayList<>();
-		ArrayList<String> names = new ArrayList<>();
+			ArrayList<Value> values = new ArrayList<>();
+			ArrayList<String> names = new ArrayList<>();
 
-		for(int i=0; i < propList.size(); i++){
-			if( propList.get(i).propertyName() != null ){
-				names.add((String)visit(propList.get(i).propertyName()));
-				values.add((Value)visit(propList.get(i).expression(0)));
+			for (int i = 0; i < propList.size(); i++) {
+				names.add((String) visit(propList.get(i).propertyName()));
+				values.add((Value) visit(propList.get(i).expression()));
 			}
-			else{
-				// TODO
-			}
+			return new LiteralObjectValue(names, values);
+		} catch (NullPointerException e) {
+			return null;
 		}
-		return new LiteralObjectValue(names, values);
+	}
+
+	@Override
+	public Object visitExprLogicAnd(ExprLogicAndContext ctx) {
+		try{
+			Value value1 = (Value) visit(ctx.expression().get(0));
+			Value value2 = (Value) visit(ctx.expression().get(1));
+
+			return value1.logicAnd(value2);
+		} catch(SyntacticError e){
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprLogicOr(ExprLogicOrContext ctx) {
+		try{
+			Value value1 = (Value) visit(ctx.expression().get(0));
+			Value value2 = (Value) visit(ctx.expression().get(1));
+
+			return value1.logicOr(value2);
+		} catch(SyntacticError e){
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprBinAnd(ExprBinAndContext ctx) {
+		try{
+			Value value1 = (Value) visit(ctx.expression().get(0));
+			Value value2 = (Value) visit(ctx.expression().get(1));
+
+			return value1.binAnd(value2);
+		} catch(SyntacticError e){
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprBinOr(ExprBinOrContext ctx) {
+		try{
+			Value value1 = (Value) visit(ctx.expression().get(0));
+			Value value2 = (Value) visit(ctx.expression().get(1));
+
+			return value1.binOr(value2);
+		} catch(SyntacticError e){
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		}
 	}
 
 	@Override
 	public Object visitPropertyName(PropertyNameContext ctx) {
-		if( ctx.STRING_LITERAL() != null ){
+		if (ctx.STRING_LITERAL() != null) {
 			StringBuilder ans = new StringBuilder();
 
-			for(int i=1; i < ctx.getText().length()-1; i++)
+			for (int i = 1; i < ctx.getText().length() - 1; i++)
 				ans.append(ctx.getText().charAt(i));
 			return ans;
-		}
-		else
+		} else
 			return ctx.getText();
 	}
 
@@ -380,28 +446,26 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	public Object visitObjLiteralEmpty(ObjLiteralEmptyContext ctx) {
 		return new LiteralObjectValue();
 	}
-	
-/**
- *  Property Access 
-**/
+
+	/**
+	 * Property Access
+	 **/
 	@Override
 	public Object visitExprDotIdent(ExprDotIdentContext ctx) {
 		try {
-			ObjectValue objValue = (ObjectValue)visit(ctx.expression());
+			ObjectValue objValue = (ObjectValue) visit(ctx.expression());
 
 			return objValue.get(ctx.identifier().getText());
 		} catch (ClassCastException e) {
 			syntacticErrors.add(new SyntacticError(
-				"La expresion a la izquierda del operador . no es un objeto"
-			));
+					"La expresion a la izquierda del operador . no es un objeto"));
 			return null;
 		} catch (NullPointerException e) {
 			syntacticErrors.add(new SyntacticError(
-				"La expresion a la izquierda del operador . no es un objeto"
-			));
+					"La expresion a la izquierda del operador . no es un objeto"));
 			return null;
 		} catch (SyntacticError e) {
-			syntacticErrors.add(e);
+			addError(e);
 			return null;
 		}
 	}
@@ -409,32 +473,29 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 	@Override
 	public Object visitExprObjectIndex(ExprObjectIndexContext ctx) {
 		try {
-			ObjectValue objValue = (ObjectValue)visit(ctx.expression());
+			ObjectValue objValue = (ObjectValue) visit(ctx.expression());
 			List<ExpressionContext> expList = ctx.expressionSequence().expression();
-			
+
 			Value index = null;
-			for(int i=0; i < expList.size(); i++)
-				index = (Value)visit(expList.get(i));
-			
-			if( StringType.isOfThisType(index) ){
+			for (int i = 0; i < expList.size(); i++)
+				index = (Value) visit(expList.get(i));
+
+			if (StringType.isOfThisType(index)) {
 				return objValue.get(index.toString());
-			}
-			else if( NumberType.isOfThisType(index) )
+			} else if (NumberType.isOfThisType(index))
 				return objValue.get(index.toString());
-			else{
+			else {
 				throw new SyntacticError(
-					"El indice " + expList.get(expList.size()-1).getText() + " no es valido"
-				);
+						"El indice " + expList.get(expList.size() - 1).getText() + " no es valido");
 			}
 		} catch (ClassCastException e) {
 			syntacticErrors.add(new SyntacticError(
-				"La expresion a la izquierda del operador [] no es un objeto"
-			));
+					"La expresion a la izquierda del operador [] no es un objeto"));
 			return null;
 		} catch (NullPointerException e) {
 			return null;
 		} catch (SyntacticError e) {
-			syntacticErrors.add(e);
+			addError(e);
 			return null;
 		}
 	}

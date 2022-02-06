@@ -43,9 +43,6 @@ public class SymbolTable{
 
 		/* Comprobacion de que el tipo sea igual al del valor */
 		if( e.getValue() != null && e.getType() != null ){
-			// System.out.println(e.getValue().getType().getTypeName() + " " + e.getType().getTypeName());
-			// System.out.println(e.getValue().getType() instanceof LiteralObjectType);
-
 			if( e.getValue().getType().getTypeName() == "[@object]" && e.getType().getTypeName() == "[@object]" )
 				; // Si son objetos literales.
 			else if( !e.getType().isInstanceOfThisType(e.getValue()) )

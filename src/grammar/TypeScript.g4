@@ -142,7 +142,7 @@ constructorDeclaration
 
 /* Declaracion de una Funcion */
 functionStatement
-	: TK_FUNCTION TK_IDENT callSignature ( TK_LCURLY functionBody TK_RCURLY | TK_SEMICOLON)
+	: TK_FUNCTION TK_IDENT callSignature ( (TK_LCURLY functionBody TK_RCURLY) | TK_SEMICOLON)
 	;
 
 /* Sentencia Continue */
@@ -251,7 +251,7 @@ objectLiteral
 
 propertyAssign
 	: propertyName (TK_COLON | TK_EQ) expression
-	| TK_LBRACKET expression TK_RBRACKET TK_COLON expression
+	// | TK_LBRACKET expression TK_RBRACKET TK_COLON expression
  	;
 
 propertyName
@@ -366,10 +366,10 @@ expression
 	| expression (TK_PLUS | TK_MINUS) expression									#ExprSumSubs //
 	| expression (TK_LESS | TK_GREAT | TK_LESSEQ | TK_GREATEQ) expression			#ExprComparator //
 	| expression (TK_EQEQ | TK_NOTEQ | TK_IDENTEQ | TK_IDENTNOTEQ) expression		#ExprEquality //
-	| expression TK_BIN_AND expression												#ExprBinAnd
-    | expression TK_BIN_OR expression												#ExprBinOr
-    | expression TK_LOGIC_AND expression											#ExprLogicAnd
-    | expression TK_LOGIC_OR expression												#ExprLogicOr
+	| expression TK_BIN_AND expression												#ExprBinAnd //
+    | expression TK_BIN_OR expression												#ExprBinOr //
+    | expression TK_LOGIC_AND expression											#ExprLogicAnd // 
+    | expression TK_LOGIC_OR expression												#ExprLogicOr //
 	| expression TK_QMARK expression TK_COLON expression							#ExprTernaryOperator
 	| functionCall																	#ExprFunctionCall
 	| TK_LPARENT expression TK_RPARENT												#ExprParent //
