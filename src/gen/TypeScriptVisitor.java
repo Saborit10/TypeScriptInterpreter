@@ -281,11 +281,19 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArrayElement(TypeScriptParser.ArrayElementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link TypeScriptParser#objectLiteral}.
+	 * Visit a parse tree produced by the {@code ObjLiteralEmpty}
+	 * labeled alternative in {@link TypeScriptParser#objectLiteral}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitObjectLiteral(TypeScriptParser.ObjectLiteralContext ctx);
+	T visitObjLiteralEmpty(TypeScriptParser.ObjLiteralEmptyContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ObjLiteral}
+	 * labeled alternative in {@link TypeScriptParser#objectLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjLiteral(TypeScriptParser.ObjLiteralContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#propertyAssign}.
 	 * @param ctx the parse tree

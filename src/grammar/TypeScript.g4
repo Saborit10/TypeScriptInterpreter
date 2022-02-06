@@ -245,8 +245,8 @@ arrayElement
 	;
 
 objectLiteral
-	: TK_LCURLY TK_RCURLY
-	| TK_LCURLY propertyAssign (TK_COMMA propertyAssign)* TK_RCURLY
+	: TK_LCURLY TK_RCURLY																			#ObjLiteralEmpty
+	| TK_LCURLY propertyAssign (TK_COMMA propertyAssign)* TK_RCURLY									#ObjLiteral
 	;
 
 propertyAssign
@@ -269,7 +269,6 @@ primitiveType
 	| TK_ANY
 	| TK_BOOLEAN
 	| TK_NUMBER
-	// | TK_SYMBOL
 	;
 
 typeName
@@ -353,7 +352,7 @@ assignmentOperator
 expression
 	: functionExpressionDecl														#ExprFuncionObject 
 	| expression '[' expressionSequence ']'											#ExprObjectIndex
-    | expression '.' identifier														#ExprDotIdent
+    | expression '.' identifier														#ExprDotIdent //
     | expression '.' functionCall													#ExprDotFunctionCall
 	| TK_PLUSPLUS expression														#ExprPlusPlusOp
 	| TK_MINUSMINUS expression														#ExprMinusMinusOp

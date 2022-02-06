@@ -4,11 +4,12 @@ import src.values.StringValue;
 import src.values.Value;
 
 public class StringType extends PrimitiveType{
+	protected String typeName;
 
 	private static StringValue UNDEFINED = new StringValue();
 
 	public StringType() {
-		super("string");
+		typeName = "string";
 	}
 
 	@Override
@@ -33,5 +34,10 @@ public class StringType extends PrimitiveType{
 	@Override
 	public Value undefinedValue() {
 		return UNDEFINED;
+	}
+
+	@Override
+	public String getTypeName() {
+		return typeName;
 	}
 }

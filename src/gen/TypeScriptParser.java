@@ -3239,25 +3239,43 @@ public class TypeScriptParser extends Parser {
 	}
 
 	public static class ObjectLiteralContext extends ParserRuleContext {
+		public ObjectLiteralContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_objectLiteral; }
+	 
+		public ObjectLiteralContext() { }
+		public void copyFrom(ObjectLiteralContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class ObjLiteralEmptyContext extends ObjectLiteralContext {
 		public TerminalNode TK_LCURLY() { return getToken(TypeScriptParser.TK_LCURLY, 0); }
 		public TerminalNode TK_RCURLY() { return getToken(TypeScriptParser.TK_RCURLY, 0); }
+		public ObjLiteralEmptyContext(ObjectLiteralContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitObjLiteralEmpty(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ObjLiteralContext extends ObjectLiteralContext {
+		public TerminalNode TK_LCURLY() { return getToken(TypeScriptParser.TK_LCURLY, 0); }
 		public List<PropertyAssignContext> propertyAssign() {
 			return getRuleContexts(PropertyAssignContext.class);
 		}
 		public PropertyAssignContext propertyAssign(int i) {
 			return getRuleContext(PropertyAssignContext.class,i);
 		}
+		public TerminalNode TK_RCURLY() { return getToken(TypeScriptParser.TK_RCURLY, 0); }
 		public List<TerminalNode> TK_COMMA() { return getTokens(TypeScriptParser.TK_COMMA); }
 		public TerminalNode TK_COMMA(int i) {
 			return getToken(TypeScriptParser.TK_COMMA, i);
 		}
-		public ObjectLiteralContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_objectLiteral; }
+		public ObjLiteralContext(ObjectLiteralContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitObjectLiteral(this);
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitObjLiteral(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -3271,6 +3289,7 @@ public class TypeScriptParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,64,_ctx) ) {
 			case 1:
+				_localctx = new ObjLiteralEmptyContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(551);
@@ -3280,6 +3299,7 @@ public class TypeScriptParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new ObjLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(553);

@@ -4,11 +4,12 @@ import src.values.NumberValue;
 import src.values.Value;
 
 public class NumberType extends PrimitiveType{
+	protected String typeName;
 
 	private static NumberValue UNDEFINED = new NumberValue();
 
 	public NumberType() {
-		super("number");
+		typeName = "number";
 	}
 
 	@Override
@@ -33,5 +34,10 @@ public class NumberType extends PrimitiveType{
 	@Override
 	public Value undefinedValue() {
 		return UNDEFINED;
+	}
+
+	@Override
+	public String getTypeName() {
+		return typeName;
 	}
 }

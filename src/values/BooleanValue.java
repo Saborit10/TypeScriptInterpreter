@@ -16,10 +16,9 @@ public class BooleanValue extends Value{
 	}
 
 
-	//ELIMINAR
-	public boolean getValue(){
-		return value;
-		
+	/* Devuelve si el valor esta definido y es verdadero */
+	public boolean isTrue(){
+		return !undefined && value == true;
 	}
  
 	public NumberValue toNumberValue(){
@@ -32,30 +31,11 @@ public class BooleanValue extends Value{
 	}
 
 
-
 	@Override
 	public String toString() {
 		if( undefined )
 			return "undefined";
 		return Boolean.valueOf(value).toString();	
-	}
-
-	@Override
-	public boolean isEqualValue(Value v) {
-		if( v instanceof BooleanValue ){
-			BooleanValue booleanValue = (BooleanValue)v;
-			return booleanValue.getValue() == value;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isNotEqualValue(Value v) {
-		if( v instanceof BooleanValue ){
-			BooleanValue booleanValue = (BooleanValue)v;
-			return booleanValue.getValue() != value;
-		}
-		return true;
 	}
 
 	@Override

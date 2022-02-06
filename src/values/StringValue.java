@@ -26,24 +26,6 @@ public class StringValue extends Value{
 	}
 
 	@Override
-	public boolean isEqualValue(Value v) {
-		if( v instanceof StringValue ){
-			StringValue stringValue = (StringValue)v;
-			return stringValue.getValue().equals(value);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isNotEqualValue(Value v) {
-		if( v instanceof StringValue ){
-			StringValue stringValue = (StringValue)v;
-			return !stringValue.getValue().equals(value);
-		}
-		return true;
-	}
-
-	@Override
 	public Value sum(Value v) throws SyntacticError {
 		if( this.undefined && v.undefined )
 			return new NumberValue(Double.NaN);

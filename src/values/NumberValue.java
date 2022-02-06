@@ -45,24 +45,6 @@ public class NumberValue extends Value{
 	}
 
 	@Override
-	public boolean isEqualValue(Value v) {
-		if( v instanceof NumberValue ){
-			NumberValue numberValue = (NumberValue)v;
-			return numberValue.getValue() == value;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isNotEqualValue(Value v) {
-		if( v instanceof NumberValue ){
-			NumberValue numberValue = (NumberValue)v;
-			return numberValue.getValue() != value;
-		}
-		return true;
-	}
-
-	@Override
 	public Value sum(Value v) throws SyntacticError {
 		if( StringType.isOfThisType(v) )
 			return v.sum(this);

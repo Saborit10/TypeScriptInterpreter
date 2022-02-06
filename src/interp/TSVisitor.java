@@ -7,17 +7,24 @@ import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
 import src.gen.TypeScriptParser.ExprBinaryNotContext;
 import src.gen.TypeScriptParser.ExprComparatorContext;
+import src.gen.TypeScriptParser.ExprDotIdentContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprMinusOpContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
 import src.gen.TypeScriptParser.ExprNotContext;
+import src.gen.TypeScriptParser.ExprObjectLiteralContext;
 import src.gen.TypeScriptParser.ExprParentContext;
 import src.gen.TypeScriptParser.ExprPlusOpContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
+import src.gen.TypeScriptParser.ExpressionContext;
 import src.gen.TypeScriptParser.InitializerContext;
 import src.gen.TypeScriptParser.LiteralContext;
+import src.gen.TypeScriptParser.ObjLiteralContext;
+import src.gen.TypeScriptParser.ObjLiteralEmptyContext;
+import src.gen.TypeScriptParser.PropertyAssignContext;
+import src.gen.TypeScriptParser.PropertyNameContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
 import src.symbols.Mod;
 import src.symbols.SymbolTableStack;
@@ -28,7 +35,9 @@ import src.types.NumberType;
 import src.types.StringType;
 import src.types.Type;
 import src.values.BooleanValue;
+import src.values.LiteralObjectValue;
 import src.values.NumberValue;
+import src.values.ObjectValue;
 import src.values.StringValue;
 import src.values.Value;
 
@@ -89,7 +98,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			if( c.initializer() != null ){
 				Value init = (Value)visit(c.initializer());
 				var.setValue(init);
-				
+
 				if( var.getType() == null )
 					var.setType(init.getType());
 			}
@@ -102,7 +111,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 				syntacticErrors.add(e);
 			}
 		}
-		return visitChildren(ctx);
+		return null;
 	}
 
 	@Override
@@ -214,7 +223,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 
 	@Override
 	public Object visitInitializer(InitializerContext ctx) {
-		return visit(ctx.expression());
+		Value value = (Value)visit(ctx.expression());
+		return value;
 	}
 
 /**
@@ -249,11 +259,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		}
 	}
 
-	
-	
-
-
-	
 	@Override
 	public Object visitExprIdentifier(ExprIdentifierContext ctx) {
 		try {
@@ -283,6 +288,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 			return null;
 		} catch (SyntacticError e) {
 			syntacticErrors.add(e);
+			return null;
+		} catch(NullPointerException e){
 			return null;
 		}
 	}
@@ -328,6 +335,71 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		Value value = (Value)visit(ctx.expression());
 		System.out.println(value);
 		return value;
+	}
+
+	@Override
+	public Object visitExprObjectLiteral(ExprObjectLiteralContext ctx) {
+		Value value = (Value)visit(ctx.objectLiteral());
+		return value;
+	}
+
+	@Override
+	public Object visitObjLiteral(ObjLiteralContext ctx) {
+		List<PropertyAssignContext> propList = ctx.propertyAssign();
+
+		ArrayList<Value> values = new ArrayList<>();
+		ArrayList<String> names = new ArrayList<>();
+
+		for(int i=0; i < propList.size(); i++){
+			if( propList.get(i).propertyName() != null ){
+				names.add((String)visit(propList.get(i).propertyName()));
+				values.add((Value)visit(propList.get(i).expression(0)));
+			}
+			else{
+				// TODO
+			}
+		}
+		return new LiteralObjectValue(names, values);
+	}
+
+	@Override
+	public Object visitPropertyName(PropertyNameContext ctx) {
+		if( ctx.STRING_LITERAL() != null ){
+			StringBuilder ans = new StringBuilder();
+
+			for(int i=1; i < ctx.getText().length()-1; i++)
+				ans.append(ctx.getText().charAt(i));
+			return ans;
+		}
+		else
+			return ctx.getText();
+	}
+
+	@Override
+	public Object visitObjLiteralEmpty(ObjLiteralEmptyContext ctx) {
+		return new LiteralObjectValue();
+	}
+	
+	@Override
+	public Object visitExprDotIdent(ExprDotIdentContext ctx) {
+		try {
+			ObjectValue objValue = (ObjectValue)visit(ctx.expression());
+
+			return objValue.get(ctx.identifier().getText());
+		} catch (ClassCastException e) {
+			syntacticErrors.add(new SyntacticError(
+				"La expresion a la izquierda del operador . no es un objeto"
+			));
+			return null;
+		} catch (NullPointerException e) {
+			syntacticErrors.add(new SyntacticError(
+				"La expresion a la izquierda del operador . no es un objeto"
+			));
+			return null;
+		} catch (SyntacticError e) {
+			syntacticErrors.add(e);
+			return null;
+		}
 	}
 
 	public SymbolTableStack getScope() {

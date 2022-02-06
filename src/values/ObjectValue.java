@@ -4,8 +4,15 @@ import src.symbols.SyntacticError;
 import src.types.ObjectType;
 
 public abstract class ObjectValue extends Value{
-	
+	protected Value[] properties;
+
 	public abstract ObjectType getType();
+
+	public Value[] getProperties() {
+		return this.properties;
+	}
+
+	public abstract Value get(String propName)throws SyntacticError;
 
 	@Override
 	public Value binAnd(Value v) throws SyntacticError {
@@ -82,4 +89,14 @@ public abstract class ObjectValue extends Value{
 		throw new SyntacticError("El operador + no es aplicable a los tipos " + this.getType() + " y " + v.getType());
 	}
 
+	@Override
+	public Value plus() throws SyntacticError {
+		throw new SyntacticError("El operador + no es aplicable al tipo " + this.getType());
+	}
+
+	@Override
+	public Value minus() throws SyntacticError {
+		throw new SyntacticError("El operador - no es aplicable al tipo " + this.getType());
+	}
+	
 }
