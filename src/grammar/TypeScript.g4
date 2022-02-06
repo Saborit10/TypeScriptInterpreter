@@ -140,7 +140,7 @@ constructorDeclaration
 	: accessModifier? TK_CONSTRUCTOR TK_LPARENT formalParameterList? TK_RPARENT TK_LCURLY functionBody TK_RCURLY
 	;
 
-/* Declaracion de uan Funcion */
+/* Declaracion de una Funcion */
 functionStatement
 	: TK_FUNCTION TK_IDENT callSignature ( TK_LCURLY functionBody TK_RCURLY | TK_SEMICOLON)
 	;
@@ -351,7 +351,7 @@ assignmentOperator
 
 expression
 	: functionExpressionDecl														#ExprFuncionObject 
-	| expression '[' expressionSequence ']'											#ExprObjectIndex
+	| expression '[' expressionSequence ']'											#ExprObjectIndex //
     | expression '.' identifier														#ExprDotIdent //
     | expression '.' functionCall													#ExprDotFunctionCall
 	| TK_PLUSPLUS expression														#ExprPlusPlusOp

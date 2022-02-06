@@ -13,6 +13,7 @@ import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprMinusOpContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
 import src.gen.TypeScriptParser.ExprNotContext;
+import src.gen.TypeScriptParser.ExprObjectIndexContext;
 import src.gen.TypeScriptParser.ExprObjectLiteralContext;
 import src.gen.TypeScriptParser.ExprParentContext;
 import src.gen.TypeScriptParser.ExprPlusOpContext;
@@ -380,6 +381,9 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		return new LiteralObjectValue();
 	}
 	
+/**
+ *  Property Access 
+**/
 	@Override
 	public Object visitExprDotIdent(ExprDotIdentContext ctx) {
 		try {
@@ -402,11 +406,44 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object>{
 		}
 	}
 
-	public SymbolTableStack getScope() {
-		return this.scope;
+	@Override
+	public Object visitExprObjectIndex(ExprObjectIndexContext ctx) {
+		try {
+			ObjectValue objValue = (ObjectValue)visit(ctx.expression());
+			List<ExpressionContext> expList = ctx.expressionSequence().expression();
+			
+			Value index = null;
+			for(int i=0; i < expList.size(); i++)
+				index = (Value)visit(expList.get(i));
+			
+			if( StringType.isOfThisType(index) ){
+				return objValue.get(index.toString());
+			}
+			else if( NumberType.isOfThisType(index) )
+				return objValue.get(index.toString());
+			else{
+				throw new SyntacticError(
+					"El indice " + expList.get(expList.size()-1).getText() + " no es valido"
+				);
+			}
+		} catch (ClassCastException e) {
+			syntacticErrors.add(new SyntacticError(
+				"La expresion a la izquierda del operador [] no es un objeto"
+			));
+			return null;
+		} catch (NullPointerException e) {
+			return null;
+		} catch (SyntacticError e) {
+			syntacticErrors.add(e);
+			return null;
+		}
 	}
 
 	// Getters-Setters
+
+	public SymbolTableStack getScope() {
+		return this.scope;
+	}
 
 	public void setScope(SymbolTableStack scope) {
 		this.scope = scope;
