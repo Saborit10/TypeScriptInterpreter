@@ -10,8 +10,8 @@ import src.types.Type;
 
 public class FunctionObjectValue extends ObjectValue{
 	private FunctionBodyContext body;
-	private Type argTypes;
-	private String argNames;
+	private Type[] argTypes;
+	private String[] argNames;
 
 	public FunctionObjectValue(){
 		undefined = true;
@@ -23,9 +23,12 @@ public class FunctionObjectValue extends ObjectValue{
 	
 		SyntacticChecker.noEqualPair(argNames);
 
+		this.argNames = new String[argNames.size()];
+		this.argTypes = new Type[argTypes.size()];
+		
 		for(int i=0; i < argNames.size(); i++){
-			this.argNames = argNames.get(i);
-			this.argTypes = argTypes.get(i);
+			this.argNames[i] = argNames.get(i);
+			this.argTypes[i] = argTypes.get(i);
 		}
 	}
 
@@ -62,6 +65,11 @@ public class FunctionObjectValue extends ObjectValue{
 	@Override
 	public Value notStrictEquals(Value v) throws SyntacticError {
 		return new BooleanValue(true);
+	}
+
+	@Override
+	public Value[] getPropertyValues() {
+		return null;
 	}
 
 }

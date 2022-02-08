@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import src.symbols.SyntacticError;
 import src.types.ArrayObjectType;
-import src.types.ObjectType;
 import src.types.Type;
 
 public class ArrayObjectValue extends ObjectValue{
 	private int length;
 	private Value[] values;
 	private Type type;
+	private Value[] propertyValues;
 
 	public ArrayObjectValue(){
 		undefined = true;
@@ -90,6 +90,11 @@ public class ArrayObjectValue extends ObjectValue{
 	@Override
 	public Value notStrictEquals(Value v) throws SyntacticError {
 		return new BooleanValue(true);
+	}
+
+	@Override
+	public Value[] getPropertyValues() {
+		return this.propertyValues;
 	}
 
 }

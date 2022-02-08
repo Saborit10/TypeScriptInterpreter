@@ -42,6 +42,8 @@ import src.gen.TypeScriptParser.SimpleTypeContext;
 import src.gen.TypeScriptParser.TypeAnnotationContext;
 import src.gen.TypeScriptParser.TypeNameContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
+import src.heap.Heap;
+import src.heap.Reference;
 import src.symbols.Mod;
 import src.symbols.SymbolTableStack;
 import src.symbols.SyntacticError;
@@ -72,6 +74,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		scope = new SymbolTableStack();
 		syntacticErrors = new ArrayList<>();
 		typeTable = new TypeTable();
+
+		Reference.HEAP = new Heap();
 	}
 
 	private void addError(SyntacticError e) {
@@ -556,7 +560,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 				names.add((String) visit(propList.get(i).propertyName()));
 				values.add((Value) visit(propList.get(i).expression()));
 			}
-			return new LiteralObjectValue(names, values);
+			return Reference.HEAP.malloc(names, values);
 		} catch (NullPointerException e) {
 			return null;
 		}

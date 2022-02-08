@@ -8,7 +8,9 @@ import src.types.Type;
 
 public class ClassInstanceValue extends ObjectValue{
 	private ClassInstanceType prototype;
-	
+	protected Value[] propertyValues;
+
+
 	public ClassInstanceValue(){
 		this.undefined = true;
 	}
@@ -19,7 +21,7 @@ public class ClassInstanceValue extends ObjectValue{
 
 		Type[] types = proto.getPropertyTypes();
 		for(int i=0; i < types.length; i++)
-			properties[i] = types[i].undefinedValue();
+			propertyValues[i] = types[i].undefinedValue();
 	}
 
 	public ClassInstanceValue(ClassInstanceType proto, ArrayList<Value> propVals) throws SyntacticError{
@@ -35,7 +37,7 @@ public class ClassInstanceValue extends ObjectValue{
 			if( !types[i].isExtendedType(propVals.get(i).getType()) )
 				throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
 			
-			properties[i] = propVals.get(i);
+			propertyValues[i] = propVals.get(i);
 		}
 	}
 
@@ -51,11 +53,15 @@ public class ClassInstanceValue extends ObjectValue{
 		// TODO: Arreglar para que las propiedades puedan estar en cualquier orden
 
 		for(int i=0; i < types.length; i++){
-			if( !types[i].isExtendedType(obj.getProperties()[i].getType()) )
+			if( !types[i].isExtendedType(obj.getPropertyValues()[i].getType()) )
 				throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
 		
-			properties[i] = obj.getProperties()[i];
+			propertyValues[i] = obj.getPropertyValues()[i];
 		}
+	}
+
+	public Value[] getPropertyValues() {
+		return this.propertyValues;
 	}
 
 	@Override
@@ -76,8 +82,8 @@ public class ClassInstanceValue extends ObjectValue{
 			if( !prototype.isEqualType(instanceValue.prototype) )
 				throw new SyntacticError("La expresion siempre es igual a false, ya que no hay solapamiento entre los tipos " + this.getType() + " y " + v.getType());
 			
-			for(int i=0; i < properties.length; i++){
-				BooleanValue compareProp = (BooleanValue)properties[i].equals(instanceValue.properties[i]);
+			for(int i=0; i < propertyValues.length; i++){
+				BooleanValue compareProp = (BooleanValue)propertyValues[i].equals(instanceValue.propertyValues[i]);
 
 				if( !compareProp.isTrue() )
 					return new BooleanValue(false);
@@ -102,8 +108,8 @@ public class ClassInstanceValue extends ObjectValue{
 			if( !prototype.isEqualType(instanceValue.prototype) )
 				return new BooleanValue(false);
 			
-			for(int i=0; i < properties.length; i++){
-				BooleanValue compareProp = (BooleanValue)properties[i].equals(instanceValue.properties[i]);
+			for(int i=0; i < propertyValues.length; i++){
+				BooleanValue compareProp = (BooleanValue)propertyValues[i].equals(instanceValue.propertyValues[i]);
 
 				if( !compareProp.isTrue() )
 					return new BooleanValue(false);
@@ -128,8 +134,8 @@ public class ClassInstanceValue extends ObjectValue{
 			if( !prototype.isEqualType(instanceValue.prototype) )
 				throw new SyntacticError("La expresion siempre es igual a true, ya que no hay solapamiento entre los tipos " + this.getType() + " y " + v.getType());
 			
-			for(int i=0; i < properties.length; i++){
-				BooleanValue compareProp = (BooleanValue)properties[i].equals(instanceValue.properties[i]);
+			for(int i=0; i < propertyValues.length; i++){
+				BooleanValue compareProp = (BooleanValue)propertyValues[i].equals(instanceValue.propertyValues[i]);
 
 				if( !compareProp.isTrue() )
 					return new BooleanValue(true);
@@ -153,8 +159,8 @@ public class ClassInstanceValue extends ObjectValue{
 			if( !prototype.isEqualType(instanceValue.prototype) )
 				return new BooleanValue(true);
 			
-			for(int i=0; i < properties.length; i++){
-				BooleanValue compareProp = (BooleanValue)properties[i].equals(instanceValue.properties[i]);
+			for(int i=0; i < propertyValues.length; i++){
+				BooleanValue compareProp = (BooleanValue)propertyValues[i].equals(instanceValue.propertyValues[i]);
 
 				if( !compareProp.isTrue() )
 					return new BooleanValue(true);
@@ -173,11 +179,11 @@ public class ClassInstanceValue extends ObjectValue{
 		String[] names = prototype.getPropertyNames();
 
 		String ans = "{";
-		if( properties.length > 0 )
-			ans += names[0] + ": " + properties[0];
+		if( propertyValues.length > 0 )
+			ans += names[0] + ": " + propertyValues[0];
 
-		for(int i=1; i < properties.length; i++)
-			ans += ", " + names[i] + ": " + properties[i];
+		for(int i=1; i < propertyValues.length; i++)
+			ans += ", " + names[i] + ": " + propertyValues[i];
 
 		return ans + "}";
 	}
@@ -186,9 +192,9 @@ public class ClassInstanceValue extends ObjectValue{
 	public Value get(String propName) throws SyntacticError{
 		String[] propertyNames = prototype.getPropertyNames();
 
-		for(int i=0; i < properties.length; i++){
+		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) )
-				return properties[i];
+				return propertyValues[i];
 		}
 		throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
 	}
@@ -197,9 +203,9 @@ public class ClassInstanceValue extends ObjectValue{
 	public void set(String propName, Value value) throws SyntacticError {
 		String[] propertyNames = prototype.getPropertyNames();
 
-		for(int i=0; i < properties.length; i++){
+		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) ){
-				properties[i] = value;
+				propertyValues[i] = value;
 				return;
 			}
 		}

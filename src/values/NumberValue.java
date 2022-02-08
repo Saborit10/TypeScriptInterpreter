@@ -17,11 +17,6 @@ public class NumberValue extends Value{
 		this.undefined = true;
 	}
 
-	//ELIMINAR
-	public double getValue(){
-		return value;
-	}
-
 	public BooleanValue toBooleanValue(){
 		if( undefined )
 			return new BooleanValue();

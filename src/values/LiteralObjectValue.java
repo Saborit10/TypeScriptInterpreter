@@ -1,6 +1,6 @@
 package src.values;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import src.symbols.SyntacticError;
 import src.types.LiteralObjectType;
@@ -8,6 +8,7 @@ import src.types.ObjectType;
 
 public class LiteralObjectValue extends ObjectValue{
 	private String[] propertyNames;
+	private Value[] propertyValues;
 
 	public LiteralObjectValue(){
 		undefined = true;
@@ -17,9 +18,9 @@ public class LiteralObjectValue extends ObjectValue{
 		return this.propertyNames;
 	}
 
-	public LiteralObjectValue(ArrayList<String> propNames, ArrayList<Value> propVals){
+	public LiteralObjectValue(List<String> propNames, List<Value> propVals){
 		undefined = false;
-		properties = new Value[propNames.size()];
+		propertyValues = new Value[propNames.size()];
 		propertyNames = new String[propNames.size()];
 
 		// Los largos de los arraylists deben ser iguales
@@ -27,7 +28,7 @@ public class LiteralObjectValue extends ObjectValue{
 
 		for(int i=0; i < propNames.size(); i++){
 			propertyNames[i] = propNames.get(i);
-			properties[i] = propVals.get(i);
+			propertyValues[i] = propVals.get(i);
 		}
 	}
 	
@@ -61,32 +62,37 @@ public class LiteralObjectValue extends ObjectValue{
 			return "null";
 
 		String ans = "{";
-		if( properties.length > 0 )
-			ans += propertyNames[0] + ": " + properties[0];
+		if( propertyValues.length > 0 )
+			ans += propertyNames[0] + ": " + propertyValues[0];
 
-		for(int i=1; i < properties.length; i++)
-			ans += ", " + propertyNames[i] + ": " + properties[i];
+		for(int i=1; i < propertyValues.length; i++)
+			ans += ", " + propertyNames[i] + ": " + propertyValues[i];
 
 		return ans + "}";
 	}
 
 	@Override
 	public Value get(String propName) throws SyntacticError {
-		for(int i=0; i < properties.length; i++){
+		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) )
-				return properties[i];
+				return propertyValues[i];
 		}
 		throw new SyntacticError("La propiedad " + propName + " no esta definida en el objeto");
 	}
 
 	@Override
 	public void set(String propName, Value value) throws SyntacticError {
-		for(int i=0; i < properties.length; i++){
+		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) ){
-				properties[i] = value;
+				propertyValues[i] = value;
 				return;
 			}
 		}
 		throw new SyntacticError("La propiedad " + propName + " no esta definida en el objeto");
+	}
+
+	@Override
+	public Value[] getPropertyValues() {
+		return this.propertyValues;
 	}
 }

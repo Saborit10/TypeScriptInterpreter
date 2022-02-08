@@ -9,7 +9,7 @@ import src.types.Type;
 public abstract class Value{
 	protected boolean undefined;
 
-	public Type getType(){
+	public Type getType(){  // Delegar
 		if( this instanceof BooleanValue )
 			return new BooleanType();
 		else if( this instanceof NumberValue )

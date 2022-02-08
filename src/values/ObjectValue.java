@@ -4,17 +4,13 @@ import src.symbols.SyntacticError;
 import src.types.Type;
 
 public abstract class ObjectValue extends Value{
-	protected Value[] properties;
-
 	public abstract Type getType();
-
-	public Value[] getProperties() {
-		return this.properties;
-	}
 
 	public abstract Value get(String propName) throws SyntacticError;
 	
 	public abstract void set(String propName, Value value) throws SyntacticError;
+	
+	public abstract Value[] getPropertyValues();
 
 	@Override
 	public Value binAnd(Value v) throws SyntacticError {

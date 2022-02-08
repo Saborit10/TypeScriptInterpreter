@@ -13,4 +13,4 @@ a.obj.sc = 10;
 a["obj"].fr = 6;
 a[3] = 6; // NO HACE NADA
 
-(a);
+(a); // HAY QUE ARREGLAR LO DE SET PROPERTY
