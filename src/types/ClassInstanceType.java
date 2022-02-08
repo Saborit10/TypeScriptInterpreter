@@ -11,6 +11,7 @@ public class ClassInstanceType extends ObjectType{
 	private String typeName; 
 	private ClassInstanceType superType;
 	private ArrayList<Type> templateArgs;
+	private ArrayList<FunctionObjectType> constructors;
 	
 	public ClassInstanceType(String typeName) {
 		templateArgs = new ArrayList<>();
@@ -29,6 +30,19 @@ public class ClassInstanceType extends ObjectType{
 		this.superType = superType;
 		this.propertyTypes = new Type[propertyTypes.size()];
 		this.propertyNames = new String[propertyTypes.size()];
+
+		for(int i=0; i < propertyTypes.size(); i++){
+			this.propertyTypes[i] = propertyTypes.get(i);
+			this.propertyNames[i] = propertyNames.get(i);
+		}
+	}
+
+	public ClassInstanceType(String typeName, ClassInstanceType superType, ArrayList<Type> propertyTypes, ArrayList<String> propertyNames, ArrayList<FunctionObjectType> constructors){
+		templateArgs = new ArrayList<>();
+		this.superType = superType;
+		this.propertyTypes = new Type[propertyTypes.size()];
+		this.propertyNames = new String[propertyTypes.size()];
+		this.constructors = constructors;
 
 		for(int i=0; i < propertyTypes.size(); i++){
 			this.propertyTypes[i] = propertyTypes.get(i);

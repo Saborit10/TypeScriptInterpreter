@@ -266,7 +266,7 @@ typeAnnotation
 
 primitiveType
 	: TK_STRING
-	| TK_ANY
+	// | TK_ANY
 	| TK_BOOLEAN
 	| TK_NUMBER
 	;
@@ -372,7 +372,7 @@ expression
     | expression TK_LOGIC_OR expression												#ExprLogicOr //
 	| expression TK_QMARK expression TK_COLON expression							#ExprTernaryOperator
 	| functionCall																	#ExprFunctionCall
-	| TK_LPARENT expression TK_RPARENT												#ExprParent //
+	| TK_LPARENT expressionSequence TK_RPARENT										#ExprParent //
 	| expression TK_EQ expression													#ExprAsig
 	| expression TK_PLUS_ASIGN expression											#ExprPlusAsig
 	| expression TK_MINUS_ASIGN expression											#ExprMinusAsig
@@ -386,6 +386,7 @@ expression
 	| objectLiteral																	#ExprObjectLiteral
 	| literal																		#ExprPrimitiveLiteral //
 	| TK_IDENT																		#ExprIdentifier //
+	| TK_THIS																		#ExprThis
 	;
 
 formalParameterList
@@ -473,6 +474,7 @@ TK_NEW: 'new';
 TK_SWITCH: 'switch';
 TK_CASE: 'case';
 TK_DEFAULT: 'default';
+TK_THIS: 'this';
 
 NULL_LITERAL
 	: 'null'

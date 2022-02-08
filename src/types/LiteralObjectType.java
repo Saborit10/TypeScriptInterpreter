@@ -47,4 +47,5 @@ public class LiteralObjectType extends ObjectType{
 	public boolean isInstanceOfThisType(Value v) {
 		return false;
 	}
+
 }

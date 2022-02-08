@@ -31,6 +31,10 @@ public class NumberValue extends Value{
 			return new BooleanValue(true);
 	}
 	
+	public boolean isUndefinedOrZero(){
+		return undefined || value == 0.0;
+	}
+
 	@Override
 	public String toString() {
 		if( undefined )

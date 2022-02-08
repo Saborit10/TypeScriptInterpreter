@@ -29,7 +29,10 @@ public class SymbolTableStack {
 	public Value getValueOf(String name) throws SyntacticError{
 		return top().getValueOf(name);	
 	}	
-
+	
+	public void setValueOf(String name, Value value) throws SyntacticError{
+		top().setValueOf(name, value);	
+	}
 
 	@Override
 	public String toString() {
@@ -37,5 +40,9 @@ public class SymbolTableStack {
 		for(int i=0; i < stack.size(); i++)
 			ans += stack.get(i).toString();
 		return ans;
+	}
+
+	public void setValueOf(ArrayList<String> path, Value value) throws SyntacticError {
+		top().setValueOf(path, value);
 	}
 }

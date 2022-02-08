@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import src.symbols.SyntacticError;
 import src.types.ClassInstanceType;
-import src.types.ObjectType;
 import src.types.Type;
 
 public class ClassInstanceValue extends ObjectValue{
@@ -59,9 +58,8 @@ public class ClassInstanceValue extends ObjectValue{
 		}
 	}
 
-
 	@Override
-	public ObjectType getType(){
+	public Type getType(){
 		return prototype;
 	}
 
@@ -191,6 +189,19 @@ public class ClassInstanceValue extends ObjectValue{
 		for(int i=0; i < properties.length; i++){
 			if( propertyNames[i].equals(propName) )
 				return properties[i];
+		}
+		throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+	}
+
+	@Override
+	public void set(String propName, Value value) throws SyntacticError {
+		String[] propertyNames = prototype.getPropertyNames();
+
+		for(int i=0; i < properties.length; i++){
+			if( propertyNames[i].equals(propName) ){
+				properties[i] = value;
+				return;
+			}
 		}
 		throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
 	}

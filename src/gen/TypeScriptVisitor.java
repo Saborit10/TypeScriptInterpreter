@@ -661,6 +661,13 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprNew(TypeScriptParser.ExprNewContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ExprThis}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprThis(TypeScriptParser.ExprThisContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#formalParameterList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

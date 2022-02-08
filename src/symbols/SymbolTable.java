@@ -1,9 +1,9 @@
 package src.symbols;
 
 import java.util.HashMap;
+import java.util.List;
 
-import src.types.LiteralObjectType;
-import src.values.LiteralObjectValue;
+import src.values.ObjectValue;
 import src.values.Value;
 
 // 1 - El nombre ya existe
@@ -80,6 +80,35 @@ public class SymbolTable{
 		
 		Variable variable = (Variable)e;
 		variable.setValue(value);
+	}
+
+	public void setValueOf(List<String> propertyPath, Value value) throws SyntacticError{
+		String name = propertyPath.get(0);
+
+		if( !symbols.containsKey(name) ){
+			if( parent == null )
+				throw new SyntacticError("El nombre " + name + " no se ha definido");
+			parent.setValueOf(propertyPath, value);
+		}
+			
+		Entry entry = symbols.get(name);
+		if( !(entry instanceof Variable) )
+			throw new SyntacticError(name + " no es una vairable");
+		
+		try {
+			Variable variable = (Variable)entry;
+			
+			ObjectValue ref = (ObjectValue)variable.getValue();
+
+			for(int i=1; i < propertyPath.size()-1; i++){
+				ref = (ObjectValue)ref.get(propertyPath.get(i));
+			}
+
+			ref.set(propertyPath.get(propertyPath.size()-1), value);
+		} catch (Exception e) {
+			throw new SyntacticError("No se puede acceder a la propiedad del objeto " + name);
+		}
+		
 	}
 
 	@Override

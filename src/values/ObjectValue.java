@@ -1,18 +1,20 @@
 package src.values;
 
 import src.symbols.SyntacticError;
-import src.types.ObjectType;
+import src.types.Type;
 
 public abstract class ObjectValue extends Value{
 	protected Value[] properties;
 
-	public abstract ObjectType getType();
+	public abstract Type getType();
 
 	public Value[] getProperties() {
 		return this.properties;
 	}
 
-	public abstract Value get(String propName)throws SyntacticError;
+	public abstract Value get(String propName) throws SyntacticError;
+	
+	public abstract void set(String propName, Value value) throws SyntacticError;
 
 	@Override
 	public Value binAnd(Value v) throws SyntacticError {

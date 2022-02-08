@@ -78,4 +78,15 @@ public class LiteralObjectValue extends ObjectValue{
 		}
 		throw new SyntacticError("La propiedad " + propName + " no esta definida en el objeto");
 	}
+
+	@Override
+	public void set(String propName, Value value) throws SyntacticError {
+		for(int i=0; i < properties.length; i++){
+			if( propertyNames[i].equals(propName) ){
+				properties[i] = value;
+				return;
+			}
+		}
+		throw new SyntacticError("La propiedad " + propName + " no esta definida en el objeto");
+	}
 }

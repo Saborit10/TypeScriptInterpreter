@@ -5,6 +5,8 @@ import java.util.List;
 
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
+import src.gen.TypeScriptParser.ArrayTypeContext;
+import src.gen.TypeScriptParser.ExprAsigContext;
 import src.gen.TypeScriptParser.ExprBinAndContext;
 import src.gen.TypeScriptParser.ExprBinOrContext;
 import src.gen.TypeScriptParser.ExprBinaryNotContext;
@@ -16,6 +18,7 @@ import src.gen.TypeScriptParser.ExprLogicAndContext;
 import src.gen.TypeScriptParser.ExprLogicOrContext;
 import src.gen.TypeScriptParser.ExprMinusOpContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
+import src.gen.TypeScriptParser.ExprNewContext;
 import src.gen.TypeScriptParser.ExprNotContext;
 import src.gen.TypeScriptParser.ExprObjectIndexContext;
 import src.gen.TypeScriptParser.ExprObjectLiteralContext;
@@ -23,18 +26,28 @@ import src.gen.TypeScriptParser.ExprParentContext;
 import src.gen.TypeScriptParser.ExprPlusOpContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
+import src.gen.TypeScriptParser.ExprThisContext;
 import src.gen.TypeScriptParser.ExpressionContext;
+import src.gen.TypeScriptParser.IdentifierContext;
 import src.gen.TypeScriptParser.InitializerContext;
 import src.gen.TypeScriptParser.LiteralContext;
 import src.gen.TypeScriptParser.ObjLiteralContext;
 import src.gen.TypeScriptParser.ObjLiteralEmptyContext;
+import src.gen.TypeScriptParser.ParametricTypeContext;
+import src.gen.TypeScriptParser.PrimitiveTypeContext;
 import src.gen.TypeScriptParser.PropertyAssignContext;
 import src.gen.TypeScriptParser.PropertyNameContext;
+import src.gen.TypeScriptParser.ReferenceTypeContext;
+import src.gen.TypeScriptParser.SimpleTypeContext;
+import src.gen.TypeScriptParser.TypeAnnotationContext;
+import src.gen.TypeScriptParser.TypeNameContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
 import src.symbols.Mod;
 import src.symbols.SymbolTableStack;
 import src.symbols.SyntacticError;
+import src.symbols.TypeTable;
 import src.symbols.Variable;
+import src.types.ArrayObjectType;
 import src.types.BooleanType;
 import src.types.NumberType;
 import src.types.StringType;
@@ -52,14 +65,21 @@ import src.values.Value;
 public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	private SymbolTableStack scope;
 	private ArrayList<SyntacticError> syntacticErrors;
+	private TypeTable typeTable;
+	private Value thisObject;
 
 	public TSVisitor() {
 		scope = new SymbolTableStack();
 		syntacticErrors = new ArrayList<>();
+		typeTable = new TypeTable();
 	}
 
 	private void addError(SyntacticError e) {
-		addError(e);
+		syntacticErrors.add(e);
+	}
+
+	private Type getTypeByName(String name) throws SyntacticError{
+		return typeTable.getTypeByName(name);
 	}
 
 	@Override
@@ -83,9 +103,10 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 					type = (Type) visit(c.typeAnnotation());
 
 				Variable var = new Variable(
-						identifier,
-						accessModifiers | varModifiers | readonlyModifiers,
-						type);
+					identifier,
+					accessModifiers | varModifiers | readonlyModifiers,
+					type
+				);
 
 				if (c.initializer() != null) {
 					Value init = (Value) visit(c.initializer());
@@ -93,12 +114,15 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 					if (var.getType() == null)
 						var.setType(init.getType());
-				} else
+				}
+				else{
 					var.setValue(var.getType().undefinedValue());
+				}
 
 				scope.declareVariable(var);
 			}
 		} catch (NullPointerException e) {
+			// e.printStackTrace();
 			return null;
 		} catch (SyntacticError e) {
 			addError(e);
@@ -179,6 +203,98 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	}
 
 	@Override
+	public Object visitTypeAnnotation(TypeAnnotationContext ctx) {
+		return visit(ctx.typeName());
+	}
+
+	@Override
+	public Object visitTypeName(TypeNameContext ctx) {
+		if( ctx.simpleType() != null )
+			return visit(ctx.simpleType());
+		else if( ctx.parametricType() != null )
+			return visit(ctx.parametricType());
+		else if( ctx.arrayType() != null )
+			return visit(ctx.arrayType());
+		return null;
+	}
+
+	@Override
+	public Object visitArrayType(ArrayTypeContext ctx) {
+		try {
+			if( ctx.simpleType() != null )
+				return new ArrayObjectType((Type)visit(ctx.simpleType()));
+			
+			Type type = (Type)visit(ctx.arrayType());
+			return new ArrayObjectType(type);
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitParametricType(ParametricTypeContext ctx) {
+		// TODO Add parametric behavior
+		return visit(ctx.simpleType());
+	}
+
+	// @Override
+	// public Object visitExprNew(ExprNewContext ctx) {
+	// 	try {
+	// 		String constructorName = ctx.functionCall().TK_IDENT().getText();
+
+			// if( Es Arreglo )
+
+	// 		Type type = getTypeByName(constructorName);
+	// 		thisObject = 
+
+
+
+	// 	} catch (SyntacticError e) {
+	// 		addError(e);
+	// 		return null;
+	// 	}
+	// }
+
+	@Override
+	public Object visitPrimitiveType(PrimitiveTypeContext ctx) {
+		String type = ctx.getText();
+
+		if( type.equals("number") )
+			return new NumberType();
+		else if( type.equals("boolean") )
+			return new BooleanType();
+		else
+			return new StringType();
+	}
+
+	@Override
+	public Object visitExprThis(ExprThisContext ctx) {
+		if( thisObject != null ){
+			return thisObject;
+		}
+		addError(new SyntacticError("this no puede ser referenciado. El contexto no es un objeto."));
+		return null;
+	}
+
+	@Override
+	public Object visitReferenceType(ReferenceTypeContext ctx) {
+		try {
+			return getTypeByName(ctx.getText());
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitSimpleType(SimpleTypeContext ctx) {
+		if( ctx.primitiveType() != null )
+			return visit(ctx.primitiveType());
+		else
+			return visit(ctx.referenceType());
+	}
+
+	@Override
 	public Object visitExprPlusOp(ExprPlusOpContext ctx) {
 		try {
 			Value value = (Value) visit(ctx.expression());
@@ -217,6 +333,78 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		} catch (NullPointerException e) {
 			return null;
 		}
+	}
+
+	private boolean collectPath(ExpressionContext ctx, List<String> path) throws SyntacticError{
+		if( ctx instanceof ExprDotIdentContext ){
+			ExprDotIdentContext context = (ExprDotIdentContext)ctx;
+
+			boolean tmp = collectPath(context.expression(), path);
+			
+			path.add(context.identifier().getText());
+			return tmp;
+		}
+		else if( ctx instanceof ExprIdentifierContext ){
+			path.add(ctx.getText());
+			return true;
+		}
+		else if( ctx instanceof ExprObjectIndexContext ){
+			ExprObjectIndexContext context = (ExprObjectIndexContext)ctx;
+
+			boolean tmp = collectPath(context.expression(), path);
+			
+			Value expSeqValue = (Value)visit(context.expressionSequence());
+			
+			if( !StringType.isOfThisType(expSeqValue) )
+				return false;
+
+			path.add(expSeqValue.toString());
+			return tmp;
+		}
+		else
+			return false;
+	}
+
+	@Override
+	public Object visitExprAsig(ExprAsigContext ctx) {
+		try {
+			List<ExpressionContext> expList = ctx.expression();
+			
+			if( expList.get(0) instanceof ExprIdentifierContext ){
+				ExprIdentifierContext leftSideContext = (ExprIdentifierContext)expList.get(0);
+				Value value = (Value)visit(expList.get(1));
+
+				scope.setValueOf(leftSideContext.getText(), value);
+				return value;
+			}
+			else if( expList.get(0) instanceof ExprDotIdentContext ){
+				ArrayList<String> path = new ArrayList<>();
+				Value value = (Value)visit(expList.get(1));
+
+				if( !collectPath(expList.get(0), path) )
+					throw new SyntacticError("No se puede acceder a la propiedad del objeto");
+
+				System.out.println(path);
+
+				scope.setValueOf(path, value);
+
+				return null;
+			}
+			else{
+				// TODO throw exception
+				return null;
+			}
+			
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e){
+			return null;
+		}
+
+		
+
+
 	}
 
 	@Override
@@ -341,7 +529,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitExprParent(ExprParentContext ctx) {
-		Value value = (Value) visit(ctx.expression());
+		List<ExpressionContext> expList = ctx.expressionSequence().expression();
+		Value value = null;
+		
+		for(int i=0; i < expList.size(); i++)
+			value = (Value)visit(expList.get(i));
 		System.out.println(value);
 		return value;
 	}
@@ -374,6 +566,20 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	public Object visitExprLogicAnd(ExprLogicAndContext ctx) {
 		try{
 			Value value1 = (Value) visit(ctx.expression().get(0));
+			
+			if( NumberType.isOfThisType(value1) ){
+				NumberValue numberValue = (NumberValue)value1;
+				
+				if( numberValue.isUndefinedOrZero() )
+					return value1;
+			}
+			else if( BooleanType.isOfThisType(value1) ){
+				BooleanValue booleanValue = (BooleanValue)value1;
+				
+				if( booleanValue.isUndefinedOrFalse() )
+					return value1;
+			}
+			
 			Value value2 = (Value) visit(ctx.expression().get(1));
 
 			return value1.logicAnd(value2);
@@ -389,6 +595,20 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	public Object visitExprLogicOr(ExprLogicOrContext ctx) {
 		try{
 			Value value1 = (Value) visit(ctx.expression().get(0));
+			
+			if( NumberType.isOfThisType(value1) ){
+				NumberValue numberValue = (NumberValue)value1;
+				
+				if( !numberValue.isUndefinedOrZero() )
+					return value1;
+			}
+			else if( BooleanType.isOfThisType(value1) ){
+				BooleanValue booleanValue = (BooleanValue)value1;
+				
+				if( !booleanValue.isUndefinedOrFalse() )
+					return value1;
+			}
+			
 			Value value2 = (Value) visit(ctx.expression().get(1));
 
 			return value1.logicOr(value2);

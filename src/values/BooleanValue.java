@@ -30,6 +30,9 @@ public class BooleanValue extends Value{
 			return new NumberValue(0);
 	}
 
+	public boolean isUndefinedOrFalse(){
+		return undefined || value == false;
+	}
 
 	@Override
 	public String toString() {

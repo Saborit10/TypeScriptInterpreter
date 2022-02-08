@@ -17,12 +17,12 @@ public class FunctionObjectType extends ObjectType{
 
 	@Override
 	public boolean isInstanceOfThisType(Value v) {
-		return false;
+		return isEqualType(v.getType());
 	}
 
 	@Override
 	public boolean isEqualType(Type v) {
-		return false;
+		return v instanceof FunctionObjectType;
 	}
 
 	@Override
