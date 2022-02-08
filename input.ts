@@ -8,9 +8,11 @@ let a = {
 	}
 };
 
-a.p = 5;
-a.obj.sc = 10;
-a["obj"].fr = 6;
-a[3] = 6; // NO HACE NADA
+// a.p = 5;
+// a.obj.sc = 10;
+// a["obj"].fr = 6;
+// a[3] = 6; // NO HACE NADA
+
+(a.obj.fr = 10);
 
 (a); // HAY QUE ARREGLAR LO DE SET PROPERTY

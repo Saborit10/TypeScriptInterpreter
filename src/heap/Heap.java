@@ -34,5 +34,5 @@ public class Heap {
 
 	public ObjectValue access(Reference ref){
 		return objects.get(ref.getAddress());
-	} 
+	}
 }

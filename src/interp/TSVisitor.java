@@ -372,33 +372,40 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	@Override
 	public Object visitExprAsig(ExprAsigContext ctx) {
 		try {
-			List<ExpressionContext> expList = ctx.expression();
-			
-			if( expList.get(0) instanceof ExprIdentifierContext ){
-				ExprIdentifierContext leftSideContext = (ExprIdentifierContext)expList.get(0);
-				Value value = (Value)visit(expList.get(1));
+			ExpressionContext expLeft = ctx.expression().get(0);
 
-				scope.setValueOf(leftSideContext.getText(), value);
+			if( expLeft instanceof ExprDotIdentContext ){
+				ExprDotIdentContext expDotIdent = (ExprDotIdentContext)expLeft;
+
+				Reference ref = (Reference)visit(expDotIdent.expression());
+				String property = expDotIdent.identifier().getText();
+				Value value = (Value)visit(ctx.expression().get(1));
+				
+				System.out.println(ref + " -> " + property + " = " + value);
+
+				ref.set(property, value);
 				return value;
 			}
-			else if( expList.get(0) instanceof ExprDotIdentContext ){
-				ArrayList<String> path = new ArrayList<>();
-				Value value = (Value)visit(expList.get(1));
+			else if( expLeft instanceof ExprObjectIndexContext ){
+				ExprObjectIndexContext expObjIndex = (ExprObjectIndexContext)expLeft;
 
-				if( !collectPath(expList.get(0), path) )
-					throw new SyntacticError("No se puede acceder a la propiedad del objeto");
+				Reference ref = (Reference)visit(expObjIndex.expression());
+				Value index = (Value)visit(expObjIndex.expressionSequence());
+				Value value = (Value)visit(ctx.expression().get(1));
 
-				System.out.println(path);
+				if( StringType.isOfThisType(index) || NumberType.isOfThisType(index) ){
+					String property = index.toString();
 
-				scope.setValueOf(path, value);
-
-				return null;
+					ref.set(property, value);
+					return value;
+				}
+				else
+					throw new SyntacticError(index.toString() + " no es de tipo string o number");
 			}
 			else{
-				// TODO throw exception
-				return null;
+				//TODO Hacer lo de function call
 			}
-			
+			return null;
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
@@ -668,16 +675,20 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitObjLiteralEmpty(ObjLiteralEmptyContext ctx) {
-		return new LiteralObjectValue();
+		return Reference.HEAP.malloc(new ArrayList<String>(), new ArrayList<Value>());
 	}
 
 	/**
 	 * Property Access
 	 **/
+
 	@Override
 	public Object visitExprDotIdent(ExprDotIdentContext ctx) {
 		try {
 			ObjectValue objValue = (ObjectValue) visit(ctx.expression());
+
+			// System.out.println(objValue instanceof Reference);
+			// System.out.println(ctx.expression().getText() + " -> " + objValue);
 
 			return objValue.get(ctx.identifier().getText());
 		} catch (ClassCastException e) {
