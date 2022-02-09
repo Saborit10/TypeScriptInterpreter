@@ -5,6 +5,9 @@ import java.util.List;
 
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
+import src.gen.TypeScriptParser.ArrayElementContext;
+import src.gen.TypeScriptParser.ArrayLiteralAltContext;
+import src.gen.TypeScriptParser.ArrayLiteralEmptyAltContext;
 import src.gen.TypeScriptParser.ArrayTypeContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
 import src.gen.TypeScriptParser.ExprBinAndContext;
@@ -282,6 +285,39 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			addError(e);
 			return null;
 		}
+	}
+
+	@Override
+	public Object visitArrayLiteralAlt(ArrayLiteralAltContext ctx) {
+		try {
+			List<ArrayElementContext> elems = ctx.arrayElement();
+			List<Value> values = new ArrayList<>();
+
+			for(int i=0; i < elems.size(); i++)
+				values.add((Value)visit(elems.get(i)));
+
+			return Reference.HEAP.mallocArray(values);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			// System.out.println("OK");
+			// e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitArrayElement(ArrayElementContext ctx) {
+		if( ctx.expression() != null )
+			return visit(ctx.expression());
+		else
+			return visit(ctx.TK_IDENT());
+	}
+
+	@Override
+	public Object visitArrayLiteralEmptyAlt(ArrayLiteralEmptyAltContext ctx) {
+		return Reference.HEAP.mallocArray(0);
 	}
 
 	@Override

@@ -235,8 +235,8 @@ initializer
 	;
 
 arrayLiteral
-	: TK_LBRACKET TK_RBRACKET
-	| TK_LBRACKET arrayElement (TK_COMMA arrayElement)* TK_RBRACKET
+	: TK_LBRACKET TK_RBRACKET																		#ArrayLiteralEmptyAlt
+	| TK_LBRACKET arrayElement (TK_COMMA arrayElement)* TK_RBRACKET									#ArrayLiteralAlt
 	;
 
 arrayElement
@@ -383,10 +383,10 @@ expression
 	| expression TK_OR_ASIGN expression												#ExprOrAsig
 	| TK_NEW functionCall															#ExprNew
 	| arrayLiteral																	#ExprArrayLiteral
-	| objectLiteral																	#ExprObjectLiteral
+	| objectLiteral																	#ExprObjectLiteral //
 	| literal																		#ExprPrimitiveLiteral //
 	| TK_IDENT																		#ExprIdentifier //
-	| TK_THIS																		#ExprThis
+	| TK_THIS																		#ExprThis //
 	;
 
 formalParameterList

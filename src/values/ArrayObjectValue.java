@@ -40,6 +40,7 @@ public class ArrayObjectValue extends ObjectValue{
 		undefined = false;
 		this.type = values.get(0).getType();
 		this.length = values.size();
+		this.propertyValues = new Value[length];
 
 		for(int i=1; i < this.length; i++){
 			if( !values.get(i).getType().isEqualType(type) )
@@ -125,8 +126,10 @@ public class ArrayObjectValue extends ObjectValue{
 			if( propertyValues[i].isUndefined() )
 				cantUndef++;
 			else{
-				if( cantUndef > 0 )
+				if( cantUndef > 1 )
 					ans += "<" + cantUndef + " empty>, ";
+				else if( cantUndef == 1 )
+					ans += "<empty>, ";
 				cantUndef = 0;
 
 				ans += propertyValues[i];
@@ -135,8 +138,10 @@ public class ArrayObjectValue extends ObjectValue{
 				ans += ", ";
 			}
 		}
-		if( cantUndef > 0 )
-			ans += "<" + cantUndef + " undefined>";
+		if( cantUndef > 1 )
+					ans += "<" + cantUndef + " empty>";
+				else if( cantUndef == 1 )
+					ans += "<empty>";
 		ans += ']';
 		
 		return ans;

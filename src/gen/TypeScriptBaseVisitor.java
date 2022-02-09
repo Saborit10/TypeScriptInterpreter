@@ -318,7 +318,14 @@ public class TypeScriptBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArrayLiteral(TypeScriptParser.ArrayLiteralContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayLiteralEmptyAlt(TypeScriptParser.ArrayLiteralEmptyAltContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitArrayLiteralAlt(TypeScriptParser.ArrayLiteralAltContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

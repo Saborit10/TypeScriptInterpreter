@@ -9,10 +9,6 @@ public class ArrayObjectType extends ObjectType{
 	
 	private Type innerType;
 
-	// public ArrayObjectType(){
-		
-	// }
-
 	public ArrayObjectType(Type innerType){
 		this.innerType = innerType;
 	}
@@ -29,13 +25,12 @@ public class ArrayObjectType extends ObjectType{
 
 	@Override
 	public boolean isEqualType(Type v) {
-		// TODO Tener en cuenta el inner type para comparar arreglos
 		return v instanceof ArrayObjectType;
 	}
 
 	@Override
 	public boolean isExtendedType(Type t) {
-		return false;
+		return isEqualType(t);
 	}
 
 	@Override

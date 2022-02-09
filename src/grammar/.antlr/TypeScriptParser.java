@@ -2895,22 +2895,35 @@ public class TypeScriptParser extends Parser {
 	}
 
 	public static class ArrayLiteralContext extends ParserRuleContext {
+		public ArrayLiteralContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_arrayLiteral; }
+	 
+		public ArrayLiteralContext() { }
+		public void copyFrom(ArrayLiteralContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class ArrayLiteralAltContext extends ArrayLiteralContext {
 		public TerminalNode TK_LBRACKET() { return getToken(TypeScriptParser.TK_LBRACKET, 0); }
-		public TerminalNode TK_RBRACKET() { return getToken(TypeScriptParser.TK_RBRACKET, 0); }
 		public List<ArrayElementContext> arrayElement() {
 			return getRuleContexts(ArrayElementContext.class);
 		}
 		public ArrayElementContext arrayElement(int i) {
 			return getRuleContext(ArrayElementContext.class,i);
 		}
+		public TerminalNode TK_RBRACKET() { return getToken(TypeScriptParser.TK_RBRACKET, 0); }
 		public List<TerminalNode> TK_COMMA() { return getTokens(TypeScriptParser.TK_COMMA); }
 		public TerminalNode TK_COMMA(int i) {
 			return getToken(TypeScriptParser.TK_COMMA, i);
 		}
-		public ArrayLiteralContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_arrayLiteral; }
+		public ArrayLiteralAltContext(ArrayLiteralContext ctx) { copyFrom(ctx); }
+	}
+	public static class ArrayLiteralEmptyAltContext extends ArrayLiteralContext {
+		public TerminalNode TK_LBRACKET() { return getToken(TypeScriptParser.TK_LBRACKET, 0); }
+		public TerminalNode TK_RBRACKET() { return getToken(TypeScriptParser.TK_RBRACKET, 0); }
+		public ArrayLiteralEmptyAltContext(ArrayLiteralContext ctx) { copyFrom(ctx); }
 	}
 
 	public final ArrayLiteralContext arrayLiteral() throws RecognitionException {
@@ -2922,6 +2935,7 @@ public class TypeScriptParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,61,_ctx) ) {
 			case 1:
+				_localctx = new ArrayLiteralEmptyAltContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(532);
@@ -2931,6 +2945,7 @@ public class TypeScriptParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new ArrayLiteralAltContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(534);
