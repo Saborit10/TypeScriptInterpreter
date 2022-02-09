@@ -30,17 +30,18 @@ public class LiteralObjectType extends ObjectType{
 
 	@Override
 	public boolean isEqualType(Type v) {
-		return false;
+		return v instanceof ObjectType;
 	}
 
 	@Override
 	public boolean isExtendedType(Type t) {
-		return false;
+		System.out.println("PASA POR AQUI");
+		return t instanceof ObjectType;
 	}
 
 	@Override
 	public String getTypeName() {
-		return "[@object]";
+		return "[@object__]";
 	}
 
 	@Override

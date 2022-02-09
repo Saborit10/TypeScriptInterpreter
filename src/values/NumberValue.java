@@ -338,4 +338,8 @@ public class NumberValue extends Value{
 		return new NumberValue(-value);
 	}
 
+	public double getValue() {
+		return value;
+	}
+
 }

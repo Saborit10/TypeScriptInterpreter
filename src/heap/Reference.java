@@ -80,7 +80,6 @@ public class Reference extends ObjectValue{
 
 	@Override
 	public String toString() {
-		// return "[@ref_" + address + "]";
 		return HEAP.access(this).toString();
 	}
 

@@ -12,9 +12,8 @@ public class BooleanValue extends Value{
 	}
 	
 	public BooleanValue(){
-		this.undefined = false;
+		this.undefined = true;
 	}
-
 
 	/* Devuelve si el valor esta definido y es verdadero */
 	public boolean isTrue(){

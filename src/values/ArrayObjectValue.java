@@ -1,6 +1,6 @@
 package src.values;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import src.symbols.SyntacticError;
 import src.types.ArrayObjectType;
@@ -8,9 +8,8 @@ import src.types.Type;
 
 public class ArrayObjectValue extends ObjectValue{
 	private int length;
-	private Value[] values;
-	private Type type;
 	private Value[] propertyValues;
+	private Type type;
 
 	public ArrayObjectValue(){
 		undefined = true;
@@ -20,13 +19,24 @@ public class ArrayObjectValue extends ObjectValue{
 		undefined = false;
 		this.type = type;
 		this.length = length;
-		this.values = new Value[length];
+		this.propertyValues = new Value[length];
 
 		for(int i=0; i < length; i++)
-			values[i] = new BooleanValue();
+			propertyValues[i] = type.undefinedValue();
 	}
 
-	public ArrayObjectValue(ArrayList<Value> values) throws SyntacticError{
+	public ArrayObjectValue(int length){
+		undefined = false;
+		this.type = null;
+		this.length = length;
+		this.propertyValues = new Value[length];
+
+		for(int i=0; i < length; i++)
+			propertyValues[i] = new BooleanValue();
+	}
+
+
+	public ArrayObjectValue(List<Value> values) throws SyntacticError{
 		undefined = false;
 		this.type = values.get(0).getType();
 		this.length = values.size();
@@ -37,7 +47,7 @@ public class ArrayObjectValue extends ObjectValue{
 		}
 
 		for(int i=0; i < this.length; i++)
-			this.values[i] = values.get(i);
+			this.propertyValues[i] = values.get(i);
 	}
 
 	@Override
@@ -54,7 +64,7 @@ public class ArrayObjectValue extends ObjectValue{
 			int pos = Integer.parseInt(propName);
 			if( pos >= length )
 				return type.undefinedValue();
-			return this.values[pos];	
+			return this.propertyValues[pos];	
 		} catch (NumberFormatException e) {
 			return type.undefinedValue();
 		}
@@ -66,7 +76,16 @@ public class ArrayObjectValue extends ObjectValue{
 			int pos = Integer.parseInt(propName);
 			if( pos >= length )
 				throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
-			this.values[pos] = value;
+			
+			if( type == null ){
+				type = value.getType();
+			}
+			else if( !type.isExtendedType(value.getType()) ){
+				System.out.println(type + " " + value.getType());
+				throw new SyntacticError(value + " no es de tipo " + type);
+			}
+
+			this.propertyValues[pos] = value;
 		} catch (NumberFormatException e) {
 			throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
 		}
@@ -97,4 +116,29 @@ public class ArrayObjectValue extends ObjectValue{
 		return this.propertyValues;
 	}
 
+	@Override
+	public String toString() {
+		String ans = "[";
+		
+		int cantUndef = 0;
+		for(int i=0; i < propertyValues.length; i++){
+			if( propertyValues[i].isUndefined() )
+				cantUndef++;
+			else{
+				if( cantUndef > 0 )
+					ans += "<" + cantUndef + " empty>, ";
+				cantUndef = 0;
+
+				ans += propertyValues[i];
+
+				if( i < propertyValues.length - 1 )
+				ans += ", ";
+			}
+		}
+		if( cantUndef > 0 )
+			ans += "<" + cantUndef + " undefined>";
+		ans += ']';
+		
+		return ans;
+	}
 }

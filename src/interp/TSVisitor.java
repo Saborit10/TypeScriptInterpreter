@@ -28,6 +28,7 @@ import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
 import src.gen.TypeScriptParser.ExprThisContext;
 import src.gen.TypeScriptParser.ExpressionContext;
+import src.gen.TypeScriptParser.FunctionCallContext;
 import src.gen.TypeScriptParser.IdentifierContext;
 import src.gen.TypeScriptParser.InitializerContext;
 import src.gen.TypeScriptParser.LiteralContext;
@@ -54,6 +55,7 @@ import src.types.BooleanType;
 import src.types.NumberType;
 import src.types.StringType;
 import src.types.Type;
+import src.values.ArrayObjectValue;
 import src.values.BooleanValue;
 import src.values.LiteralObjectValue;
 import src.values.NumberValue;
@@ -241,23 +243,46 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		return visit(ctx.simpleType());
 	}
 
-	// @Override
-	// public Object visitExprNew(ExprNewContext ctx) {
-	// 	try {
-	// 		String constructorName = ctx.functionCall().TK_IDENT().getText();
+	List<Value> getArguments(FunctionCallContext ctx){
+		ArrayList<Value> ans = new ArrayList<>();
 
-			// if( Es Arreglo )
+		if( ctx.expressionSequence() != null ){
+			List<ExpressionContext> expList = ctx.expressionSequence().expression();
 
-	// 		Type type = getTypeByName(constructorName);
-	// 		thisObject = 
+			for(int i=0; i < expList.size(); i++)
+				ans.add((Value)visit(expList.get(i)));
+		}
+		return ans;
+	}
 
+	@Override
+	public Object visitExprNew(ExprNewContext ctx) {
+		try {
+			String constructorName = ctx.functionCall().TK_IDENT().getText();
 
-
-	// 	} catch (SyntacticError e) {
-	// 		addError(e);
-	// 		return null;
-	// 	}
-	// }
+			if( constructorName.equals("Array") ){
+				List<Value> args = getArguments(ctx.functionCall());
+				
+				if( args.size() == 0 ){
+					return Reference.HEAP.mallocArray(0);
+				}
+				else if( args.size() == 1 && NumberType.isOfThisType(args.get(0)) ){
+					NumberValue len = (NumberValue)args.get(0);
+					return Reference.HEAP.mallocArray((int)len.getValue());
+				}
+				else{
+					return Reference.HEAP.mallocArray(args);
+				}
+			}
+			else{
+				// TODO Llamar al constructor
+				return null;
+			}
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		}
+	}
 
 	@Override
 	public Object visitPrimitiveType(PrimitiveTypeContext ctx) {
@@ -339,36 +364,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		}
 	}
 
-	private boolean collectPath(ExpressionContext ctx, List<String> path) throws SyntacticError{
-		if( ctx instanceof ExprDotIdentContext ){
-			ExprDotIdentContext context = (ExprDotIdentContext)ctx;
-
-			boolean tmp = collectPath(context.expression(), path);
-			
-			path.add(context.identifier().getText());
-			return tmp;
-		}
-		else if( ctx instanceof ExprIdentifierContext ){
-			path.add(ctx.getText());
-			return true;
-		}
-		else if( ctx instanceof ExprObjectIndexContext ){
-			ExprObjectIndexContext context = (ExprObjectIndexContext)ctx;
-
-			boolean tmp = collectPath(context.expression(), path);
-			
-			Value expSeqValue = (Value)visit(context.expressionSequence());
-			
-			if( !StringType.isOfThisType(expSeqValue) )
-				return false;
-
-			path.add(expSeqValue.toString());
-			return tmp;
-		}
-		else
-			return false;
-	}
-
 	@Override
 	public Object visitExprAsig(ExprAsigContext ctx) {
 		try {
@@ -381,7 +376,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 				String property = expDotIdent.identifier().getText();
 				Value value = (Value)visit(ctx.expression().get(1));
 				
-				System.out.println(ref + " -> " + property + " = " + value);
+				// System.out.println(ref + " -> " + property + " = " + value);
 
 				ref.set(property, value);
 				return value;
@@ -412,10 +407,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		} catch (NullPointerException e){
 			return null;
 		}
-
-		
-
-
 	}
 
 	@Override
@@ -546,6 +537,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		for(int i=0; i < expList.size(); i++)
 			value = (Value)visit(expList.get(i));
 		System.out.println(value);
+		// System.out.println(value instanceof ArrayObjectValue);
+		// System.out.println(Reference.HEAP);
 		return value;
 	}
 
@@ -567,7 +560,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 				names.add((String) visit(propList.get(i).propertyName()));
 				values.add((Value) visit(propList.get(i).expression()));
 			}
-			return Reference.HEAP.malloc(names, values);
+			return Reference.HEAP.mallocLiteralObject(names, values);
 		} catch (NullPointerException e) {
 			return null;
 		}
@@ -675,7 +668,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitObjLiteralEmpty(ObjLiteralEmptyContext ctx) {
-		return Reference.HEAP.malloc(new ArrayList<String>(), new ArrayList<Value>());
+		return Reference.HEAP.mallocLiteralObject(new ArrayList<String>(), new ArrayList<Value>());
 	}
 
 	/**
