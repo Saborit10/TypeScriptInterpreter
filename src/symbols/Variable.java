@@ -37,7 +37,12 @@ public class Variable extends NamedSymbol{
 		this.type = type;
 	}
 
-	public void setValue(Value v){
+	public void setValue(Value v) throws SyntacticError{
+		if( type == null )
+			type = v.getType();
+		else if( !type.isExtendedType(v.getType()) ){
+			throw new SyntacticError(v + " no es de tipo " + type);
+		}
 		value = v;
 	}
 

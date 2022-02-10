@@ -48,7 +48,6 @@ public class SymbolTable{
 			else if( !e.getType().isInstanceOfThisType(e.getValue()) )
 				throw new SyntacticError("El tipo de la variable " + e.getIdentifier() + " no coincide con el del valor");
 		}
-
 		symbols.put(e.getIdentifier(), e);		
 	}
 

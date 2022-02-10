@@ -8,9 +8,15 @@ mv ./src/grammar/*.tokens ./src/gen
 mv ./src/grammar/*.java ./src/gen
 python script/package.py src/gen src.gen
 
+echo 'Cleaning Old Files...'
+rm src/symbols/*.class
+rm src/types/*.class
+rm src/values/*.class
+rm src/interp/*.class
+rm src/heap/*.class
+
 # Compile the .java
 echo 'Compiling the java files...'
-rm src/symbols/*.class src/gen/*.java src/interp/*.java Main.java
-javac src/symbols/*.java src/gen/*.java src/interp/*.java Main.java
+javac src/symbols/*.java src/gen/*.java src/interp/*.java src/values/*.java src/types/*.java src/heap/*.java Main.java
 
 echo 'Done.'

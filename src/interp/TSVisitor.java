@@ -117,6 +117,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 				if (c.initializer() != null) {
 					Value init = (Value) visit(c.initializer());
+					
 					var.setValue(init);
 
 					if (var.getType() == null)
