@@ -82,8 +82,13 @@ public class LiteralObjectValue extends ObjectValue{
 
 	@Override
 	public void set(String propName, Value value) throws SyntacticError {
+		
 		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) ){
+				// System.out.println(propertyValues[i].getType() + " " + value.getType());
+				if( !propertyValues[i].getType().isExtendedType(value.getType()) )
+					throw new SyntacticError(value + " no es de tipo " + propertyValues[i].getType());
+				
 				propertyValues[i] = value;
 				return;
 			}

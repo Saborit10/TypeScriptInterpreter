@@ -373,7 +373,7 @@ expression
 	| expression TK_QMARK expression TK_COLON expression							#ExprTernaryOperator
 	| functionCall																	#ExprFunctionCall
 	| TK_LPARENT expressionSequence TK_RPARENT										#ExprParent //
-	| expression TK_EQ expression													#ExprAsig
+	| expression TK_EQ expression													#ExprAsig //
 	| expression TK_PLUS_ASIGN expression											#ExprPlusAsig
 	| expression TK_MINUS_ASIGN expression											#ExprMinusAsig
 	| expression TK_STAR_ASIGN expression											#ExprMultAsig
@@ -382,7 +382,7 @@ expression
 	| expression TK_AND_ASIGN expression											#ExprAndAsig
 	| expression TK_OR_ASIGN expression												#ExprOrAsig
 	| TK_NEW functionCall															#ExprNew
-	| arrayLiteral																	#ExprArrayLiteral
+	| arrayLiteral																	#ExprArrayLiteral //
 	| objectLiteral																	#ExprObjectLiteral //
 	| literal																		#ExprPrimitiveLiteral //
 	| TK_IDENT																		#ExprIdentifier //

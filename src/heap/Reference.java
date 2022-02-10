@@ -38,8 +38,8 @@ public class Reference extends ObjectValue{
 
 	@Override
 	public void set(String propName, Value value) throws SyntacticError {
+		System.out.println(HEAP.access(this).getType());
 		HEAP.access(this).set(propName, value);
-		
 	}
 
 	public boolean isReferenceProperty(String propName) throws SyntacticError {

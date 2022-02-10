@@ -10,6 +10,7 @@ python script/package.py src/gen src.gen
 
 # Compile the .java
 echo 'Compiling the java files...'
+rm src/symbols/*.class src/gen/*.java src/interp/*.java Main.java
 javac src/symbols/*.java src/gen/*.java src/interp/*.java Main.java
 
 echo 'Done.'

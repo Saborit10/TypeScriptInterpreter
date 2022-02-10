@@ -205,6 +205,9 @@ public class ClassInstanceValue extends ObjectValue{
 
 		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) ){
+				if( !propertyValues[i].getType().isExtendedType(value.getType()) )
+					throw new SyntacticError(value + " no es de tipo " + propertyValues[i].getType());
+
 				propertyValues[i] = value;
 				return;
 			}

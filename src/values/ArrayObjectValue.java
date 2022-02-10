@@ -82,7 +82,7 @@ public class ArrayObjectValue extends ObjectValue{
 				type = value.getType();
 			}
 			else if( !type.isExtendedType(value.getType()) ){
-				System.out.println(type + " " + value.getType());
+				// System.out.println(type + " " + value.getType());
 				throw new SyntacticError(value + " no es de tipo " + type);
 			}
 

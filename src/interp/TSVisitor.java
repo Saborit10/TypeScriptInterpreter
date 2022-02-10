@@ -14,6 +14,7 @@ import src.gen.TypeScriptParser.ExprBinAndContext;
 import src.gen.TypeScriptParser.ExprBinOrContext;
 import src.gen.TypeScriptParser.ExprBinaryNotContext;
 import src.gen.TypeScriptParser.ExprComparatorContext;
+import src.gen.TypeScriptParser.ExprDotFunctionCallContext;
 import src.gen.TypeScriptParser.ExprDotIdentContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
@@ -32,7 +33,6 @@ import src.gen.TypeScriptParser.ExprSumSubsContext;
 import src.gen.TypeScriptParser.ExprThisContext;
 import src.gen.TypeScriptParser.ExpressionContext;
 import src.gen.TypeScriptParser.FunctionCallContext;
-import src.gen.TypeScriptParser.IdentifierContext;
 import src.gen.TypeScriptParser.InitializerContext;
 import src.gen.TypeScriptParser.LiteralContext;
 import src.gen.TypeScriptParser.ObjLiteralContext;
@@ -58,9 +58,7 @@ import src.types.BooleanType;
 import src.types.NumberType;
 import src.types.StringType;
 import src.types.Type;
-import src.values.ArrayObjectValue;
 import src.values.BooleanValue;
-import src.values.LiteralObjectValue;
 import src.values.NumberValue;
 import src.values.ObjectValue;
 import src.values.StringValue;
@@ -400,43 +398,46 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		}
 	}
 
+	Value makeAssign(ExprAsigContext ctx, String operator) throws SyntacticError{
+		ExpressionContext expLeft = ctx.expression().get(0);
+		Value value = (Value)visit(ctx.expression().get(1));
+
+		String property = null;
+		Reference ref = null; 
+
+		if( expLeft instanceof ExprDotIdentContext ){
+			ExprDotIdentContext expDotIdent = (ExprDotIdentContext)expLeft;
+
+			ref = (Reference)visit(expDotIdent.expression());
+			property = expDotIdent.identifier().getText();
+		}
+		else if( expLeft instanceof ExprObjectIndexContext ){
+			ExprObjectIndexContext expObjIndex = (ExprObjectIndexContext)expLeft;
+
+			ref = (Reference)visit(expObjIndex.expression());
+			Value index = (Value)visit(expObjIndex.expressionSequence());
+
+			if( StringType.isOfThisType(index) || NumberType.isOfThisType(index) )
+				property = index.toString();
+			else
+				throw new SyntacticError(index.toString() + " no es de tipo string o number");
+		}
+		else if( expLeft instanceof ExprDotFunctionCallContext ){
+			//TODO Hacer lo de function call
+		}
+
+		if( ref == null )
+			scope.setValueOf(expLeft.getText(), value);
+		else{
+			ref.set(property, value);
+		}
+		return value;
+	}
+
 	@Override
 	public Object visitExprAsig(ExprAsigContext ctx) {
 		try {
-			ExpressionContext expLeft = ctx.expression().get(0);
-
-			if( expLeft instanceof ExprDotIdentContext ){
-				ExprDotIdentContext expDotIdent = (ExprDotIdentContext)expLeft;
-
-				Reference ref = (Reference)visit(expDotIdent.expression());
-				String property = expDotIdent.identifier().getText();
-				Value value = (Value)visit(ctx.expression().get(1));
-				
-				// System.out.println(ref + " -> " + property + " = " + value);
-
-				ref.set(property, value);
-				return value;
-			}
-			else if( expLeft instanceof ExprObjectIndexContext ){
-				ExprObjectIndexContext expObjIndex = (ExprObjectIndexContext)expLeft;
-
-				Reference ref = (Reference)visit(expObjIndex.expression());
-				Value index = (Value)visit(expObjIndex.expressionSequence());
-				Value value = (Value)visit(ctx.expression().get(1));
-
-				if( StringType.isOfThisType(index) || NumberType.isOfThisType(index) ){
-					String property = index.toString();
-
-					ref.set(property, value);
-					return value;
-				}
-				else
-					throw new SyntacticError(index.toString() + " no es de tipo string o number");
-			}
-			else{
-				//TODO Hacer lo de function call
-			}
-			return null;
+			return makeAssign(ctx, "");
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
