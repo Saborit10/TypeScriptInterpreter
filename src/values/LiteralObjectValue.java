@@ -100,4 +100,9 @@ public class LiteralObjectValue extends ObjectValue{
 	public Value[] getPropertyValues() {
 		return this.propertyValues;
 	}
+
+	@Override
+	public boolean isFalsy() {
+		return undefined;
+	}
 }

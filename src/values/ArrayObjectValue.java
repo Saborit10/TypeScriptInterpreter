@@ -146,4 +146,9 @@ public class ArrayObjectValue extends ObjectValue{
 		
 		return ans;
 	}
+
+	@Override
+	public boolean isFalsy() {
+		return undefined;
+	}
 }

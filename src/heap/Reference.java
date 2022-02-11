@@ -83,5 +83,10 @@ public class Reference extends ObjectValue{
 		return HEAP.access(this).toString();
 	}
 
+	@Override
+	public boolean isFalsy() {
+		return HEAP.access(this).isFalsy();
+	}
+
 	
 }

@@ -1,5 +1,9 @@
-var A = {
-    a: 3,
-    objecto: [1, 2],
-    6: 4
-};
+// let x: number;
+// console.log(x);
+var A = { a: 5 };
+if (0)
+    // console.log("IF");
+    ("IF");
+else
+    // console.log("ELSE");
+    ("ELSE");

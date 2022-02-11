@@ -9,6 +9,7 @@ import src.gen.TypeScriptParser.ArrayElementContext;
 import src.gen.TypeScriptParser.ArrayLiteralAltContext;
 import src.gen.TypeScriptParser.ArrayLiteralEmptyAltContext;
 import src.gen.TypeScriptParser.ArrayTypeContext;
+import src.gen.TypeScriptParser.BlockContext;
 import src.gen.TypeScriptParser.ExprAndAsigContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
 import src.gen.TypeScriptParser.ExprBinAndContext;
@@ -40,6 +41,7 @@ import src.gen.TypeScriptParser.ExprSumSubsContext;
 import src.gen.TypeScriptParser.ExprThisContext;
 import src.gen.TypeScriptParser.ExpressionContext;
 import src.gen.TypeScriptParser.FunctionCallContext;
+import src.gen.TypeScriptParser.IfStatementContext;
 import src.gen.TypeScriptParser.InitializerContext;
 import src.gen.TypeScriptParser.LiteralContext;
 import src.gen.TypeScriptParser.ObjLiteralContext;
@@ -50,6 +52,7 @@ import src.gen.TypeScriptParser.PropertyAssignContext;
 import src.gen.TypeScriptParser.PropertyNameContext;
 import src.gen.TypeScriptParser.ReferenceTypeContext;
 import src.gen.TypeScriptParser.SimpleTypeContext;
+import src.gen.TypeScriptParser.StatementContext;
 import src.gen.TypeScriptParser.TypeAnnotationContext;
 import src.gen.TypeScriptParser.TypeNameContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
@@ -732,7 +735,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		
 		for(int i=0; i < expList.size(); i++)
 			value = (Value)visit(expList.get(i));
-		System.out.println(value);
+		
+		if( value == null )
+			System.out.println("[null returned]");
+		else
+			System.out.println(value);
 		// System.out.println(value instanceof ArrayObjectValue);
 		// System.out.println(Reference.HEAP);
 		return value;
@@ -940,6 +947,34 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	public void setSyntacticErrors(ArrayList<SyntacticError> syntacticErrors) {
 		this.syntacticErrors = syntacticErrors;
+	}
+
+/**
+ * Scopes and Blocks
+*/
+	@Override
+	public Object visitBlock(BlockContext ctx) {
+		scope.createUnnamedScope();
+
+		List<StatementContext> statements = ctx.statementList().statement();
+		for(int i=0; i < statements.size(); i++)
+			visit(statements.get(i));
+		
+		scope.popScope();
+		return null;
+	}
+
+	@Override
+	public Object visitIfStatement(IfStatementContext ctx) {
+		Value conditionValue = (Value)visit(ctx.expressionSequence());
+		List<StatementContext> statements = ctx.statement();
+
+		if( !conditionValue.isFalsy() )
+			visit(statements.get(0));
+		else if( statements.size() > 1 )
+			visit(statements.get(1));
+
+		return null;
 	}
 
 }

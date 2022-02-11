@@ -278,4 +278,9 @@ public class BooleanValue extends Value{
 
 		return new NumberValue(-v);
 	}
+
+	@Override
+	public boolean isFalsy() {
+		return undefined || value == false;
+	}
 }

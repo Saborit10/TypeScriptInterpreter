@@ -342,4 +342,9 @@ public class NumberValue extends Value{
 		return value;
 	}
 
+	@Override
+	public boolean isFalsy() {
+		return undefined || value == 0;
+	}
+
 }

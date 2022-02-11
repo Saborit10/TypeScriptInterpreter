@@ -177,4 +177,9 @@ public class StringValue extends Value{
 		return new NumberValue(Double.NaN);
 	}
 
+	@Override
+	public boolean isFalsy() {
+		return undefined || value.equals("");
+	}
+
 }

@@ -24,6 +24,8 @@ public abstract class Value{
 		return undefined;
 	}
 
+	public abstract boolean isFalsy();
+
 	public abstract Value sum(Value v) throws SyntacticError;
 	public abstract Value sub(Value v) throws SyntacticError;
 	public abstract Value prod(Value v) throws SyntacticError;

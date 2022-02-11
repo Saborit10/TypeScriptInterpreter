@@ -214,4 +214,9 @@ public class ClassInstanceValue extends ObjectValue{
 		}
 		throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
 	}
+
+	@Override
+	public boolean isFalsy() {
+		return undefined;
+	}
 }

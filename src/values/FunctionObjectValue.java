@@ -72,4 +72,9 @@ public class FunctionObjectValue extends ObjectValue{
 		return null;
 	}
 
+	@Override
+	public boolean isFalsy() {
+		return undefined;
+	}
+
 }
