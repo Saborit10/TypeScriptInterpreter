@@ -1,8 +1,12 @@
 package src.types;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import src.heap.Reference;
+import src.symbols.SyntacticError;
 import src.values.ClassInstanceValue;
+import src.values.FunctionObjectValue;
 import src.values.Value;
 
 public class ClassInstanceType extends ObjectType{
@@ -10,39 +14,22 @@ public class ClassInstanceType extends ObjectType{
 	
 	private String typeName; 
 	private ClassInstanceType superType;
-	private ArrayList<Type> templateArgs;
-	private ArrayList<FunctionObjectType> constructors;
+	private List<FunctionObjectValue> constructors;
+	private List<FunctionObjectValue> methods;
+	private Map<String, Value> staticValues;
+	private Map<String, Value> initValues;
 	
-	public ClassInstanceType(String typeName) {
-		templateArgs = new ArrayList<>();
-		propertyTypes = new Type[0];
-	}
-	
-	public ClassInstanceType(String typeName, ClassInstanceType superType){
-		templateArgs = new ArrayList<>();
-		this.superType = superType;
-		propertyTypes = new Type[0];
-		propertyNames = new String[0];
-	}
-
-	public ClassInstanceType(String typeName, ClassInstanceType superType, ArrayList<Type> propertyTypes, ArrayList<String> propertyNames){
-		templateArgs = new ArrayList<>();
-		this.superType = superType;
-		this.propertyTypes = new Type[propertyTypes.size()];
-		this.propertyNames = new String[propertyTypes.size()];
-
-		for(int i=0; i < propertyTypes.size(); i++){
-			this.propertyTypes[i] = propertyTypes.get(i);
-			this.propertyNames[i] = propertyNames.get(i);
-		}
-	}
-
-	public ClassInstanceType(String typeName, ClassInstanceType superType, ArrayList<Type> propertyTypes, ArrayList<String> propertyNames, ArrayList<FunctionObjectType> constructors){
-		templateArgs = new ArrayList<>();
+	public ClassInstanceType(String typeName, ClassInstanceType superType, List<Type> propertyTypes,
+		List<String> propertyNames, List<FunctionObjectValue> constructors, List<FunctionObjectValue> methods,
+		Map<String, Value> staticValues, Map<String, Value> initValues){
+		
 		this.superType = superType;
 		this.propertyTypes = new Type[propertyTypes.size()];
 		this.propertyNames = new String[propertyTypes.size()];
 		this.constructors = constructors;
+		this.methods = methods;
+		this.staticValues = staticValues;
+		this.initValues = initValues;
 
 		for(int i=0; i < propertyTypes.size(); i++){
 			this.propertyTypes[i] = propertyTypes.get(i);
@@ -94,5 +81,57 @@ public class ClassInstanceType extends ObjectType{
 		return isEqualType(v.getType());
 	}
 
+	private boolean isCompatibleSignature(FunctionObjectValue f, List<Type> argTypes){
+		Type[] funcArgTypes = f.getArgTypes();
+
+		if( argTypes.size() != funcArgTypes.length )
+			return false;
+
+		for(int i=0; i < funcArgTypes.length; i++)
+			if( !funcArgTypes[i].isExtendedType(argTypes.get(i)) )
+				return false;
+		return true;
+	}
+
+	public FunctionObjectValue getMethodBySignature(String name, List<Type> argTypes) throws SyntacticError{
+		for(int i=0; i < methods.size(); i++){
+			if( methods.get(i).getName().equals(name) && isCompatibleSignature(methods.get(i), argTypes) )
+				return methods.get(i);
+		}
+
+		if( superType != null )
+			throw new SyntacticError("El metodo " + name + " no pertenece a la clase " + typeName + " ni a sus superclases");
+		else
+			return superType.getMethodBySignature(name, argTypes);
+	}
 	
+	public FunctionObjectValue getConstructorBySignature(String name, List<Type> argTypes) throws SyntacticError{
+		for(int i=0; i < constructors.size(); i++){
+			if( isCompatibleSignature(constructors.get(i), argTypes) )
+				return constructors.get(i);
+		}
+
+		throw new SyntacticError("No se reconoce el constructor invocado, de la clase " + typeName);
+	}
+
+	public Reference createObject() throws SyntacticError{
+		Reference obj = Reference.HEAP.mallocClassInstance(this);
+
+		for(String propName: initValues.keySet())
+			obj.set(propName, initValues.get(propName));
+
+		return obj;
+	}
+
+	public Reference createObject(FunctionObjectValue constructor){
+		// TODO 
+		return null;
+	}
+	
+	public Value getStaticValue(String name) throws SyntacticError{
+		if( staticValues.containsKey(name) )
+			return staticValues.get(name);
+		else
+			throw new SyntacticError("No existe el valor estatico " + name + " en la clase " + typeName);
+	}
 }

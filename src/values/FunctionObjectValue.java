@@ -9,6 +9,7 @@ import src.types.FunctionObjectType;
 import src.types.Type;
 
 public class FunctionObjectValue extends ObjectValue{
+	private String name;
 	private FunctionBodyContext body;
 	private Type[] argTypes;
 	private String[] argNames;
@@ -17,9 +18,10 @@ public class FunctionObjectValue extends ObjectValue{
 		undefined = true;
 	}
 
-	public FunctionObjectValue(ArrayList<Type> argTypes, ArrayList<String> argNames, FunctionBodyContext body) throws SyntacticError{
+	public FunctionObjectValue(String name, ArrayList<Type> argTypes, ArrayList<String> argNames, FunctionBodyContext body) throws SyntacticError{
 		undefined = false;
 		this.body = body;
+		this.name = name;
 	
 		SyntacticChecker.noEqualPair(argNames);
 
@@ -30,6 +32,14 @@ public class FunctionObjectValue extends ObjectValue{
 			this.argNames[i] = argNames.get(i);
 			this.argTypes[i] = argTypes.get(i);
 		}
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override
@@ -77,4 +87,15 @@ public class FunctionObjectValue extends ObjectValue{
 		return undefined;
 	}
 
+	public Type[] getArgTypes() {
+		return argTypes;
+	}
+
+	public FunctionBodyContext getBody() {
+		return body;
+	}
+
+	public String[] getArgNames() {
+		return argNames;
+	}
 }

@@ -10,6 +10,9 @@ import src.gen.TypeScriptParser.ArrayLiteralAltContext;
 import src.gen.TypeScriptParser.ArrayLiteralEmptyAltContext;
 import src.gen.TypeScriptParser.ArrayTypeContext;
 import src.gen.TypeScriptParser.BlockContext;
+import src.gen.TypeScriptParser.ClassBodyContext;
+import src.gen.TypeScriptParser.ClassHeritageContext;
+import src.gen.TypeScriptParser.ClassStatementContext;
 import src.gen.TypeScriptParser.ExprAndAsigContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
 import src.gen.TypeScriptParser.ExprBinAndContext;
@@ -977,4 +980,35 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		return null;
 	}
 
+/**
+ * Classes
+*/
+	@Override
+	public Object visitClassStatement(ClassStatementContext ctx) {
+		String typeName = ctx.TK_IDENT().getText();
+		Type superType = (Type)visit(ctx.classHeritage());
+
+		
+
+		return null;
+	}
+
+@Override
+public Object visitClassHeritage(ClassHeritageContext ctx) {
+	try {
+		if( ctx.classExtendsClause() != null ){
+			String typeName = ctx.classExtendsClause().referenceType().TK_IDENT().getText();
+
+			return typeTable.getTypeByName(typeName);
+		}
+		return null;
+	} catch (SyntacticError e) {
+		addError(e);
+		return null;
+	} catch (NullPointerException e){
+		return null;
+	}
+}
+
+	
 }

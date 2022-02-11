@@ -17,4 +17,8 @@ public class TypeTable {
 			throw new SyntacticError("No se reconoce " + name + " como un tipo");
 		return types.get(name);
 	}
+
+	public void declareType(Type type){
+		types.put(type.getTypeName(), type);
+	}
 }
