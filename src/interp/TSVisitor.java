@@ -9,24 +9,31 @@ import src.gen.TypeScriptParser.ArrayElementContext;
 import src.gen.TypeScriptParser.ArrayLiteralAltContext;
 import src.gen.TypeScriptParser.ArrayLiteralEmptyAltContext;
 import src.gen.TypeScriptParser.ArrayTypeContext;
+import src.gen.TypeScriptParser.ExprAndAsigContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
 import src.gen.TypeScriptParser.ExprBinAndContext;
 import src.gen.TypeScriptParser.ExprBinOrContext;
 import src.gen.TypeScriptParser.ExprBinaryNotContext;
 import src.gen.TypeScriptParser.ExprComparatorContext;
+import src.gen.TypeScriptParser.ExprDivAsigContext;
 import src.gen.TypeScriptParser.ExprDotFunctionCallContext;
 import src.gen.TypeScriptParser.ExprDotIdentContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprLogicAndContext;
 import src.gen.TypeScriptParser.ExprLogicOrContext;
+import src.gen.TypeScriptParser.ExprMinusAsigContext;
 import src.gen.TypeScriptParser.ExprMinusOpContext;
+import src.gen.TypeScriptParser.ExprMultAsigContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
 import src.gen.TypeScriptParser.ExprNewContext;
 import src.gen.TypeScriptParser.ExprNotContext;
 import src.gen.TypeScriptParser.ExprObjectIndexContext;
 import src.gen.TypeScriptParser.ExprObjectLiteralContext;
+import src.gen.TypeScriptParser.ExprOrAsigContext;
 import src.gen.TypeScriptParser.ExprParentContext;
+import src.gen.TypeScriptParser.ExprPercentAsigContext;
+import src.gen.TypeScriptParser.ExprPlusAsigContext;
 import src.gen.TypeScriptParser.ExprPlusOpContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
@@ -399,13 +406,49 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		}
 	}
 
-	Value makeAssign(ExprAsigContext ctx, String operator) throws SyntacticError{
-		ExpressionContext expLeft = ctx.expression().get(0);
-		Value value = (Value)visit(ctx.expression().get(1));
+/**
+ * Asignacion
+*/
 
+	Value makeAssign(ExpressionContext ctx) throws SyntacticError{
+		ExpressionContext expLeft = null;
+		Value value = null;
 		String property = null;
 		Reference ref = null; 
 
+		if( ctx instanceof ExprAsigContext ){
+			expLeft = ((ExprAsigContext)ctx).expression().get(0);
+			value = (Value)visit(((ExprAsigContext)ctx).expression().get(1));
+		}
+		else if( ctx instanceof ExprPlusAsigContext ){
+			expLeft = ((ExprPlusAsigContext)ctx).expression().get(0);
+			value = (Value)visit(((ExprPlusAsigContext)ctx).expression().get(1));
+		}
+		else if( ctx instanceof ExprMinusAsigContext ){
+			expLeft = ((ExprMinusAsigContext)ctx).expression().get(0);
+			value = (Value)visit(((ExprMinusAsigContext)ctx).expression().get(1));
+		}
+		else if( ctx instanceof ExprMultAsigContext ){
+			expLeft = ((ExprMultAsigContext)ctx).expression().get(0);
+			value = (Value)visit(((ExprMultAsigContext)ctx).expression().get(1));
+		}
+		else if( ctx instanceof ExprDivAsigContext ){
+			expLeft = ((ExprDivAsigContext)ctx).expression().get(0);
+			value = (Value)visit(((ExprDivAsigContext)ctx).expression().get(1));
+		}
+		else if( ctx instanceof ExprPercentAsigContext ){
+			expLeft = ((ExprPercentAsigContext)ctx).expression().get(0);
+			value = (Value)visit(((ExprPercentAsigContext)ctx).expression().get(1));
+		}
+		else if( ctx instanceof ExprAndAsigContext ){
+			expLeft = ((ExprAndAsigContext)ctx).expression().get(0);
+			value = (Value)visit(((ExprAndAsigContext)ctx).expression().get(1));
+		}
+		else if( ctx instanceof ExprOrAsigContext ){
+			expLeft = ((ExprOrAsigContext)ctx).expression().get(0);
+			value = (Value)visit(((ExprOrAsigContext)ctx).expression().get(1));
+		}
+		
 		if( expLeft instanceof ExprDotIdentContext ){
 			ExprDotIdentContext expDotIdent = (ExprDotIdentContext)expLeft;
 
@@ -427,18 +470,46 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			//TODO Hacer lo de function call
 		}
 
+		Value oldValue = null;
+
 		if( ref == null )
-			scope.setValueOf(expLeft.getText(), value);
-		else{
-			ref.set(property, value);
+			oldValue = scope.getValueOf(expLeft.getText());
+		else
+			oldValue = ref.get(property);
+	
+		if( ctx instanceof ExprPlusAsigContext ){
+			value = oldValue.sum(value);
 		}
+		else if( ctx instanceof ExprMinusAsigContext ){
+			value = oldValue.sub(value);
+		}
+		else if( ctx instanceof ExprMultAsigContext ){
+			value = oldValue.prod(value);
+		}
+		else if( ctx instanceof ExprDivAsigContext ){
+			value = oldValue.div(value);
+		}
+		else if( ctx instanceof ExprPercentAsigContext ){
+			value = oldValue.mod(value);
+		}
+		else if( ctx instanceof ExprAndAsigContext ){
+			value = oldValue.binAnd(value);
+		}
+		else if( ctx instanceof ExprOrAsigContext ){
+			value = oldValue.binOr(value);
+		}
+		
+		if( ref == null )
+			scope.setValueOf(expLeft.getText(), value);	
+		else
+			ref.set(property, value);
 		return value;
 	}
 
 	@Override
 	public Object visitExprAsig(ExprAsigContext ctx) {
 		try {
-			return makeAssign(ctx, "");
+			return makeAssign(ctx);
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
@@ -447,6 +518,93 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		}
 	}
 
+	@Override
+	public Object visitExprAndAsig(ExprAndAsigContext ctx) {
+		try {
+			return makeAssign(ctx);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprDivAsig(ExprDivAsigContext ctx) {
+		try {
+			return makeAssign(ctx);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprMinusAsig(ExprMinusAsigContext ctx) {
+		try {
+			return makeAssign(ctx);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprMultAsig(ExprMultAsigContext ctx) {
+		try {
+			return makeAssign(ctx);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprOrAsig(ExprOrAsigContext ctx) {
+		try {
+			return makeAssign(ctx);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprPercentAsig(ExprPercentAsigContext ctx) {
+		try {
+			return makeAssign(ctx);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprPlusAsig(ExprPlusAsigContext ctx) {
+		try {
+			return makeAssign(ctx);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e){
+			return null;
+		}
+	}
+
+/**
+ * Inicializador
+*/
 	@Override
 	public Object visitInitializer(InitializerContext ctx) {
 		try {
@@ -457,9 +615,9 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		}
 	}
 
-	/**
-	 * Expression
-	 **/
+/**
+ * Expression
+*/
 	@Override
 	public Object visitExprMultDivPerc(ExprMultDivPercContext ctx) {
 		try {

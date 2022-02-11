@@ -266,7 +266,6 @@ typeAnnotation
 
 primitiveType
 	: TK_STRING
-	// | TK_ANY
 	| TK_BOOLEAN
 	| TK_NUMBER
 	;
@@ -305,7 +304,6 @@ typeParameterList
 
 typeParameter
 	: typeName extendsConstraint?
-	// | typeParameters
 	;
 
 extendsConstraint
@@ -374,13 +372,13 @@ expression
 	| functionCall																	#ExprFunctionCall
 	| TK_LPARENT expressionSequence TK_RPARENT										#ExprParent //
 	| expression TK_EQ expression													#ExprAsig //
-	| expression TK_PLUS_ASIGN expression											#ExprPlusAsig
-	| expression TK_MINUS_ASIGN expression											#ExprMinusAsig
-	| expression TK_STAR_ASIGN expression											#ExprMultAsig
-	| expression TK_SLASH_ASIGN expression											#ExprDivAsig
-	| expression TK_PERCENT_ASIGN expression										#ExprPercentAsig
-	| expression TK_AND_ASIGN expression											#ExprAndAsig
-	| expression TK_OR_ASIGN expression												#ExprOrAsig
+	| expression TK_PLUS_ASIGN expression											#ExprPlusAsig //
+	| expression TK_MINUS_ASIGN expression											#ExprMinusAsig // 
+	| expression TK_STAR_ASIGN expression											#ExprMultAsig //
+	| expression TK_SLASH_ASIGN expression											#ExprDivAsig //
+	| expression TK_PERCENT_ASIGN expression										#ExprPercentAsig //
+	| expression TK_AND_ASIGN expression											#ExprAndAsig //
+	| expression TK_OR_ASIGN expression												#ExprOrAsig //
 	| TK_NEW functionCall															#ExprNew
 	| arrayLiteral																	#ExprArrayLiteral //
 	| objectLiteral																	#ExprObjectLiteral //
