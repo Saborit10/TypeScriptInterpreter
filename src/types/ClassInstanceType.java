@@ -127,11 +127,6 @@ public class ClassInstanceType extends ObjectType{
 
 		return obj;
 	}
-
-	public Reference createObject(FunctionObjectValue constructor){
-		// TODO 
-		return null;
-	}
 	
 	public Value getStaticValue(String name) throws SyntacticError{
 		// TODO chequear si es privado

@@ -3,6 +3,7 @@ package src.interp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.TreeMap;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
@@ -96,12 +97,13 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	private SymbolTableStack scope;
 	private ArrayList<SyntacticError> syntacticErrors;
 	private TypeTable typeTable;
-	private Value thisObject;
+	private Stack<Reference> thisStack;
 
 	public TSVisitor() {
 		scope = new SymbolTableStack();
 		syntacticErrors = new ArrayList<>();
 		typeTable = new TypeTable();
+		thisStack = new Stack<>();
 
 		Reference.HEAP = new Heap();
 	}
@@ -297,13 +299,40 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 					return Reference.HEAP.mallocArray(args);
 				}
 			} else {
-				// TODO Llamar al constructor
-				return null;
+				ClassInstanceType type = typeTable.getTypeByName(constructorName);
+				List<Type> argTypes = new ArrayList<>();
+				List<Value> argVals = getArguments(ctx.functionCall());
+				
+				for(int i=0; i < argVals.size(); i++)
+					argTypes.add(argVals.get(i).getType());
+				
+				FunctionObjectValue constructor = type.getConstructorBySignature(constructorName, argTypes);
+
+				thisStack.push(type.createObject());
+				scope.createUnnamedScope();
+				
+				for(int i=0; i < argVals.size(); i++){
+					scope.declareVariable(new Variable(
+						constructor.getArgNames()[i],
+						0,
+						constructor.getArgTypes()[i],
+						argVals.get(i)
+					));
+				}
+
+				visit(constructor.getBody());
+				
+				scope.popScope();
+				return thisStack.pop();
 			}
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
+		} catch (Exception e){
+			e.printStackTrace();
+			return null;
 		}
+
 	}
 
 	@Override
@@ -353,11 +382,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitExprThis(ExprThisContext ctx) {
-		if (thisObject != null) {
-			return thisObject;
+		if( thisStack.isEmpty() ){
+			addError(new SyntacticError("this no puede ser referenciado. El contexto no es un objeto."));	
+			return null;
 		}
-		addError(new SyntacticError("this no puede ser referenciado. El contexto no es un objeto."));
-		return null;
+		return thisStack.peek();
 	}
 
 	@Override
@@ -1033,10 +1062,13 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 					if( elem.memberDecl() instanceof ClassMemberPropertyContext ){
 						ClassMemberPropertyContext propCtx = (ClassMemberPropertyContext)elem.memberDecl();
 
-						String name = (String)visit(propCtx.propertyName());
-						int mods = (Integer)visit(propCtx.propertyMemberBase());
 						Type type = null;
 						Value init = null;
+						String name = (String)visit(propCtx.propertyName());
+						int mods = (Integer)visit(propCtx.propertyMemberBase());
+						
+						if( (mods & Mod.PROTECTED) == 0  && (mods & Mod.PRIVATE) == 0 )
+							mods |= Mod.PUBLIC;
 
 						if( propCtx.typeAnnotation() != null )
 							type = (Type)visit(propCtx.typeAnnotation());
@@ -1090,7 +1122,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			addError(e);
 			return null;
 		} catch (NullPointerException e){
-			e.printStackTrace();
+			// e.printStackTrace();
 			return null;
 		}
 	}

@@ -3,30 +3,30 @@ package src.symbols;
 import java.util.HashMap;
 import java.util.Map;
 
-import src.types.Type;
+import src.types.ClassInstanceType;
 
 public class TypeTable {
-	private Map<String, Type> types;
+	private Map<String, ClassInstanceType> types;
 
 	public TypeTable(){
 		types = new HashMap<>();
 	}
 
-	public Type getTypeByName(String name) throws SyntacticError{
+	public ClassInstanceType getTypeByName(String name) throws SyntacticError{
 		if( !types.containsKey(name) )
 			throw new SyntacticError("No se reconoce " + name + " como un tipo");
 		return types.get(name);
 	}
 
-	public void declareType(Type type){
+	public void declareType(ClassInstanceType type){
 		types.put(type.getTypeName(), type);
 	}
 
-	public Map<String, Type> getTypes() {
+	public Map<String,ClassInstanceType> getTypes() {
 		return types;
 	}
 
-	public void setTypes(Map<String, Type> types) {
+	public void setTypes(Map<String, ClassInstanceType> types) {
 		this.types = types;
 	}
 }

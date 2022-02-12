@@ -1,6 +1,7 @@
 package src.values;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import src.heap.Reference;
 import src.symbols.Mod;
@@ -21,6 +22,7 @@ public class ClassInstanceValue extends ObjectValue{
 		this.undefined = false;
 		this.prototype = proto;
 		this.superValue = superValue;
+		this.propertyValues = new Value[proto.getPropertyTypes().length];
 
 		Type[] types = proto.getPropertyTypes();
 		for(int i=0; i < types.length; i++)
@@ -206,7 +208,7 @@ public class ClassInstanceValue extends ObjectValue{
 		}
 
 		if( prototype.getSuperType() == null )
-			throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
 		else
 			return superValue.getFromSuperClass(propName);
 	}
@@ -222,7 +224,7 @@ public class ClassInstanceValue extends ObjectValue{
 		}
 
 		if( prototype.getSuperType() == null )
-			throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
 		else
 			return superValue.getFromSuperClass(propName);
 	}
@@ -241,7 +243,7 @@ public class ClassInstanceValue extends ObjectValue{
 		}
 
 		if( prototype.getSuperType() == null )
-			throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
 		else
 			return superValue.getFromSuperClass(propName);
 	}
@@ -259,7 +261,7 @@ public class ClassInstanceValue extends ObjectValue{
 				return;
 			}
 		}
-		throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+		throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
 	}
 
 	@Override

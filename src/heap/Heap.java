@@ -20,14 +20,14 @@ public class Heap {
 	}
 
 	public Reference mallocClassInstance(ClassInstanceType type){
-		int address = objects.size();
+		Reference superValue = null;
 
-		if( type.getSuperType() != null )
-			objects.add(new ClassInstanceValue(type, mallocClassInstance(type.getSuperType())));
-		else
-			objects.add(new ClassInstanceValue(type, (Reference)null));
-
-		return new Reference(address);
+		if( type.getSuperType() != null ){
+			superValue = mallocClassInstance(type.getSuperType());
+		}
+		objects.add(new ClassInstanceValue(type, superValue));
+		
+		return new Reference(objects.size() - 1);
 	}
 
 	public Reference mallocLiteralObject(List<String> names, List<Value> values){ // Object Literal
