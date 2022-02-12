@@ -5,9 +5,14 @@ class B{
 class A extends B{
 	a: number;
 	b: string;
-	obj: string = 0.1;
-	// let c = {}; / ver porque no lanza error (no hace nada)
+	// obj: string = 0.1;
+	c = {}; // ver porque no lanza error (no hace nada)
 	
+	2 = "luis";
+	
+	static s: boolean;
+	static y = 4;
+
 	constructor(a: number, b: string){
 		super();
 	}

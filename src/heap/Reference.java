@@ -2,6 +2,7 @@ package src.heap;
 
 import src.symbols.SyntacticError;
 import src.types.Type;
+import src.values.ClassInstanceValue;
 import src.values.ObjectValue;
 import src.values.Value;
 
@@ -88,5 +89,12 @@ public class Reference extends ObjectValue{
 		return HEAP.access(this).isFalsy();
 	}
 
+	public Value getFromSuperClass(String propName) throws SyntacticError {
+		return ((ClassInstanceValue)HEAP.access(this)).getFromSuperClass(propName);
+	}
+
+	public Value getFromThisClass(String propName) throws SyntacticError {
+		return ((ClassInstanceValue)HEAP.access(this)).getFromThisClass(propName);
+	}
 	
 }

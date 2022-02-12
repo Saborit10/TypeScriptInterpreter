@@ -141,6 +141,14 @@ public class ClassInstanceType extends ObjectType{
 			throw new SyntacticError("No existe el valor estatico " + name + " en la clase " + typeName);
 	}
 
+	public int[] getModifiers() {
+		return modifiers;
+	}
+
+	public void setModifiers(int[] modifiers) {
+		this.modifiers = modifiers;
+	}
+
 	public String toDescriptionString(){
 		String ans = "=====================\n";
 
@@ -180,6 +188,10 @@ public class ClassInstanceType extends ObjectType{
 
 		for(int i=0; i < propertyTypes.length; i++)
 			ans += propertyNames[i] + ": " + propertyTypes[i] + "\n";
+		
+		ans += staticValues + "\n";
+		
+		
 		ans += "=====================\n";
 		
 		return ans;

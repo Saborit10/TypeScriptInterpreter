@@ -2,6 +2,8 @@ package src.values;
 
 import java.util.ArrayList;
 
+import src.heap.Reference;
+import src.symbols.Mod;
 import src.symbols.SyntacticError;
 import src.types.ClassInstanceType;
 import src.types.Type;
@@ -9,15 +11,16 @@ import src.types.Type;
 public class ClassInstanceValue extends ObjectValue{
 	private ClassInstanceType prototype;
 	protected Value[] propertyValues;
-
+	private Reference superValue;
 
 	public ClassInstanceValue(){
 		this.undefined = true;
 	}
 
-	public ClassInstanceValue(ClassInstanceType proto){
-		this.prototype = proto;
+	public ClassInstanceValue(ClassInstanceType proto, Reference superValue){
 		this.undefined = false;
+		this.prototype = proto;
+		this.superValue = superValue;
 
 		Type[] types = proto.getPropertyTypes();
 		for(int i=0; i < types.length; i++)
@@ -188,15 +191,59 @@ public class ClassInstanceValue extends ObjectValue{
 		return ans + "}";
 	}
 
+	/* Acceso a propiedades publicas de la clase */
 	@Override
 	public Value get(String propName) throws SyntacticError{
 		String[] propertyNames = prototype.getPropertyNames();
+		int[] propertyMods = prototype.getModifiers();
 
 		for(int i=0; i < propertyValues.length; i++){
-			if( propertyNames[i].equals(propName) )
-				return propertyValues[i];
+			if( propertyNames[i].equals(propName) ){
+				if( (propertyMods[i] & Mod.PUBLIC) > 0 )
+					return propertyValues[i];
+				throw new SyntacticError("La propiedad " + propName + " no es publica");
+			}
 		}
-		throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+
+		if( prototype.getSuperType() == null )
+			throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+		else
+			return superValue.getFromSuperClass(propName);
+	}
+	
+	/* Acceso a propiedades de la misma clase */
+	public Value getFromThisClass(String propName) throws SyntacticError{
+		String[] propertyNames = prototype.getPropertyNames();
+
+		for(int i=0; i < propertyValues.length; i++){
+			if( propertyNames[i].equals(propName) ){
+				return propertyValues[i];
+			}
+		}
+
+		if( prototype.getSuperType() == null )
+			throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+		else
+			return superValue.getFromSuperClass(propName);
+	}
+
+	/* Acceso a propiedades de la superclase */
+	public Value getFromSuperClass(String propName) throws SyntacticError{
+		String[] propertyNames = prototype.getPropertyNames();
+		int[] propertyMods = prototype.getModifiers();
+
+		for(int i=0; i < propertyValues.length; i++){
+			if( propertyNames[i].equals(propName) ){
+				if( (propertyMods[i] & Mod.PUBLIC) > 0 || (propertyMods[i] & Mod.PROTECTED) > 0)
+					return propertyValues[i];
+				throw new SyntacticError("La propiedad " + propName + " no es publica");
+			}
+		}
+
+		if( prototype.getSuperType() == null )
+			throw new SyntacticError("La propiedad " + propName + " no esta definida en el tipo " + getType());
+		else
+			return superValue.getFromSuperClass(propName);
 	}
 
 	@Override

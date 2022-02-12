@@ -22,7 +22,10 @@ public class Heap {
 	public Reference mallocClassInstance(ClassInstanceType type){
 		int address = objects.size();
 
-		objects.add(new ClassInstanceValue(type));
+		if( type.getSuperType() != null )
+			objects.add(new ClassInstanceValue(type, mallocClassInstance(type.getSuperType())));
+		else
+			objects.add(new ClassInstanceValue(type, (Reference)null));
 
 		return new Reference(address);
 	}
