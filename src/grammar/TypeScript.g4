@@ -104,10 +104,10 @@ classElement
 
 /* Declaracio de un Miembro de una Clase */
 memberDecl
-	: propertyMemberBase propertyName TK_QMARK? typeAnnotation? initializer? TK_SEMICOLON
-	| propertyMemberBase propertyName callSignature ( (TK_LCURLY functionBody TK_RCURLY) | TK_SEMICOLON)
-    | propertyMemberBase (getter | setter)
-    | abstractDecl
+	: propertyMemberBase propertyName TK_QMARK? typeAnnotation? initializer? TK_SEMICOLON					#ClassMemberProperty
+	| propertyMemberBase propertyName callSignature ( (TK_LCURLY functionBody TK_RCURLY) | TK_SEMICOLON)	#ClassMemberMethod
+    | propertyMemberBase (getter | setter)																	#ClassMemberGetterSetter
+    | abstractDecl																							#ClassMemberAbstract
     ;
 
 /* Getter */

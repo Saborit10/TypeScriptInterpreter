@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.*;
 import src.gen.*;
 import src.symbols.SyntacticError;
+import src.types.ClassInstanceType;
 
 class VerboseListener extends BaseErrorListener {
 	@Override
@@ -50,6 +51,16 @@ public class Interpreter {
 		TSVisitor v = new TSVisitor();
 		v.visit(tree);
 
+		for(String key: v.getTypeTable().getTypes().keySet()){
+			try {
+				ClassInstanceType type = (ClassInstanceType)v.getTypeTable().getTypes().get(key);
+				System.out.println(type.toDescriptionString());
+			} catch (Exception e) {
+				
+			}
+			
+		}
+
 		System.out.println(v.getScope());
 
 		if( v.getSyntacticErrors().size() > 0 ){
@@ -58,6 +69,5 @@ public class Interpreter {
 			for(SyntacticError e: v.getSyntacticErrors())
 				System.out.println(e);
 		}
-		
 	}
 }

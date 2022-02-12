@@ -113,11 +113,33 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitClassElement(TypeScriptParser.ClassElementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link TypeScriptParser#memberDecl}.
+	 * Visit a parse tree produced by the {@code ClassMemberProperty}
+	 * labeled alternative in {@link TypeScriptParser#memberDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMemberDecl(TypeScriptParser.MemberDeclContext ctx);
+	T visitClassMemberProperty(TypeScriptParser.ClassMemberPropertyContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ClassMemberMethod}
+	 * labeled alternative in {@link TypeScriptParser#memberDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassMemberMethod(TypeScriptParser.ClassMemberMethodContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ClassMemberGetterSetter}
+	 * labeled alternative in {@link TypeScriptParser#memberDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassMemberGetterSetter(TypeScriptParser.ClassMemberGetterSetterContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ClassMemberAbstract}
+	 * labeled alternative in {@link TypeScriptParser#memberDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassMemberAbstract(TypeScriptParser.ClassMemberAbstractContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#getter}.
 	 * @param ctx the parse tree

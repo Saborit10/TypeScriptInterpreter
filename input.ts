@@ -1,22 +1,22 @@
+class B{
+	
+}
 
-
-// let x: number;
-
-// console.log(x);
-
-var A = {a: 5};
-
-let a = 0;
-		
-if( A )
-	if( false ){
-
+class A extends B{
+	a: number;
+	b: string;
+	obj: string = 0.1;
+	// let c = {}; / ver porque no lanza error (no hace nada)
+	
+	constructor(a: number, b: string){
+		super();
 	}
-	else{
-		("IF-ELSE");
-		
-		(a == -1);
-	}
-else
-	// console.log("ELSE");
-	("ELSE");
+}
+
+
+
+
+
+
+
+// reservar espacio en los arreglos de propiedades para las de las clases superiores. (en los classinstancevalues)

@@ -21,4 +21,12 @@ public class TypeTable {
 	public void declareType(Type type){
 		types.put(type.getTypeName(), type);
 	}
+
+	public Map<String, Type> getTypes() {
+		return types;
+	}
+
+	public void setTypes(Map<String, Type> types) {
+		this.types = types;
+	}
 }

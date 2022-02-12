@@ -1315,6 +1315,53 @@ public class TypeScriptParser extends Parser {
 	}
 
 	public static class MemberDeclContext extends ParserRuleContext {
+		public MemberDeclContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_memberDecl; }
+	 
+		public MemberDeclContext() { }
+		public void copyFrom(MemberDeclContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class ClassMemberAbstractContext extends MemberDeclContext {
+		public AbstractDeclContext abstractDecl() {
+			return getRuleContext(AbstractDeclContext.class,0);
+		}
+		public ClassMemberAbstractContext(MemberDeclContext ctx) { copyFrom(ctx); }
+	}
+	public static class ClassMemberGetterSetterContext extends MemberDeclContext {
+		public PropertyMemberBaseContext propertyMemberBase() {
+			return getRuleContext(PropertyMemberBaseContext.class,0);
+		}
+		public GetterContext getter() {
+			return getRuleContext(GetterContext.class,0);
+		}
+		public SetterContext setter() {
+			return getRuleContext(SetterContext.class,0);
+		}
+		public ClassMemberGetterSetterContext(MemberDeclContext ctx) { copyFrom(ctx); }
+	}
+	public static class ClassMemberMethodContext extends MemberDeclContext {
+		public PropertyMemberBaseContext propertyMemberBase() {
+			return getRuleContext(PropertyMemberBaseContext.class,0);
+		}
+		public PropertyNameContext propertyName() {
+			return getRuleContext(PropertyNameContext.class,0);
+		}
+		public CallSignatureContext callSignature() {
+			return getRuleContext(CallSignatureContext.class,0);
+		}
+		public TerminalNode TK_SEMICOLON() { return getToken(TypeScriptParser.TK_SEMICOLON, 0); }
+		public TerminalNode TK_LCURLY() { return getToken(TypeScriptParser.TK_LCURLY, 0); }
+		public FunctionBodyContext functionBody() {
+			return getRuleContext(FunctionBodyContext.class,0);
+		}
+		public TerminalNode TK_RCURLY() { return getToken(TypeScriptParser.TK_RCURLY, 0); }
+		public ClassMemberMethodContext(MemberDeclContext ctx) { copyFrom(ctx); }
+	}
+	public static class ClassMemberPropertyContext extends MemberDeclContext {
 		public PropertyMemberBaseContext propertyMemberBase() {
 			return getRuleContext(PropertyMemberBaseContext.class,0);
 		}
@@ -1329,27 +1376,7 @@ public class TypeScriptParser extends Parser {
 		public InitializerContext initializer() {
 			return getRuleContext(InitializerContext.class,0);
 		}
-		public CallSignatureContext callSignature() {
-			return getRuleContext(CallSignatureContext.class,0);
-		}
-		public TerminalNode TK_LCURLY() { return getToken(TypeScriptParser.TK_LCURLY, 0); }
-		public FunctionBodyContext functionBody() {
-			return getRuleContext(FunctionBodyContext.class,0);
-		}
-		public TerminalNode TK_RCURLY() { return getToken(TypeScriptParser.TK_RCURLY, 0); }
-		public GetterContext getter() {
-			return getRuleContext(GetterContext.class,0);
-		}
-		public SetterContext setter() {
-			return getRuleContext(SetterContext.class,0);
-		}
-		public AbstractDeclContext abstractDecl() {
-			return getRuleContext(AbstractDeclContext.class,0);
-		}
-		public MemberDeclContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_memberDecl; }
+		public ClassMemberPropertyContext(MemberDeclContext ctx) { copyFrom(ctx); }
 	}
 
 	public final MemberDeclContext memberDecl() throws RecognitionException {
@@ -1361,6 +1388,7 @@ public class TypeScriptParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,27,_ctx) ) {
 			case 1:
+				_localctx = new ClassMemberPropertyContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(311);
@@ -1402,6 +1430,7 @@ public class TypeScriptParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new ClassMemberMethodContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(324);
@@ -1437,6 +1466,7 @@ public class TypeScriptParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new ClassMemberGetterSetterContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(334);
@@ -1462,6 +1492,7 @@ public class TypeScriptParser extends Parser {
 				}
 				break;
 			case 4:
+				_localctx = new ClassMemberAbstractContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(339);

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import src.heap.Reference;
 import src.symbols.SyntacticError;
+import src.symbols.Variable;
 import src.values.ClassInstanceValue;
 import src.values.FunctionObjectValue;
 import src.values.Value;
@@ -16,16 +17,19 @@ public class ClassInstanceType extends ObjectType{
 	private ClassInstanceType superType;
 	private List<FunctionObjectValue> constructors;
 	private List<FunctionObjectValue> methods;
-	private Map<String, Value> staticValues;
+	private Map<String, Variable> staticValues;
 	private Map<String, Value> initValues;
+	private int[] modifiers;
 	
 	public ClassInstanceType(String typeName, ClassInstanceType superType, List<Type> propertyTypes,
-		List<String> propertyNames, List<FunctionObjectValue> constructors, List<FunctionObjectValue> methods,
-		Map<String, Value> staticValues, Map<String, Value> initValues){
+		List<String> propertyNames, List<Integer> modifiers, List<FunctionObjectValue> constructors,
+		List<FunctionObjectValue> methods, Map<String, Variable> staticValues, Map<String, Value> initValues){
 		
 		this.superType = superType;
+		this.typeName = typeName;
 		this.propertyTypes = new Type[propertyTypes.size()];
 		this.propertyNames = new String[propertyTypes.size()];
+		this.modifiers = new int[propertyTypes.size()];
 		this.constructors = constructors;
 		this.methods = methods;
 		this.staticValues = staticValues;
@@ -34,6 +38,7 @@ public class ClassInstanceType extends ObjectType{
 		for(int i=0; i < propertyTypes.size(); i++){
 			this.propertyTypes[i] = propertyTypes.get(i);
 			this.propertyNames[i] = propertyNames.get(i);
+			this.modifiers[i] = modifiers.get(i);
 		}
 	}
 
@@ -129,9 +134,54 @@ public class ClassInstanceType extends ObjectType{
 	}
 	
 	public Value getStaticValue(String name) throws SyntacticError{
+		// TODO chequear si es privado
 		if( staticValues.containsKey(name) )
-			return staticValues.get(name);
+			return staticValues.get(name).getValue();
 		else
 			throw new SyntacticError("No existe el valor estatico " + name + " en la clase " + typeName);
+	}
+
+	public String toDescriptionString(){
+		String ans = "=====================\n";
+
+		ans += "[" + typeName + "]";
+		
+		if( superType != null )
+			ans += " -> " + superType;
+		ans += "\n";
+
+		ans += "\nConstructors:\n";
+		for(int i=0; i < constructors.size(); i++){
+			ans += typeName + "(";
+			
+			for(int j=0; j < constructors.get(i).getArgTypes().length; j++){
+				ans += constructors.get(i).getArgTypes()[j];
+				
+				if( j < constructors.get(i).getArgTypes().length-1 )
+					ans += ", ";
+			}
+			ans += ")\n";
+		}
+
+		ans += "\nMethods:\n";
+
+		for(int i=0; i < methods.size(); i++){
+			ans += methods.get(i).toString() + "\n";
+			
+			for(int j=0; j < methods.get(i).getArgTypes().length; j++){
+				ans += methods.get(i).getArgTypes()[j];
+				
+				if( j < methods.get(i).getArgTypes().length-1 )
+					ans += ", ";
+			}
+			ans += ")\n";
+		}
+		ans += "\nProperties:\n";
+
+		for(int i=0; i < propertyTypes.length; i++)
+			ans += propertyNames[i] + ": " + propertyTypes[i] + "\n";
+		ans += "=====================\n";
+		
+		return ans;
 	}
 }
