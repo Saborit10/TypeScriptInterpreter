@@ -123,7 +123,7 @@ public class ClassInstanceType extends ObjectType{
 		Reference obj = Reference.HEAP.mallocClassInstance(this);
 
 		for(String propName: initValues.keySet())
-			obj.set(propName, initValues.get(propName));
+			obj.set(obj, propName, initValues.get(propName));
 
 		return obj;
 	}

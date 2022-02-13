@@ -42,9 +42,9 @@ public class SymbolTableStack {
 		return ans;
 	}
 
-	public void setValueOf(ArrayList<String> path, Value value) throws SyntacticError {
-		top().setValueOf(path, value);
-	}
+	// public void setValueOf(ArrayList<String> path, Value value) throws SyntacticError {
+	// 	top().setValueOf(path, value);
+	// }
 
 	public void popScope() {
 		stack.remove(stack.size()-1);

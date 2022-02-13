@@ -1,14 +1,15 @@
 package src.values;
 
+import src.heap.Reference;
 import src.symbols.SyntacticError;
 import src.types.Type;
 
 public abstract class ObjectValue extends Value{
 	public abstract Type getType();
 
-	public abstract Value get(String propName) throws SyntacticError;
+	public abstract Value get(Reference thisRef, String propName) throws SyntacticError;
 	
-	public abstract void set(String propName, Value value) throws SyntacticError;
+	public abstract void set(Reference thisRef, String propName, Value value) throws SyntacticError;
 	
 	public abstract Value[] getPropertyValues();
 

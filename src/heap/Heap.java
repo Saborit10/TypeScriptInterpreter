@@ -25,7 +25,7 @@ public class Heap {
 		if( type.getSuperType() != null ){
 			superValue = mallocClassInstance(type.getSuperType());
 		}
-		objects.add(new ClassInstanceValue(type, superValue));
+		objects.add(new ClassInstanceValue(type, superValue, new Reference(objects.size())));
 		
 		return new Reference(objects.size() - 1);
 	}

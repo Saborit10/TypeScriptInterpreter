@@ -20,8 +20,10 @@ class A extends B{
 			this.b = b;
 		}
 
-		// this.c.fr = 4;
-		// this.p = s;
+		this.c.fr = 4;
+		
+		this.p = s;
+		(this.p);
 	}
 }
 
@@ -30,7 +32,10 @@ let obj2 = new A(-100, -2000, "casa");
 
 (obj1);
 (obj2);
-(obj1.p);
+
+
+//Quitar el self
+
 
 
 

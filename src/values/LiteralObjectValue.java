@@ -2,6 +2,7 @@ package src.values;
 
 import java.util.List;
 
+import src.heap.Reference;
 import src.symbols.SyntacticError;
 import src.types.LiteralObjectType;
 import src.types.ObjectType;
@@ -72,7 +73,7 @@ public class LiteralObjectValue extends ObjectValue{
 	}
 
 	@Override
-	public Value get(String propName) throws SyntacticError {
+	public Value get(Reference thisRef, String propName) throws SyntacticError {
 		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) )
 				return propertyValues[i];
@@ -81,7 +82,7 @@ public class LiteralObjectValue extends ObjectValue{
 	}
 
 	@Override
-	public void set(String propName, Value value) throws SyntacticError {
+	public void set(Reference thisRef, String propName, Value value) throws SyntacticError {
 		
 		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) ){

@@ -108,6 +108,10 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		Reference.HEAP = new Heap();
 	}
 
+	private Reference thisStackTop(){
+		return thisStack.size() == 0 ? null : thisStack.peek();
+	}
+
 	private void addError(SyntacticError e) {
 		syntacticErrors.add(e);
 	}
@@ -508,7 +512,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		if (ref == null)
 			oldValue = scope.getValueOf(expLeft.getText());
 		else
-			oldValue = ref.get(property);
+			oldValue = ref.get(thisStackTop(), property);
 
 		if (ctx instanceof ExprPlusAsigContext) {
 			value = oldValue.sum(value);
@@ -529,7 +533,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		if (ref == null)
 			scope.setValueOf(expLeft.getText(), value);
 		else
-			ref.set(property, value);
+			ref.set(thisStackTop(), property, value);
 		return value;
 	}
 
@@ -905,19 +909,21 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		try {
 			ObjectValue objValue = (ObjectValue) visit(ctx.expression());
 
-			// System.out.println(objValue instanceof Reference);
-			// System.out.println(ctx.expression().getText() + " -> " + objValue);
-
-			return objValue.get(ctx.identifier().getText());
+			return objValue.get(thisStackTop(), ctx.identifier().getText());
 		} catch (ClassCastException e) {
-			syntacticErrors.add(new SyntacticError(
-					"La expresion a la izquierda del operador . no es un objeto"));
+			// e.printStackTrace();
+			addError(new SyntacticError(
+				"La expresion a la izquierda del operador . no es un objeto"
+			));
 			return null;
 		} catch (NullPointerException e) {
-			syntacticErrors.add(new SyntacticError(
-					"La expresion a la izquierda del operador . no es un objeto"));
+			addError(new SyntacticError(
+				"La expresion a la izquierda del operador . no es un objeto"
+			));
+			// e.printStackTrace();
 			return null;
 		} catch (SyntacticError e) {
+			// e.printStackTrace();
 			addError(e);
 			return null;
 		}
@@ -934,9 +940,9 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 				index = (Value) visit(expList.get(i));
 
 			if (StringType.isOfThisType(index)) {
-				return objValue.get(index.toString());
+				return objValue.get(thisStackTop(), index.toString());
 			} else if (NumberType.isOfThisType(index))
-				return objValue.get(index.toString());
+				return objValue.get(thisStackTop(), index.toString());
 			else {
 				throw new SyntacticError(
 						"El indice " + expList.get(expList.size() - 1).getText() + " no es valido");

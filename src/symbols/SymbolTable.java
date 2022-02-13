@@ -81,34 +81,34 @@ public class SymbolTable{
 		variable.setValue(value);
 	}
 
-	public void setValueOf(List<String> propertyPath, Value value) throws SyntacticError{
-		String name = propertyPath.get(0);
+	// public void setValueOf(List<String> propertyPath, Value value) throws SyntacticError{
+	// 	String name = propertyPath.get(0);
 
-		if( !symbols.containsKey(name) ){
-			if( parent == null )
-				throw new SyntacticError("El nombre " + name + " no se ha definido");
-			parent.setValueOf(propertyPath, value);
-		}
+	// 	if( !symbols.containsKey(name) ){
+	// 		if( parent == null )
+	// 			throw new SyntacticError("El nombre " + name + " no se ha definido");
+	// 		parent.setValueOf(propertyPath, value);
+	// 	}
 			
-		Entry entry = symbols.get(name);
-		if( !(entry instanceof Variable) )
-			throw new SyntacticError(name + " no es una vairable");
+	// 	Entry entry = symbols.get(name);
+	// 	if( !(entry instanceof Variable) )
+	// 		throw new SyntacticError(name + " no es una vairable");
 		
-		try {
-			Variable variable = (Variable)entry;
+	// 	try {
+	// 		Variable variable = (Variable)entry;
 			
-			ObjectValue ref = (ObjectValue)variable.getValue();
+	// 		ObjectValue ref = (ObjectValue)variable.getValue();
 
-			for(int i=1; i < propertyPath.size()-1; i++){
-				ref = (ObjectValue)ref.get(propertyPath.get(i));
-			}
+	// 		for(int i=1; i < propertyPath.size()-1; i++){
+	// 			ref = (ObjectValue)ref.get(propertyPath.get(i));
+	// 		}
 
-			ref.set(propertyPath.get(propertyPath.size()-1), value);
-		} catch (Exception e) {
-			throw new SyntacticError("No se puede acceder a la propiedad del objeto " + name);
-		}
+	// 		ref.set(propertyPath.get(propertyPath.size()-1), value);
+	// 	} catch (Exception e) {
+	// 		throw new SyntacticError("No se puede acceder a la propiedad del objeto " + name);
+	// 	}
 		
-	}
+	// }
 
 	@Override
 	public String toString() {

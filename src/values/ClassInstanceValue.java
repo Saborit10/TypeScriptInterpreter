@@ -1,6 +1,6 @@
 package src.values;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import src.heap.Reference;
@@ -10,6 +10,7 @@ import src.types.ClassInstanceType;
 import src.types.Type;
 
 public class ClassInstanceValue extends ObjectValue{
+	private Reference self;
 	private ClassInstanceType prototype;
 	protected Value[] propertyValues;
 	private Reference superValue;
@@ -18,51 +19,16 @@ public class ClassInstanceValue extends ObjectValue{
 		this.undefined = true;
 	}
 
-	public ClassInstanceValue(ClassInstanceType proto, Reference superValue){
+	public ClassInstanceValue(ClassInstanceType proto, Reference superValue, Reference self){
 		this.undefined = false;
 		this.prototype = proto;
 		this.superValue = superValue;
+		this.self = self;
 		this.propertyValues = new Value[proto.getPropertyTypes().length];
 
 		Type[] types = proto.getPropertyTypes();
 		for(int i=0; i < types.length; i++)
 			propertyValues[i] = types[i].undefinedValue();
-	}
-
-	public ClassInstanceValue(ClassInstanceType proto, ArrayList<Value> propVals) throws SyntacticError{
-		this.prototype = proto;
-		this.undefined = false;
-
-		Type[] types = proto.getPropertyTypes();
-
-		if( propVals.size() != types.length )
-			throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
-
-		for(int i=0; i < types.length; i++){
-			if( !types[i].isExtendedType(propVals.get(i).getType()) )
-				throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
-			
-			propertyValues[i] = propVals.get(i);
-		}
-	}
-
-	public ClassInstanceValue(ClassInstanceType proto, LiteralObjectValue obj) throws SyntacticError{
-		this.prototype = proto;
-		this.undefined = false;
-
-		Type[] types = proto.getPropertyTypes();
-
-		if( obj.getPropertyNames().length != types.length )
-			throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
-
-		// TODO: Arreglar para que las propiedades puedan estar en cualquier orden
-
-		for(int i=0; i < types.length; i++){
-			if( !types[i].isExtendedType(obj.getPropertyValues()[i].getType()) )
-				throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
-		
-			propertyValues[i] = obj.getPropertyValues()[i];
-		}
 	}
 
 	public Value[] getPropertyValues() {
@@ -193,75 +159,67 @@ public class ClassInstanceValue extends ObjectValue{
 		return ans + "}";
 	}
 
-	/* Acceso a propiedades publicas de la clase */
-	@Override
-	public Value get(String propName) throws SyntacticError{
-		String[] propertyNames = prototype.getPropertyNames();
-		int[] propertyMods = prototype.getModifiers();
+	private boolean grantAccess(int propIndex, Reference thisRef){
+		int propertyMods = prototype.getModifiers()[propIndex];
+		
+		// System.out.println("THISREF: " + thisRef);
 
-		for(int i=0; i < propertyValues.length; i++){
-			if( propertyNames[i].equals(propName) ){
-				if( (propertyMods[i] & Mod.PUBLIC) > 0 )
-					return propertyValues[i];
-				throw new SyntacticError("La propiedad " + propName + " no es publica");
-			}
+		boolean thisIsSubclass = false;
+		boolean thisIsSameClass = false;
+		
+		if( thisRef != null ){
+			thisIsSubclass = prototype.isExtendedType(thisRef.getType());
+			thisIsSameClass = prototype.isEqualType(thisRef.getType());
 		}
 
+		if( (propertyMods & Mod.PROTECTED) > 0 && !thisIsSubclass && !thisIsSameClass )
+			return false;
+		else if( (propertyMods & Mod.PRIVATE)  > 0 && ! thisIsSameClass )
+			return false;
+		// System.out.println("GRANTED!!");
+		return true;
+	}
+
+	@Override
+	public Value get(Reference thisRef, String propName) throws SyntacticError{
+		String[] propertyNames = prototype.getPropertyNames();
+		
+		// System.out.println("LOOKING IN: " + this + " -> " + Arrays.toString(propertyNames));
+		
+		for(int i=0; i < propertyValues.length; i++){
+			if( propertyNames[i].equals(propName) ){
+				// System.out.println("FOUND!!!");
+				if( grantAccess(i, thisRef) )
+					return propertyValues[i];
+				throw new SyntacticError("La propiedad " + propName + " no es accesible");
+			}
+		}
+		// System.out.println("No se encontro " + propName + " en " + prototype + ". A buscarla en " + prototype.getSuperType() + " -> " + superValue);
 		if( prototype.getSuperType() == null )
 			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
 		else
-			return superValue.getFromSuperClass(propName);
+			return superValue.get(thisRef, propName);
 	}
 	
-	/* Acceso a propiedades de la misma clase */
-	public Value getFromThisClass(String propName) throws SyntacticError{
-		String[] propertyNames = prototype.getPropertyNames();
-
-		for(int i=0; i < propertyValues.length; i++){
-			if( propertyNames[i].equals(propName) ){
-				return propertyValues[i];
-			}
-		}
-
-		if( prototype.getSuperType() == null )
-			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
-		else
-			return superValue.getFromSuperClass(propName);
-	}
-
-	/* Acceso a propiedades de la superclase */
-	public Value getFromSuperClass(String propName) throws SyntacticError{
-		String[] propertyNames = prototype.getPropertyNames();
-		int[] propertyMods = prototype.getModifiers();
-
-		for(int i=0; i < propertyValues.length; i++){
-			if( propertyNames[i].equals(propName) ){
-				if( (propertyMods[i] & Mod.PUBLIC) > 0 || (propertyMods[i] & Mod.PROTECTED) > 0)
-					return propertyValues[i];
-				throw new SyntacticError("La propiedad " + propName + " no es publica");
-			}
-		}
-
-		if( prototype.getSuperType() == null )
-			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
-		else
-			return superValue.getFromSuperClass(propName);
-	}
-
 	@Override
-	public void set(String propName, Value value) throws SyntacticError {
+	public void set(Reference thisRef, String propName, Value value) throws SyntacticError {
 		String[] propertyNames = prototype.getPropertyNames();
 
 		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) ){
 				if( !propertyValues[i].getType().isExtendedType(value.getType()) )
 					throw new SyntacticError(value + " no es de tipo " + propertyValues[i].getType());
-
+				if( !grantAccess(i, thisRef) )
+					throw new SyntacticError("La propiedad " + propName + " no es accesible");
 				propertyValues[i] = value;
 				return;
 			}
 		}
-		throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
+
+		if( prototype.getSuperType() == null )
+			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
+		else
+			superValue.set(thisRef, propName, value);
 	}
 
 	@Override
@@ -269,3 +227,44 @@ public class ClassInstanceValue extends ObjectValue{
 		return undefined;
 	}
 }
+
+
+
+
+
+
+	// public ClassInstanceValue(ClassInstanceType proto, ArrayList<Value> propVals) throws SyntacticError{
+	// 	this.prototype = proto;
+	// 	this.undefined = false;
+
+	// 	Type[] types = proto.getPropertyTypes();
+
+	// 	if( propVals.size() != types.length )
+	// 		throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
+
+	// 	for(int i=0; i < types.length; i++){
+	// 		if( !types[i].isExtendedType(propVals.get(i).getType()) )
+	// 			throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
+			
+	// 		propertyValues[i] = propVals.get(i);
+	// 	}
+	// }
+
+	// public ClassInstanceValue(ClassInstanceType proto, LiteralObjectValue obj) throws SyntacticError{
+	// 	this.prototype = proto;
+	// 	this.undefined = false;
+
+	// 	Type[] types = proto.getPropertyTypes();
+
+	// 	if( obj.getPropertyNames().length != types.length )
+	// 		throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
+
+	// 	// TODO: Arreglar para que las propiedades puedan estar en cualquier orden
+
+	// 	for(int i=0; i < types.length; i++){
+	// 		if( !types[i].isExtendedType(obj.getPropertyValues()[i].getType()) )
+	// 			throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
+		
+	// 		propertyValues[i] = obj.getPropertyValues()[i];
+	// 	}
+	// }

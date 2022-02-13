@@ -3,6 +3,7 @@ package src.values;
 import java.util.ArrayList;
 
 import src.gen.TypeScriptParser.FunctionBodyContext;
+import src.heap.Reference;
 import src.interp.SyntacticChecker;
 import src.symbols.SyntacticError;
 import src.types.FunctionObjectType;
@@ -48,12 +49,12 @@ public class FunctionObjectValue extends ObjectValue{
 	}
 
 	@Override
-	public Value get(String propName) throws SyntacticError {
+	public Value get(Reference thisRef, String propName) throws SyntacticError {
 		throw new SyntacticError("El objeto es de tipo function. No contiene propiedades.");
 	}
 
 	@Override
-	public void set(String propName, Value value) throws SyntacticError {
+	public void set(Reference thisRef, String propName, Value value) throws SyntacticError {
 		throw new SyntacticError("El objeto es de tipo function. No contiene propiedades.");
 	}
 

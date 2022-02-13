@@ -2,6 +2,7 @@ package src.values;
 
 import java.util.List;
 
+import src.heap.Reference;
 import src.symbols.SyntacticError;
 import src.types.ArrayObjectType;
 import src.types.Type;
@@ -57,7 +58,7 @@ public class ArrayObjectValue extends ObjectValue{
 	}
 
 	@Override
-	public Value get(String propName) throws SyntacticError {
+	public Value get(Reference thisRef, String propName) throws SyntacticError {
 		try {
 			if( propName.equals("length") )
 				return new NumberValue(length);
@@ -72,7 +73,7 @@ public class ArrayObjectValue extends ObjectValue{
 	}
 
 	@Override
-	public void set(String propName, Value value) throws SyntacticError {
+	public void set(Reference thisRef, String propName, Value value) throws SyntacticError {
 		try {
 			int pos = Integer.parseInt(propName);
 			if( pos >= length )
