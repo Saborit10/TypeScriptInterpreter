@@ -172,7 +172,7 @@ parameterList
 /* Parametro de una Funcion */
 parameter
 	: requiredParameter
-	| optionalParameter
+	// | optionalParameter
 	;
 
 /* Parametro Requerido */
@@ -182,7 +182,7 @@ requiredParameter
 
 /* Parametro Opcional */
 optionalParameter
-	: ( accessModifier? identifierOrPattern (TK_QMARK typeAnnotation? | typeAnnotation? initializer)) 
+	: accessModifier? identifierOrPattern (TK_QMARK typeAnnotation? | typeAnnotation? initializer)
 	;
 
 /* Identificador, Palabra Reservada, Literal de Objeto o Literal de Arreglo */

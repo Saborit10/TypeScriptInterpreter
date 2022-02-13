@@ -13,6 +13,7 @@ import src.gen.TypeScriptParser.ArrayLiteralAltContext;
 import src.gen.TypeScriptParser.ArrayLiteralEmptyAltContext;
 import src.gen.TypeScriptParser.ArrayTypeContext;
 import src.gen.TypeScriptParser.BlockContext;
+import src.gen.TypeScriptParser.CallSignatureContext;
 import src.gen.TypeScriptParser.ClassElementContext;
 import src.gen.TypeScriptParser.ClassHeritageContext;
 import src.gen.TypeScriptParser.ClassMemberPropertyContext;
@@ -53,11 +54,13 @@ import src.gen.TypeScriptParser.FormalParameterListContext;
 import src.gen.TypeScriptParser.FunctionBodyContext;
 import src.gen.TypeScriptParser.FunctionCallContext;
 import src.gen.TypeScriptParser.FunctionExpressionDeclContext;
+import src.gen.TypeScriptParser.FunctionStatementContext;
 import src.gen.TypeScriptParser.IfStatementContext;
 import src.gen.TypeScriptParser.InitializerContext;
 import src.gen.TypeScriptParser.LiteralContext;
 import src.gen.TypeScriptParser.ObjLiteralContext;
 import src.gen.TypeScriptParser.ObjLiteralEmptyContext;
+import src.gen.TypeScriptParser.ParameterContext;
 import src.gen.TypeScriptParser.ParametricTypeContext;
 import src.gen.TypeScriptParser.PrimitiveTypeContext;
 import src.gen.TypeScriptParser.PropertyAssignContext;
@@ -986,12 +989,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		scope.createUnnamedScope();
 
 		List<StatementContext> statements = ctx.statementList().statement();
-		
-		int val = Goto.NORMAL_SIGNAL;
-		for (int i = 0; i < statements.size(); i++){
-			val = (Integer)visit(statements.get(i));
 
-			if( val != Goto.NORMAL_SIGNAL )
+		int val = Goto.NORMAL_SIGNAL;
+		for (int i = 0; i < statements.size(); i++) {
+			val = (Integer) visit(statements.get(i));
+
+			if (val != Goto.NORMAL_SIGNAL)
 				break;
 		}
 
@@ -1304,6 +1307,54 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			return null;
 		}
 		return Goto.RETURN_SIGNAL;
+	}
+
+	private void fillParamTypesAndNames(CallSignatureContext ctx, List<Type> argTypes,
+			List<String> argNames) throws SyntacticError {
+
+		if (ctx.parameterList() != null) {
+			List<ParameterContext> args = ctx.parameterList().parameter();
+
+			for (int i = 0; i < args.size(); i++) {
+				String argName = null;
+
+				if (args.get(i).requiredParameter().identifierOrPattern() != null) {
+					argName = args.get(i).requiredParameter().identifierOrPattern().getText();
+				} else {
+					throw new SyntacticError("El nombre del argumento no fue especificado");
+				}
+				if (args.get(i).requiredParameter().typeAnnotation() == null)
+					throw new SyntacticError("El tipo del argumento no fue especificado");
+
+				argTypes.add((Type) visit(args.get(i).requiredParameter().typeAnnotation()));
+				argNames.add(argName);
+			}
+		}
+	}
+
+	@Override
+	public Object visitFunctionStatement(FunctionStatementContext ctx) {
+		try {
+			String name = ctx.TK_IDENT().getText();
+			List<String> argNames = new ArrayList<>();
+			List<Type> argTypes = new ArrayList<>();
+
+			fillParamTypesAndNames(ctx.callSignature(), argTypes, argNames);
+
+			FunctionObjectValue func = new FunctionObjectValue(
+				name,
+				argTypes,
+				argNames,
+				ctx.functionBody()
+			);
+
+			scope.declareVariable(new Variable(name, 0, func.getType(), func));
+
+			return Goto.NORMAL_SIGNAL;
+		} catch (SyntacticError e) {
+			addError(e);
+			return Goto.NORMAL_SIGNAL;
+		}
 	}
 
 	public TypeTable getTypeTable() {
