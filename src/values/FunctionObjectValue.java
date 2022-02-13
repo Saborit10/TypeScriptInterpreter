@@ -1,6 +1,6 @@
 package src.values;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import src.gen.TypeScriptParser.FunctionBodyContext;
 import src.heap.Reference;
@@ -14,12 +14,12 @@ public class FunctionObjectValue extends ObjectValue{
 	private FunctionBodyContext body;
 	private Type[] argTypes;
 	private String[] argNames;
-
+	
 	public FunctionObjectValue(){
 		undefined = true;
 	}
 
-	public FunctionObjectValue(String name, ArrayList<Type> argTypes, ArrayList<String> argNames, FunctionBodyContext body) throws SyntacticError{
+	public FunctionObjectValue(String name, List<Type> argTypes, List<String> argNames, FunctionBodyContext body) throws SyntacticError{
 		undefined = false;
 		this.body = body;
 		this.name = name;

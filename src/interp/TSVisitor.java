@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TreeMap;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-
 import src.gen.TypeScriptBaseVisitor;
 import src.gen.TypeScriptParser;
 import src.gen.TypeScriptParser.ArrayElementContext;
@@ -15,12 +13,10 @@ import src.gen.TypeScriptParser.ArrayLiteralAltContext;
 import src.gen.TypeScriptParser.ArrayLiteralEmptyAltContext;
 import src.gen.TypeScriptParser.ArrayTypeContext;
 import src.gen.TypeScriptParser.BlockContext;
-import src.gen.TypeScriptParser.ClassBodyContext;
 import src.gen.TypeScriptParser.ClassElementContext;
 import src.gen.TypeScriptParser.ClassHeritageContext;
 import src.gen.TypeScriptParser.ClassMemberPropertyContext;
 import src.gen.TypeScriptParser.ClassStatementContext;
-import src.gen.TypeScriptParser.ConstructorDeclarationContext;
 import src.gen.TypeScriptParser.ExprAndAsigContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
 import src.gen.TypeScriptParser.ExprBinAndContext;
@@ -31,6 +27,7 @@ import src.gen.TypeScriptParser.ExprDivAsigContext;
 import src.gen.TypeScriptParser.ExprDotFunctionCallContext;
 import src.gen.TypeScriptParser.ExprDotIdentContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
+import src.gen.TypeScriptParser.ExprFunctionCallContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprLogicAndContext;
 import src.gen.TypeScriptParser.ExprLogicOrContext;
@@ -53,7 +50,9 @@ import src.gen.TypeScriptParser.ExprThisContext;
 import src.gen.TypeScriptParser.ExpressionContext;
 import src.gen.TypeScriptParser.FormalParameterArgContext;
 import src.gen.TypeScriptParser.FormalParameterListContext;
+import src.gen.TypeScriptParser.FunctionBodyContext;
 import src.gen.TypeScriptParser.FunctionCallContext;
+import src.gen.TypeScriptParser.FunctionExpressionDeclContext;
 import src.gen.TypeScriptParser.IfStatementContext;
 import src.gen.TypeScriptParser.InitializerContext;
 import src.gen.TypeScriptParser.LiteralContext;
@@ -65,13 +64,16 @@ import src.gen.TypeScriptParser.PropertyAssignContext;
 import src.gen.TypeScriptParser.PropertyMemberBaseContext;
 import src.gen.TypeScriptParser.PropertyNameContext;
 import src.gen.TypeScriptParser.ReferenceTypeContext;
+import src.gen.TypeScriptParser.ReturnStatementContext;
 import src.gen.TypeScriptParser.SimpleTypeContext;
+import src.gen.TypeScriptParser.SourceElemContext;
 import src.gen.TypeScriptParser.StatementContext;
 import src.gen.TypeScriptParser.TypeAnnotationContext;
 import src.gen.TypeScriptParser.TypeNameContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
 import src.heap.Heap;
 import src.heap.Reference;
+import src.symbols.Goto;
 import src.symbols.Mod;
 import src.symbols.SymbolTableStack;
 import src.symbols.SyntacticError;
@@ -84,6 +86,7 @@ import src.types.NumberType;
 import src.types.StringType;
 import src.types.Type;
 import src.values.BooleanValue;
+import src.values.ClassInstanceValue;
 import src.values.FunctionObjectValue;
 import src.values.NumberValue;
 import src.values.ObjectValue;
@@ -94,6 +97,7 @@ import src.values.Value;
  * TSVisitor
  */
 public class TSVisitor extends TypeScriptBaseVisitor<Object> {
+
 	private SymbolTableStack scope;
 	private ArrayList<SyntacticError> syntacticErrors;
 	private TypeTable typeTable;
@@ -108,7 +112,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		Reference.HEAP = new Heap();
 	}
 
-	private Reference thisStackTop(){
+	private Reference thisStackTop() {
 		return thisStack.size() == 0 ? null : thisStack.peek();
 	}
 
@@ -160,11 +164,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			}
 		} catch (NullPointerException e) {
 			// e.printStackTrace();
-			return null;
+			return Goto.NORMAL_SIGNAL;
 		} catch (SyntacticError e) {
 			addError(e);
 		}
-		return null;
+		return Goto.NORMAL_SIGNAL;
 	}
 
 	@Override
@@ -306,33 +310,32 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 				ClassInstanceType type = typeTable.getTypeByName(constructorName);
 				List<Type> argTypes = new ArrayList<>();
 				List<Value> argVals = getArguments(ctx.functionCall());
-				
-				for(int i=0; i < argVals.size(); i++)
+
+				for (int i = 0; i < argVals.size(); i++)
 					argTypes.add(argVals.get(i).getType());
-				
+
 				FunctionObjectValue constructor = type.getConstructorBySignature(constructorName, argTypes);
 
 				thisStack.push(type.createObject());
 				scope.createUnnamedScope();
-				
-				for(int i=0; i < argVals.size(); i++){
+
+				for (int i = 0; i < argVals.size(); i++) {
 					scope.declareVariable(new Variable(
-						constructor.getArgNames()[i],
-						0,
-						constructor.getArgTypes()[i],
-						argVals.get(i)
-					));
+							constructor.getArgNames()[i],
+							0,
+							constructor.getArgTypes()[i],
+							argVals.get(i)));
 				}
 
 				visit(constructor.getBody());
-				
+
 				scope.popScope();
 				return thisStack.pop();
 			}
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -386,8 +389,8 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitExprThis(ExprThisContext ctx) {
-		if( thisStack.isEmpty() ){
-			addError(new SyntacticError("this no puede ser referenciado. El contexto no es un objeto."));	
+		if (thisStack.isEmpty()) {
+			addError(new SyntacticError("this no puede ser referenciado. El contexto no es un objeto."));
 			return null;
 		}
 		return thisStack.peek();
@@ -913,13 +916,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		} catch (ClassCastException e) {
 			// e.printStackTrace();
 			addError(new SyntacticError(
-				"La expresion a la izquierda del operador . no es un objeto"
-			));
+					"La expresion a la izquierda del operador . no es un objeto"));
 			return null;
 		} catch (NullPointerException e) {
 			addError(new SyntacticError(
-				"La expresion a la izquierda del operador . no es un objeto"
-			));
+					"La expresion a la izquierda del operador . no es un objeto"));
 			// e.printStackTrace();
 			return null;
 		} catch (SyntacticError e) {
@@ -985,11 +986,17 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		scope.createUnnamedScope();
 
 		List<StatementContext> statements = ctx.statementList().statement();
-		for (int i = 0; i < statements.size(); i++)
-			visit(statements.get(i));
+		
+		int val = Goto.NORMAL_SIGNAL;
+		for (int i = 0; i < statements.size(); i++){
+			val = (Integer)visit(statements.get(i));
+
+			if( val != Goto.NORMAL_SIGNAL )
+				break;
+		}
 
 		scope.popScope();
-		return null;
+		return val;
 	}
 
 	@Override
@@ -998,29 +1005,30 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		List<StatementContext> statements = ctx.statement();
 
 		if (!conditionValue.isFalsy())
-			visit(statements.get(0));
+			return visit(statements.get(0));
 		else if (statements.size() > 1)
-			visit(statements.get(1));
+			return visit(statements.get(1));
 
-		return null;
+		return Goto.NORMAL_SIGNAL;
 	}
 
 	/**
 	 * Classes
+	 * 
 	 * @throws SyntacticError
 	 */
-	private void fillParamTypesAndNames(FormalParameterListContext ctx, ArrayList<Type> argTypes,
-			ArrayList<String> argNames) throws SyntacticError {
-				
+	private void fillParamTypesAndNames(FormalParameterListContext ctx, List<Type> argTypes,
+			List<String> argNames) throws SyntacticError {
+
 		List<FormalParameterArgContext> args = ctx.formalParameterArg();
 
-		for(int i=0; i < args.size(); i++){
-			if( args.get(i).identifierOrKeyword().TK_IDENT() == null )
+		for (int i = 0; i < args.size(); i++) {
+			if (args.get(i).identifierOrKeyword().TK_IDENT() == null)
 				throw new SyntacticError("El nombre del argumento no fue especificado");
-			if( args.get(i).typeAnnotation() == null )
+			if (args.get(i).typeAnnotation() == null)
 				throw new SyntacticError("El tipo del argumento no fue especificado");
 
-			argTypes.add((Type)visit(args.get(i).typeAnnotation()));
+			argTypes.add((Type) visit(args.get(i).typeAnnotation()));
 			argNames.add(args.get(i).identifierOrKeyword().TK_IDENT().getText());
 		}
 	}
@@ -1029,17 +1037,17 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	public Object visitClassStatement(ClassStatementContext ctx) {
 		try {
 			String typeName = ctx.TK_IDENT().getText();
-			
+
 			Object obj = visit(ctx.classHeritage());
 			ClassInstanceType superType = null;
 
-			if( obj != null ){
-				if( obj instanceof ClassInstanceType )
-					superType = (ClassInstanceType)obj;
+			if (obj != null) {
+				if (obj instanceof ClassInstanceType)
+					superType = (ClassInstanceType) obj;
 				else
 					throw new SyntacticError("La clase no hereda de un tipo de referencia");
 			}
-				
+
 			List<ClassElementContext> elems = ctx.classBody().classElement();
 
 			List<Type> propertyTypes = new ArrayList<>();
@@ -1059,67 +1067,65 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 						fillParamTypesAndNames(elem.constructorDeclaration().formalParameterList(), argTypes, argNames);
 
 					constructors.add(new FunctionObjectValue(
-						"contructor",
-						argTypes,
-						argNames,
-						elem.constructorDeclaration().functionBody()));
-				}
-				else if( elem.memberDecl() != null ){
-					if( elem.memberDecl() instanceof ClassMemberPropertyContext ){
-						ClassMemberPropertyContext propCtx = (ClassMemberPropertyContext)elem.memberDecl();
+							"contructor",
+							argTypes,
+							argNames,
+							elem.constructorDeclaration().functionBody()));
+				} else if (elem.memberDecl() != null) {
+					if (elem.memberDecl() instanceof ClassMemberPropertyContext) {
+						ClassMemberPropertyContext propCtx = (ClassMemberPropertyContext) elem.memberDecl();
 
 						Type type = null;
 						Value init = null;
-						String name = (String)visit(propCtx.propertyName());
-						int mods = (Integer)visit(propCtx.propertyMemberBase());
-						
-						if( (mods & Mod.PROTECTED) == 0  && (mods & Mod.PRIVATE) == 0 )
+						String name = (String) visit(propCtx.propertyName());
+						int mods = (Integer) visit(propCtx.propertyMemberBase());
+
+						if ((mods & Mod.PROTECTED) == 0 && (mods & Mod.PRIVATE) == 0)
 							mods |= Mod.PUBLIC;
 
-						if( propCtx.typeAnnotation() != null )
-							type = (Type)visit(propCtx.typeAnnotation());
-						if( propCtx.initializer() != null )
-							init = (Value)visit(propCtx.initializer());
-						
-						if( type == null ){
-							if( init != null )
+						if (propCtx.typeAnnotation() != null)
+							type = (Type) visit(propCtx.typeAnnotation());
+						if (propCtx.initializer() != null)
+							init = (Value) visit(propCtx.initializer());
+
+						if (type == null) {
+							if (init != null)
 								type = init.getType();
 							else
 								throw new SyntacticError("No se ha podido inferir el tipo de la propiedad " + name);
 						}
 
-						if( type != null && init != null && !type.isExtendedType(init.getType()) )
-							throw new SyntacticError("El valor " + init + " no puede ser asignado a una variable de tipo " + type);
+						if (type != null && init != null && !type.isExtendedType(init.getType()))
+							throw new SyntacticError(
+									"El valor " + init + " no puede ser asignado a una variable de tipo " + type);
 
-						if( (mods & Mod.STATIC) > 0 ){
-							if( init == null )
+						if ((mods & Mod.STATIC) > 0) {
+							if (init == null)
 								staticValues.put(name, new Variable(name, mods, type));
 							else
 								staticValues.put(name, new Variable(name, mods, type, init));
-						}
-						else{
+						} else {
 							propertyNames.add(name);
 							propertyTypes.add(type);
 							modifiers.add(mods);
 
-							if( init != null )
+							if (init != null)
 								initValues.put(name, init);
 						}
 					}
 				}
 			}
-			
+
 			ClassInstanceType newType = new ClassInstanceType(
-				typeName,
-				superType,
-				propertyTypes,
-				propertyNames,
-				modifiers,
-				constructors,
-				methods,
-				staticValues,
-				initValues
-			);
+					typeName,
+					superType,
+					propertyTypes,
+					propertyNames,
+					modifiers,
+					constructors,
+					methods,
+					staticValues,
+					initValues);
 
 			typeTable.declareType(newType);
 
@@ -1127,7 +1133,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
-		} catch (NullPointerException e){
+		} catch (NullPointerException e) {
 			// e.printStackTrace();
 			return null;
 		}
@@ -1149,21 +1155,155 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public Object visitPropertyMemberBase(PropertyMemberBaseContext ctx) {
 		Integer modifiers = 0;
 
-		if( ctx.accessModifier() != null )
-			modifiers |= (Integer)visit(ctx.accessModifier());
-		if( ctx.TK_STATIC() != null )
-			modifiers |= Mod.STATIC; 
-		if( ctx.TK_ASYNC() != null )
-			modifiers |= Mod.ASYNC; 
-		if( ctx.TK_READ_ONLY() != null )
-			modifiers |= Mod.READONLY; 
-		
+		if (ctx.accessModifier() != null)
+			modifiers |= (Integer) visit(ctx.accessModifier());
+		if (ctx.TK_STATIC() != null)
+			modifiers |= Mod.STATIC;
+		if (ctx.TK_ASYNC() != null)
+			modifiers |= Mod.ASYNC;
+		if (ctx.TK_READ_ONLY() != null)
+			modifiers |= Mod.READONLY;
+
 		return modifiers;
+	}
+
+	/**
+	 * Llamadas a funciones
+	 */
+	@Override
+	public Object visitExprFunctionCall(ExprFunctionCallContext ctx) {
+		return visit(ctx.functionCall());
+	}
+
+	@Override
+	public Object visitFunctionCall(FunctionCallContext ctx) {
+		try {
+			FunctionObjectValue f = null;
+
+			List<Type> argTypes = new ArrayList<>();
+			List<Value> argVals = getArguments(ctx);
+
+			for (int i = 0; i < argVals.size(); i++)
+				argTypes.add(argVals.get(i).getType());
+
+			if (ctx.TK_IDENT() != null) {
+				String name = ctx.TK_IDENT().getText();
+
+				Value tmp = scope.getValueOf(name);
+
+				if (thisStackTop() != null) {
+					try {
+						ClassInstanceType type = (ClassInstanceType) (thisStackTop().getType());
+						tmp = type.getMethodBySignature(name, argTypes);
+					} catch (Exception e) {
+						// pass
+					}
+				}
+
+				if (tmp instanceof FunctionObjectValue)
+					f = (FunctionObjectValue) tmp;
+				else
+					throw new SyntacticError(
+							ctx.TK_IDENT().getText() + " no es el nombre de una funcion en el contexto actual");
+			} else {
+				f = (FunctionObjectValue) visit(ctx.functionExpressionDecl());
+			}
+
+			scope.createUnnamedScope();
+
+			for (int i = 0; i < argVals.size(); i++) {
+				scope.declareVariable(new Variable(
+						f.getArgNames()[i],
+						0,
+						f.getArgTypes()[i],
+						argVals.get(i)));
+			}
+
+			visit(f.getBody());
+
+			// System.out.println(scope.getTop());
+
+			Value returnValue = null;
+			if (scope.isDeclaredOnTop("[@return]"))
+				returnValue = scope.getValueOf("[@return]");
+			else
+				returnValue = new BooleanType().undefinedValue();
+
+			// System.out.println("SCOPE: " + scope.size());
+			scope.popScope();
+			// System.out.println("SCOPE: " + scope.size());
+			return returnValue;
+
+		} catch (SyntacticError e) {
+			// e.printStackTrace();
+			addError(e);
+			return null;
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitFunctionExpressionDecl(FunctionExpressionDeclContext ctx) {
+		try {
+			String name = null;
+
+			if (ctx.TK_IDENT() != null)
+				name = ctx.TK_IDENT().getText();
+
+			List<Type> argTypes = new ArrayList<>();
+			List<String> argNames = new ArrayList<>();
+
+			if (ctx.formalParameterList() != null)
+				fillParamTypesAndNames(ctx.formalParameterList(), argTypes, argNames);
+
+			return new FunctionObjectValue(name, argTypes, argNames, ctx.functionBody());
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitFunctionBody(FunctionBodyContext ctx) {
+		List<SourceElemContext> elems = ctx.sourceElem();
+
+		// System.out.println("FUNCTION BODY");
+		// System.out.println(ctx.getText());
+		for (int i = 0; i < elems.size(); i++) {
+			if ((Integer) visit(elems.get(i).statement()) == Goto.RETURN_SIGNAL)
+				break;
+		}
+		// System.out.println("FUNCTION BODY");
+
+		return Goto.NORMAL_SIGNAL;
+	}
+
+	@Override
+	public Object visitReturnStatement(ReturnStatementContext ctx) {
+		// System.out.println("RETURN STATEMENT");
+		try {
+			if (ctx.expressionSequence() != null) {
+				Value value = (Value) visit(ctx.expressionSequence());
+
+				scope.declareVariable(new Variable(
+						"[@return]",
+						0,
+						value.getType(),
+						value));
+			}
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		}
+		return Goto.RETURN_SIGNAL;
 	}
 
 	public TypeTable getTypeTable() {

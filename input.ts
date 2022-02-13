@@ -1,46 +1,18 @@
 
-class B{
-	protected p: string;
-}
-
-class A extends B{
-	a: number;
-	b: number;
-	c = {fr: 1, sc: 2};
+let fib = function(n: number){
+	if( n == 1 || n == 0 )
+		return 1;
 	
-	constructor(a: number, b: number, s: string){
-		super();
-		
-		if( a < 0 && b < 0 ){
-			this.a = -a;
-			this.b = -b;
-		}
-		else{
-			this.a = a;
-			this.b = b;
-		}
-
-		this.c.fr = 4;
-		
-		this.p = s;
-		(this.p);
-	}
+	return fib(n-1) + fib(n-2);
 }
 
-let obj1 = new A(3, 5, "luis");
-let obj2 = new A(-100, -2000, "casa");
+let fib2 = function fib(n: number){
+	if ( n < 5 )
+		return 0;
+	else	
+		return 1;
+}
 
-(obj1);
-(obj2);
+let b = fib(6);
 
-
-//Quitar el self
-
-
-
-
-
-
-
-
-// reservar espacio en los arreglos de propiedades para las de las clases superiores. (en los classinstancevalues)
+(b);

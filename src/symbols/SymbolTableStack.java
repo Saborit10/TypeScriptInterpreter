@@ -49,4 +49,16 @@ public class SymbolTableStack {
 	public void popScope() {
 		stack.remove(stack.size()-1);
 	}
+
+	public boolean isDeclaredOnTop(String varName) {
+		return top().isDeclaredOnTop(varName);
+	}
+
+	public int size() {
+		return stack.size();
+	}
+
+	public SymbolTable getTop() {
+		return top();
+	}
 }

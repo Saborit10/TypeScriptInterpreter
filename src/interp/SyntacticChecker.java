@@ -1,13 +1,13 @@
 package src.interp;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import src.symbols.SyntacticError;
 
 public class SyntacticChecker {
 	
-	public static void noEqualPair(ArrayList<String> names) throws SyntacticError{
+	public static void noEqualPair(List<String> names) throws SyntacticError{
 		String[] ord = new String[names.size()];
 
 		for(int i=0; i < names.size(); i++)

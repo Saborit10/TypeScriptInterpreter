@@ -18,17 +18,17 @@ block
 
 /* Sentencia */
 statement
-	: block
-	| variableStatement
-	| ifStatement
+	: block //
+	| variableStatement //
+	| ifStatement //
 	| forStatement
 	| whileStatement
 	| doStatement
 	| switchStatement
-	| classStatement
+	| classStatement //*
 	| continueStatement
-    | breakStatement
-    | returnStatement 
+    | breakStatement //
+    | returnStatement //
 	| functionStatement
 	| expressionStatement
 	| emptyStatement

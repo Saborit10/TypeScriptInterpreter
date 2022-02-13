@@ -1,0 +1,39 @@
+
+class B{
+	public p: string;
+}
+
+class A extends B{
+	a: number;
+	b: number;
+	c = {fr: 1, sc: 2};
+	
+	constructor(a: number, b: number, s: string){
+		super();
+		
+		if( a < 0 && b < 0 ){
+			this.a = -a;
+			this.b = -b;
+		}
+		else{
+			this.a = a;
+			this.b = b;
+		}
+
+		this.c.fr = 4;
+		
+		this.p = s;
+	}
+}
+
+let obj1 = new A(3, 5, "luis");
+let obj2 = new A(-100, -2000, "casa");
+
+(obj1.a);
+(obj2);
+(obj1.p);
+
+
+//Quitar el self
+// La asignacion agrega dobles los errores
+

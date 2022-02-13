@@ -121,4 +121,8 @@ public class SymbolTable{
 		return ans;
 	}
 
+	public boolean isDeclaredOnTop(String name) {
+		return symbols.containsKey(name);
+	}
+
 }
