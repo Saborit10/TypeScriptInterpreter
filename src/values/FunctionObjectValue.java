@@ -99,4 +99,18 @@ public class FunctionObjectValue extends ObjectValue{
 	public String[] getArgNames() {
 		return argNames;
 	}
+
+	@Override
+	public String toString() {
+		String ans = name + "(";
+		for(int i=0; i < argTypes.length; i++){
+			ans += argTypes[i];
+
+			if( i < argTypes.length - 1 )
+				ans += ", ";
+		}
+		return ans + ")";
+	}
+
+	
 }

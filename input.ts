@@ -1,11 +1,25 @@
 
-function fib(n: number){
-	if( n == 1 || n == 0 )
-		return 1;
-	
-	return fib(n-1) + fib(n-2);
+function pi(){
+	return 3.14159;
 }
 
-let b = fib(6);
+class Circle{
+	private radio: number; 
+	public length: number;
 
-(b);
+	constructor(radio: number){
+		this.radio = radio;
+		this.length = 2 * pi() * this.radio;
+	}
+
+	public getLength() {
+		return length;
+	}
+	public getLength2(a: number, b: string) {
+		return this.getLength();
+	}
+}
+
+let circle = new Circle(5);
+
+// (circle.length);

@@ -168,17 +168,9 @@ public class ClassInstanceType extends ObjectType{
 
 		ans += "\nMethods:\n";
 
-		for(int i=0; i < methods.size(); i++){
-			ans += methods.get(i).toString() + "\n";
+		for(int i=0; i < methods.size(); i++)
+			ans += methods.get(i) + "\n";
 			
-			for(int j=0; j < methods.get(i).getArgTypes().length; j++){
-				ans += methods.get(i).getArgTypes()[j];
-				
-				if( j < methods.get(i).getArgTypes().length-1 )
-					ans += ", ";
-			}
-			ans += ")\n";
-		}
 		ans += "\nProperties:\n";
 
 		for(int i=0; i < propertyTypes.length; i++)

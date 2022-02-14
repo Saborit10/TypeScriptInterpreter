@@ -16,6 +16,7 @@ import src.gen.TypeScriptParser.BlockContext;
 import src.gen.TypeScriptParser.CallSignatureContext;
 import src.gen.TypeScriptParser.ClassElementContext;
 import src.gen.TypeScriptParser.ClassHeritageContext;
+import src.gen.TypeScriptParser.ClassMemberMethodContext;
 import src.gen.TypeScriptParser.ClassMemberPropertyContext;
 import src.gen.TypeScriptParser.ClassStatementContext;
 import src.gen.TypeScriptParser.ExprAndAsigContext;
@@ -49,6 +50,7 @@ import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
 import src.gen.TypeScriptParser.ExprThisContext;
 import src.gen.TypeScriptParser.ExpressionContext;
+import src.gen.TypeScriptParser.ExpressionStatementContext;
 import src.gen.TypeScriptParser.FormalParameterArgContext;
 import src.gen.TypeScriptParser.FormalParameterListContext;
 import src.gen.TypeScriptParser.FunctionBodyContext;
@@ -89,7 +91,6 @@ import src.types.NumberType;
 import src.types.StringType;
 import src.types.Type;
 import src.values.BooleanValue;
-import src.values.ClassInstanceValue;
 import src.values.FunctionObjectValue;
 import src.values.NumberValue;
 import src.values.ObjectValue;
@@ -1116,6 +1117,33 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 								initValues.put(name, init);
 						}
 					}
+					else if (elem.memberDecl() instanceof ClassMemberMethodContext) {
+						ClassMemberMethodContext membCtx = (ClassMemberMethodContext) elem.memberDecl();
+
+						String name = (String) visit(membCtx.propertyName());
+						int mods = (Integer) visit(membCtx.propertyMemberBase());
+
+						if ((mods & Mod.PROTECTED) == 0 && (mods & Mod.PRIVATE) == 0)
+							mods |= Mod.PUBLIC;
+
+						List<String> argNames = new ArrayList<>();
+						List<Type> argTypes = new ArrayList<>();
+
+						fillParamTypesAndNames(membCtx.callSignature(), argTypes, argNames);
+
+						FunctionObjectValue func = new FunctionObjectValue(
+							name,
+							argTypes,
+							argNames,
+							membCtx.functionBody()
+						);
+
+						if ((mods & Mod.STATIC) > 0) {
+							staticValues.put(name, new Variable(name, mods, func.getType(), func));
+						} else {
+							methods.add(func);
+						}
+					}
 				}
 			}
 
@@ -1286,6 +1314,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		}
 		// System.out.println("FUNCTION BODY");
 
+		return Goto.NORMAL_SIGNAL;
+	}
+
+	@Override
+	public Object visitExpressionStatement(ExpressionStatementContext ctx) {
+		visit(ctx.expression());
 		return Goto.NORMAL_SIGNAL;
 	}
 
