@@ -1,18 +1,9 @@
 
-class factorial{
-	
-	constructor(){
+let a: Function;
 
-	}
+a = function(a: number, b: number){ return a + b; };
 
-	calc(n: number){
-		if( n == 1 )
-			return 1;
-		return n * this.calc(n-1);
-	}
-}
 
-let F = new factorial();
+(a(3, 5));
 
-(F.calc(10));
 //Metodos estaticos

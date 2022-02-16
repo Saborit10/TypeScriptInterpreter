@@ -30,6 +30,7 @@ import src.gen.TypeScriptParser.ExprDotFunctionCallContext;
 import src.gen.TypeScriptParser.ExprDotIdentContext;
 import src.gen.TypeScriptParser.ExprEqualityContext;
 import src.gen.TypeScriptParser.ExprFunctionCallContext;
+import src.gen.TypeScriptParser.ExprFunctionObjectContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprLogicAndContext;
 import src.gen.TypeScriptParser.ExprLogicOrContext;
@@ -87,6 +88,8 @@ import src.symbols.Variable;
 import src.types.ArrayObjectType;
 import src.types.BooleanType;
 import src.types.ClassInstanceType;
+import src.types.FunctionObjectType;
+import src.types.LiteralObjectType;
 import src.types.NumberType;
 import src.types.StringType;
 import src.types.Type;
@@ -161,15 +164,17 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 					if (var.getType() == null)
 						var.setType(init.getType());
 				} else {
+					// System.out.println(var.getType().undefinedValue());
 					var.setValue(var.getType().undefinedValue());
 				}
-
+				
 				scope.declareVariable(var);
 			}
 		} catch (NullPointerException e) {
 			// e.printStackTrace();
 			return Goto.NORMAL_SIGNAL;
 		} catch (SyntacticError e) {
+			e.printStackTrace();
 			addError(e);
 		}
 		return Goto.NORMAL_SIGNAL;
@@ -261,6 +266,45 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		else if (ctx.arrayType() != null)
 			return visit(ctx.arrayType());
 		return null;
+	}
+
+	@Override
+	public Object visitReferenceType(ReferenceTypeContext ctx) {
+		try {
+			String typeName = ctx.getText();
+
+			if( typeName.equals("Function") )
+				return new FunctionObjectType();
+			else if( typeName.equals("String") )
+				return new StringType();
+			else if( typeName.equals("object") )
+				return new LiteralObjectType();
+
+			return getTypeByName(typeName);
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitSimpleType(SimpleTypeContext ctx) {
+		if (ctx.primitiveType() != null)
+			return visit(ctx.primitiveType());
+		else
+			return visit(ctx.referenceType());
+	}
+
+	@Override
+	public Object visitPrimitiveType(PrimitiveTypeContext ctx) {
+		String type = ctx.getText();
+
+		if (type.equals("number"))
+			return new NumberType();
+		else if (type.equals("boolean"))
+			return new BooleanType();
+		else
+			return new StringType();
 	}
 
 	@Override
@@ -380,42 +424,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	}
 
 	@Override
-	public Object visitPrimitiveType(PrimitiveTypeContext ctx) {
-		String type = ctx.getText();
-
-		if (type.equals("number"))
-			return new NumberType();
-		else if (type.equals("boolean"))
-			return new BooleanType();
-		else
-			return new StringType();
-	}
-
-	@Override
 	public Object visitExprThis(ExprThisContext ctx) {
 		if (thisStack.isEmpty()) {
 			addError(new SyntacticError("this no puede ser referenciado. El contexto no es un objeto."));
 			return null;
 		}
 		return thisStack.peek();
-	}
-
-	@Override
-	public Object visitReferenceType(ReferenceTypeContext ctx) {
-		try {
-			return getTypeByName(ctx.getText());
-		} catch (SyntacticError e) {
-			addError(e);
-			return null;
-		}
-	}
-
-	@Override
-	public Object visitSimpleType(SimpleTypeContext ctx) {
-		if (ctx.primitiveType() != null)
-			return visit(ctx.primitiveType());
-		else
-			return visit(ctx.referenceType());
 	}
 
 	@Override
@@ -549,6 +563,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		try {
 			return makeAssign(ctx);
 		} catch (SyntacticError e) {
+			// e.printStackTrace();
 			addError(e);
 			return null;
 		} catch (NullPointerException e) {
@@ -999,6 +1014,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	}
 
 	@Override
+	public Object visitExprFunctionObject(ExprFunctionObjectContext ctx) {
+		return visit(ctx.functionExpressionDecl());
+	}
+
+	@Override
 	public Object visitExprObjectIndex(ExprObjectIndexContext ctx) {
 		try {
 			ObjectValue objValue = (ObjectValue) visit(ctx.expression());
@@ -1296,15 +1316,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 				Value tmp = scope.getValueOf(name);
 
-				// if (thisStackTop() != null) {
-				// 	try {
-				// 		ClassInstanceType type = (ClassInstanceType) (thisStackTop().getType());
-				// 		tmp = type.getMethodBySignature(name, argTypes);
-				// 	} catch (Exception e) {
-				// 		// pass
-				// 	}
-				// }
-
 				if (tmp instanceof FunctionObjectValue)
 					f = (FunctionObjectValue) tmp;
 				else
@@ -1326,21 +1337,16 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 			visit(f.getBody());
 
-			// System.out.println(scope.getTop());
-
 			Value returnValue = null;
 			if (scope.isDeclaredOnTop("[@return]"))
 				returnValue = scope.getValueOf("[@return]");
 			else
 				returnValue = new BooleanType().undefinedValue();
 
-			// System.out.println("SCOPE: " + scope.size());
 			scope.popScope();
-			// System.out.println("SCOPE: " + scope.size());
 			return returnValue;
 
 		} catch (SyntacticError e) {
-			// e.printStackTrace();
 			addError(e);
 			return null;
 		} catch (NullPointerException e) {

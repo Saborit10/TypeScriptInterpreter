@@ -27,7 +27,7 @@ public class FunctionObjectType extends ObjectType{
 
 	@Override
 	public boolean isExtendedType(Type t) {
-		return false;
+		return isEqualType(t);
 	}
 
 	@Override

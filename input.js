@@ -1,6 +1,3 @@
-var factorial = /** @class */ (function () {
-    function factorial() {
-    }
-    return factorial;
-}());
+var a;
+a = function (a, b) { return a + b; };
 //Metodos estaticos

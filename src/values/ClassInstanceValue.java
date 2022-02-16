@@ -180,8 +180,6 @@ public class ClassInstanceValue extends ObjectValue{
 	public Value get(Reference thisRef, String propName) throws SyntacticError{
 		String[] propertyNames = prototype.getPropertyNames();
 		
-		// System.out.println("LOOKING IN: " + this + " -> " + Arrays.toString(propertyNames));
-		
 		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) ){
 				// System.out.println("FOUND!!!");
@@ -190,7 +188,7 @@ public class ClassInstanceValue extends ObjectValue{
 				throw new SyntacticError("La propiedad " + propName + " no es accesible");
 			}
 		}
-		// System.out.println("No se encontro " + propName + " en " + prototype + ". A buscarla en " + prototype.getSuperType() + " -> " + superValue);
+		
 		if( prototype.getSuperType() == null )
 			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
 		else

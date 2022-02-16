@@ -102,6 +102,9 @@ public class FunctionObjectValue extends ObjectValue{
 
 	@Override
 	public String toString() {
+		if( undefined == true )
+			return "undefined";
+			
 		String ans = name + "(";
 		for(int i=0; i < argTypes.length; i++){
 			ans += argTypes[i];

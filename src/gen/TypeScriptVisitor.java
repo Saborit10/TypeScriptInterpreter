@@ -593,13 +593,6 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprLogicOr(TypeScriptParser.ExprLogicOrContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprFuncionObject}
-	 * labeled alternative in {@link TypeScriptParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprFuncionObject(TypeScriptParser.ExprFuncionObjectContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ExprArrayLiteral}
 	 * labeled alternative in {@link TypeScriptParser#expression}.
 	 * @param ctx the parse tree
@@ -697,6 +690,13 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprThis(TypeScriptParser.ExprThisContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprFunctionObject}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprFunctionObject(TypeScriptParser.ExprFunctionObjectContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#formalParameterList}.
 	 * @param ctx the parse tree

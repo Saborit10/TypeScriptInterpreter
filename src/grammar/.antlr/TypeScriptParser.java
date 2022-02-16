@@ -4260,12 +4260,6 @@ public class TypeScriptParser extends Parser {
 		public TerminalNode TK_LOGIC_OR() { return getToken(TypeScriptParser.TK_LOGIC_OR, 0); }
 		public ExprLogicOrContext(ExpressionContext ctx) { copyFrom(ctx); }
 	}
-	public static class ExprFuncionObjectContext extends ExpressionContext {
-		public FunctionExpressionDeclContext functionExpressionDecl() {
-			return getRuleContext(FunctionExpressionDeclContext.class,0);
-		}
-		public ExprFuncionObjectContext(ExpressionContext ctx) { copyFrom(ctx); }
-	}
 	public static class ExprArrayLiteralContext extends ExpressionContext {
 		public ArrayLiteralContext arrayLiteral() {
 			return getRuleContext(ArrayLiteralContext.class,0);
@@ -4387,6 +4381,12 @@ public class TypeScriptParser extends Parser {
 		public TerminalNode TK_THIS() { return getToken(TypeScriptParser.TK_THIS, 0); }
 		public ExprThisContext(ExpressionContext ctx) { copyFrom(ctx); }
 	}
+	public static class ExprFunctionObjectContext extends ExpressionContext {
+		public FunctionExpressionDeclContext functionExpressionDecl() {
+			return getRuleContext(FunctionExpressionDeclContext.class,0);
+		}
+		public ExprFunctionObjectContext(ExpressionContext ctx) { copyFrom(ctx); }
+	}
 
 	public final ExpressionContext expression() throws RecognitionException {
 		return expression(0);
@@ -4409,7 +4409,7 @@ public class TypeScriptParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,75,_ctx) ) {
 			case 1:
 				{
-				_localctx = new ExprFuncionObjectContext(_localctx);
+				_localctx = new ExprFunctionObjectContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 

@@ -4721,17 +4721,6 @@ public class TypeScriptParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class ExprFuncionObjectContext extends ExpressionContext {
-		public FunctionExpressionDeclContext functionExpressionDecl() {
-			return getRuleContext(FunctionExpressionDeclContext.class,0);
-		}
-		public ExprFuncionObjectContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitExprFuncionObject(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 	public static class ExprArrayLiteralContext extends ExpressionContext {
 		public ArrayLiteralContext arrayLiteral() {
 			return getRuleContext(ArrayLiteralContext.class,0);
@@ -4923,6 +4912,17 @@ public class TypeScriptParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class ExprFunctionObjectContext extends ExpressionContext {
+		public FunctionExpressionDeclContext functionExpressionDecl() {
+			return getRuleContext(FunctionExpressionDeclContext.class,0);
+		}
+		public ExprFunctionObjectContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TypeScriptVisitor ) return ((TypeScriptVisitor<? extends T>)visitor).visitExprFunctionObject(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 
 	public final ExpressionContext expression() throws RecognitionException {
 		return expression(0);
@@ -4945,7 +4945,7 @@ public class TypeScriptParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,75,_ctx) ) {
 			case 1:
 				{
-				_localctx = new ExprFuncionObjectContext(_localctx);
+				_localctx = new ExprFunctionObjectContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 

@@ -348,7 +348,7 @@ assignmentOperator
 	;
 
 expression
-	: functionExpressionDecl														#ExprFuncionObject 
+	: functionExpressionDecl														#ExprFunctionObject //
 	| expression '[' expressionSequence ']'											#ExprObjectIndex //
     | expression '.' identifier														#ExprDotIdent //
     | expression '.' functionCall													#ExprDotFunctionCall
