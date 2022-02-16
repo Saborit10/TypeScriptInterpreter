@@ -1,25 +1,18 @@
 
-function pi(){
-	return 3.14159;
-}
+class factorial{
+	
+	constructor(){
 
-class Circle{
-	private radio: number; 
-	public length: number;
-
-	constructor(radio: number){
-		this.radio = radio;
-		this.length = 2 * pi() * this.radio;
 	}
 
-	public getLength() {
-		return length;
-	}
-	public getLength2(a: number, b: string) {
-		return this.getLength();
+	calc(n: number){
+		if( n == 1 )
+			return 1;
+		return n * this.calc(n-1);
 	}
 }
 
-let circle = new Circle(5);
+let F = new factorial();
 
-// (circle.length);
+(F.calc(10));
+//Metodos estaticos

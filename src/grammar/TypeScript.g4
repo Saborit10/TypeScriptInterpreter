@@ -369,7 +369,7 @@ expression
     | expression TK_LOGIC_AND expression											#ExprLogicAnd // 
     | expression TK_LOGIC_OR expression												#ExprLogicOr //
 	| expression TK_QMARK expression TK_COLON expression							#ExprTernaryOperator
-	| functionCall																	#ExprFunctionCall
+	| functionCall																	#ExprFunctionCall //
 	| TK_LPARENT expressionSequence TK_RPARENT										#ExprParent //
 	| expression TK_EQ expression													#ExprAsig //
 	| expression TK_PLUS_ASIGN expression											#ExprPlusAsig //
@@ -379,7 +379,7 @@ expression
 	| expression TK_PERCENT_ASIGN expression										#ExprPercentAsig //
 	| expression TK_AND_ASIGN expression											#ExprAndAsig //
 	| expression TK_OR_ASIGN expression												#ExprOrAsig //
-	| TK_NEW functionCall															#ExprNew
+	| TK_NEW functionCall															#ExprNew //
 	| arrayLiteral																	#ExprArrayLiteral //
 	| objectLiteral																	#ExprObjectLiteral //
 	| literal																		#ExprPrimitiveLiteral //

@@ -16,14 +16,14 @@ public class ClassInstanceType extends ObjectType{
 	private String typeName; 
 	private ClassInstanceType superType;
 	private List<FunctionObjectValue> constructors;
-	private List<FunctionObjectValue> methods;
+	private List<Variable> methods;
 	private Map<String, Variable> staticValues;
 	private Map<String, Value> initValues;
 	private int[] modifiers;
 	
 	public ClassInstanceType(String typeName, ClassInstanceType superType, List<Type> propertyTypes,
 		List<String> propertyNames, List<Integer> modifiers, List<FunctionObjectValue> constructors,
-		List<FunctionObjectValue> methods, Map<String, Variable> staticValues, Map<String, Value> initValues){
+		List<Variable> methods, Map<String, Variable> staticValues, Map<String, Value> initValues){
 		
 		this.superType = superType;
 		this.typeName = typeName;
@@ -40,6 +40,14 @@ public class ClassInstanceType extends ObjectType{
 			this.propertyNames[i] = propertyNames.get(i);
 			this.modifiers[i] = modifiers.get(i);
 		}
+	}
+
+	public List<Variable> getMethods() {
+		return methods;
+	}
+
+	public void setMethods(List<Variable> methods) {
+		this.methods = methods;
 	}
 
 	public ClassInstanceType getSuperType() {
@@ -100,8 +108,9 @@ public class ClassInstanceType extends ObjectType{
 
 	public FunctionObjectValue getMethodBySignature(String name, List<Type> argTypes) throws SyntacticError{
 		for(int i=0; i < methods.size(); i++){
-			if( methods.get(i).getName().equals(name) && isCompatibleSignature(methods.get(i), argTypes) )
-				return methods.get(i);
+			FunctionObjectValue f = (FunctionObjectValue)methods.get(i).getValue();
+			if( f.getName().equals(name) && isCompatibleSignature(f, argTypes) )
+				return f;
 		}
 
 		if( superType != null )

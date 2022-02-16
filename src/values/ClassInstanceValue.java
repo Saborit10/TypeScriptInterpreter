@@ -1,11 +1,11 @@
 package src.values;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.util.List;
 
 import src.heap.Reference;
 import src.symbols.Mod;
 import src.symbols.SyntacticError;
+import src.symbols.Variable;
 import src.types.ClassInstanceType;
 import src.types.Type;
 
@@ -159,11 +159,7 @@ public class ClassInstanceValue extends ObjectValue{
 		return ans + "}";
 	}
 
-	private boolean grantAccess(int propIndex, Reference thisRef){
-		int propertyMods = prototype.getModifiers()[propIndex];
-		
-		// System.out.println("THISREF: " + thisRef);
-
+	private boolean grantAccess(int propertyMods, Reference thisRef){
 		boolean thisIsSubclass = false;
 		boolean thisIsSameClass = false;
 		
@@ -189,7 +185,7 @@ public class ClassInstanceValue extends ObjectValue{
 		for(int i=0; i < propertyValues.length; i++){
 			if( propertyNames[i].equals(propName) ){
 				// System.out.println("FOUND!!!");
-				if( grantAccess(i, thisRef) )
+				if( grantAccess(prototype.getModifiers()[i], thisRef) )
 					return propertyValues[i];
 				throw new SyntacticError("La propiedad " + propName + " no es accesible");
 			}
@@ -209,7 +205,7 @@ public class ClassInstanceValue extends ObjectValue{
 			if( propertyNames[i].equals(propName) ){
 				if( !propertyValues[i].getType().isExtendedType(value.getType()) )
 					throw new SyntacticError(value + " no es de tipo " + propertyValues[i].getType());
-				if( !grantAccess(i, thisRef) )
+				if( !grantAccess(prototype.getModifiers()[i], thisRef) )
 					throw new SyntacticError("La propiedad " + propName + " no es accesible");
 				propertyValues[i] = value;
 				return;
@@ -220,6 +216,24 @@ public class ClassInstanceValue extends ObjectValue{
 			throw new SyntacticError("La propiedad " + propName + " no esta definida o no es accesible");
 		else
 			superValue.set(thisRef, propName, value);
+	}
+
+	public FunctionObjectValue getMethod(Reference thisRef, String methName) throws SyntacticError{
+		List<Variable> methods = prototype.getMethods();
+		
+		for(int i=0; i < methods.size(); i++){
+			FunctionObjectValue f = (FunctionObjectValue)methods.get(i).getValue();
+			if( f.getName().equals(methName) ){
+				if( grantAccess(methods.get(i).getModifiers(), thisRef) )
+					return f;
+				throw new SyntacticError("El metodo " + methName + " no es accesible");
+			}
+		}
+		
+		if( prototype.getSuperType() == null )
+			throw new SyntacticError("El metodo " + methName + " no esta definida o no es accesible");
+		else
+			return superValue.getMethod(thisRef, methName);
 	}
 
 	@Override

@@ -935,6 +935,70 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	}
 
 	@Override
+	public Object visitExprDotFunctionCall(ExprDotFunctionCallContext ctx) {
+		// System.out.println("OK");
+		try {
+			Reference ref = (Reference) visit(ctx.expression());
+			
+			if( ctx.functionCall().TK_IDENT() != null ){
+				Value value = ref.getMethod(thisStackTop(), ctx.functionCall().TK_IDENT().getText());
+
+				if( value instanceof FunctionObjectValue ){
+					FunctionObjectValue f = (FunctionObjectValue)value;
+
+					List<Type> argTypes = new ArrayList<>();
+					List<Value> argVals = getArguments(ctx.functionCall());
+
+					for (int i = 0; i < argVals.size(); i++)
+						argTypes.add(argVals.get(i).getType());
+
+					scope.createUnnamedScope();
+					thisStack.add(ref);
+
+					for(int i=0; i < argVals.size(); i++){
+						scope.declareVariable(new Variable(
+							f.getArgNames()[i],
+							0,
+							f.getArgTypes()[i],
+							argVals.get(i)
+						));
+					}
+
+					visit(f.getBody());
+
+					Value returnValue = null;
+					if( scope.isDeclaredOnTop("[@return]") )
+						returnValue = scope.getValueOf("[@return]");
+					else
+						returnValue = new BooleanType().undefinedValue();
+
+					scope.popScope();
+					thisStack.pop();
+
+					return returnValue;
+				}
+				else
+					throw new SyntacticError(ctx.functionCall().TK_IDENT().getText() + " no es una funcion");
+			
+			}
+			else
+				throw new SyntacticError(ctx.functionCall().getText() + " no se puede llamar desde " + ctx.expression().getText());
+		} catch (ClassCastException e) {
+			addError(new SyntacticError(
+					"La expresion a la izquierda del operador . no es un objeto"));
+			return null;
+		} catch (NullPointerException e) {
+			addError(new SyntacticError(
+					"La expresion a la izquierda del operador . no es un objeto"));
+			return null;
+		} catch (SyntacticError e) {
+			// e.printStackTrace();
+			addError(e);
+			return null;
+		}
+	}
+
+	@Override
 	public Object visitExprObjectIndex(ExprObjectIndexContext ctx) {
 		try {
 			ObjectValue objValue = (ObjectValue) visit(ctx.expression());
@@ -1057,7 +1121,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			List<Type> propertyTypes = new ArrayList<>();
 			List<String> propertyNames = new ArrayList<>();
 			List<FunctionObjectValue> constructors = new ArrayList<>();
-			List<FunctionObjectValue> methods = new ArrayList<>();
+			List<Variable> methods = new ArrayList<>();
 			Map<String, Variable> staticValues = new TreeMap<>();
 			Map<String, Value> initValues = new TreeMap<>();
 			List<Integer> modifiers = new ArrayList<>();
@@ -1141,7 +1205,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 						if ((mods & Mod.STATIC) > 0) {
 							staticValues.put(name, new Variable(name, mods, func.getType(), func));
 						} else {
-							methods.add(func);
+							methods.add(new Variable(
+								func.getName(),
+								mods,
+								func.getType(),
+								func
+							));
 						}
 					}
 				}
@@ -1227,14 +1296,14 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 				Value tmp = scope.getValueOf(name);
 
-				if (thisStackTop() != null) {
-					try {
-						ClassInstanceType type = (ClassInstanceType) (thisStackTop().getType());
-						tmp = type.getMethodBySignature(name, argTypes);
-					} catch (Exception e) {
-						// pass
-					}
-				}
+				// if (thisStackTop() != null) {
+				// 	try {
+				// 		ClassInstanceType type = (ClassInstanceType) (thisStackTop().getType());
+				// 		tmp = type.getMethodBySignature(name, argTypes);
+				// 	} catch (Exception e) {
+				// 		// pass
+				// 	}
+				// }
 
 				if (tmp instanceof FunctionObjectValue)
 					f = (FunctionObjectValue) tmp;
