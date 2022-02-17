@@ -1,9 +1,12 @@
 
-let a: Function;
+function f(a: object){
+	return a[0];
+}
 
-a = function(a: number, b: number){ return a + b; };
+let arr = [3, 2, 1, 5];
+// let arr = new Array(3, 2, 1, 5);
+
+(f(arr));
 
 
-(a(3, 5));
 
-//Metodos estaticos

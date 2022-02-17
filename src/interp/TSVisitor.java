@@ -91,6 +91,7 @@ import src.types.ClassInstanceType;
 import src.types.FunctionObjectType;
 import src.types.LiteralObjectType;
 import src.types.NumberType;
+import src.types.ObjectType;
 import src.types.StringType;
 import src.types.Type;
 import src.values.BooleanValue;
@@ -278,7 +279,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			else if( typeName.equals("String") )
 				return new StringType();
 			else if( typeName.equals("object") )
-				return new LiteralObjectType();
+				return new ObjectType();
 
 			return getTypeByName(typeName);
 		} catch (SyntacticError e) {

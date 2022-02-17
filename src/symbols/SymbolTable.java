@@ -44,8 +44,9 @@ public class SymbolTable{
 		if( e.getValue() != null && e.getType() != null ){
 			if( e.getValue().getType().getTypeName() == "[@object]" && e.getType().getTypeName() == "[@object]" )
 				; // Si son objetos literales.
-			else if( !e.getType().isInstanceOfThisType(e.getValue()) )
-				throw new SyntacticError("El tipo de la variable " + e.getIdentifier() + " no coincide con el del valor");
+			else if( !e.getType().isInstanceOfThisType(e.getValue()) ){
+				throw new SyntacticError("El tipo " + e.getType() + " de la variable " + e.getIdentifier() + " no coincide con el del valor, que es " + e.getValue().getType());
+			}
 		}
 		symbols.put(e.getIdentifier(), e);		
 	}
@@ -77,37 +78,12 @@ public class SymbolTable{
 			throw new SyntacticError(name + " no es una vairable");
 		
 		Variable variable = (Variable)e;
+
+		if( (variable.getModifiers() & Mod.CONST) > 0 )
+			throw new SyntacticError("La variable " + name + " es constante, no puede ser modificada");
+		
 		variable.setValue(value);
 	}
-
-	// public void setValueOf(List<String> propertyPath, Value value) throws SyntacticError{
-	// 	String name = propertyPath.get(0);
-
-	// 	if( !symbols.containsKey(name) ){
-	// 		if( parent == null )
-	// 			throw new SyntacticError("El nombre " + name + " no se ha definido");
-	// 		parent.setValueOf(propertyPath, value);
-	// 	}
-			
-	// 	Entry entry = symbols.get(name);
-	// 	if( !(entry instanceof Variable) )
-	// 		throw new SyntacticError(name + " no es una vairable");
-		
-	// 	try {
-	// 		Variable variable = (Variable)entry;
-			
-	// 		ObjectValue ref = (ObjectValue)variable.getValue();
-
-	// 		for(int i=1; i < propertyPath.size()-1; i++){
-	// 			ref = (ObjectValue)ref.get(propertyPath.get(i));
-	// 		}
-
-	// 		ref.set(propertyPath.get(propertyPath.size()-1), value);
-	// 	} catch (Exception e) {
-	// 		throw new SyntacticError("No se puede acceder a la propiedad del objeto " + name);
-	// 	}
-		
-	// }
 
 	@Override
 	public String toString() {
