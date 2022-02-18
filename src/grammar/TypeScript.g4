@@ -18,7 +18,8 @@ block
 
 /* Sentencia */
 statement
-	: block //
+	: printStatement // Artificial Statement for Printing 
+	| block //
 	| variableStatement //
 	| ifStatement //
 	| forStatement
@@ -32,6 +33,10 @@ statement
 	| functionStatement
 	| expressionStatement
 	| emptyStatement
+	;
+
+printStatement // ** This is not part of the intended grammar and its included only for comatibility pourposes
+	: 'console.log' TK_LPARENT expression TK_RPARENT 
 	;
 
 /* Sentencia For */

@@ -66,6 +66,7 @@ import src.gen.TypeScriptParser.ObjLiteralEmptyContext;
 import src.gen.TypeScriptParser.ParameterContext;
 import src.gen.TypeScriptParser.ParametricTypeContext;
 import src.gen.TypeScriptParser.PrimitiveTypeContext;
+import src.gen.TypeScriptParser.PrintStatementContext;
 import src.gen.TypeScriptParser.PropertyAssignContext;
 import src.gen.TypeScriptParser.PropertyMemberBaseContext;
 import src.gen.TypeScriptParser.PropertyNameContext;
@@ -526,7 +527,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			else
 				throw new SyntacticError(index.toString() + " no es de tipo string o number");
 		} else if (expLeft instanceof ExprDotFunctionCallContext) {
-			// TODO Hacer lo de function call
+			throw new SyntacticError("Una llamada a funcion no es lvalue");
 		}
 
 		Value oldValue = null;
@@ -787,10 +788,10 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		for (int i = 0; i < expList.size(); i++)
 			value = (Value) visit(expList.get(i));
 
-		if (value == null)
-			System.out.println("[null returned]");
-		else
-			System.out.println(value);
+		// if (value == null)
+		// 	System.out.println("[null returned]");
+		// else
+		// 	System.out.println(value);
 		// System.out.println(value instanceof ArrayObjectValue);
 		// System.out.println(Reference.HEAP);
 		return value;
@@ -1382,14 +1383,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	public Object visitFunctionBody(FunctionBodyContext ctx) {
 		List<SourceElemContext> elems = ctx.sourceElem();
 
-		// System.out.println("FUNCTION BODY");
-		// System.out.println(ctx.getText());
 		for (int i = 0; i < elems.size(); i++) {
 			if ((Integer) visit(elems.get(i).statement()) == Goto.RETURN_SIGNAL)
 				break;
 		}
-		// System.out.println("FUNCTION BODY");
-
+		
 		return Goto.NORMAL_SIGNAL;
 	}
 
@@ -1475,4 +1473,17 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		this.typeTable = typeTable;
 	}
 
+	@Override
+	public Object visitPrintStatement(PrintStatementContext ctx) {
+		Value value = (Value)visit(ctx.expression());
+
+		if (value == null)
+			System.out.println("[null returned]");
+		else
+			System.out.println(value);
+		
+		return Goto.NORMAL_SIGNAL;
+	}
+
+		
 }
