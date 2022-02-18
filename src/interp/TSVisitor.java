@@ -1,5 +1,6 @@
 package src.interp;
 
+import java.beans.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +14,14 @@ import src.gen.TypeScriptParser.ArrayLiteralAltContext;
 import src.gen.TypeScriptParser.ArrayLiteralEmptyAltContext;
 import src.gen.TypeScriptParser.ArrayTypeContext;
 import src.gen.TypeScriptParser.BlockContext;
+import src.gen.TypeScriptParser.BreakStatementContext;
 import src.gen.TypeScriptParser.CallSignatureContext;
 import src.gen.TypeScriptParser.ClassElementContext;
 import src.gen.TypeScriptParser.ClassHeritageContext;
 import src.gen.TypeScriptParser.ClassMemberMethodContext;
 import src.gen.TypeScriptParser.ClassMemberPropertyContext;
 import src.gen.TypeScriptParser.ClassStatementContext;
+import src.gen.TypeScriptParser.ContinueStatementContext;
 import src.gen.TypeScriptParser.ExprAndAsigContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
 import src.gen.TypeScriptParser.ExprBinAndContext;
@@ -78,6 +81,7 @@ import src.gen.TypeScriptParser.StatementContext;
 import src.gen.TypeScriptParser.TypeAnnotationContext;
 import src.gen.TypeScriptParser.TypeNameContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
+import src.gen.TypeScriptParser.WhileStatementContext;
 import src.heap.Heap;
 import src.heap.Reference;
 import src.symbols.Goto;
@@ -1090,6 +1094,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	}
 
 	@Override
+	public Object visitStatement(StatementContext ctx) {
+		Object obj = visit(ctx.children.get(0));
+		return obj;
+	}
+
+	@Override
 	public Object visitIfStatement(IfStatementContext ctx) {
 		Value conditionValue = (Value) visit(ctx.expressionSequence());
 		List<StatementContext> statements = ctx.statement();
@@ -1251,13 +1261,13 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 			typeTable.declareType(newType);
 
-			return null;
+			return Goto.NORMAL_SIGNAL;
 		} catch (SyntacticError e) {
 			addError(e);
-			return null;
+			return Goto.NORMAL_SIGNAL;
 		} catch (NullPointerException e) {
 			// e.printStackTrace();
-			return null;
+			return Goto.NORMAL_SIGNAL;
 		}
 	}
 
@@ -1399,7 +1409,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitReturnStatement(ReturnStatementContext ctx) {
-		// System.out.println("RETURN STATEMENT");
 		try {
 			if (ctx.expressionSequence() != null) {
 				Value value = (Value) visit(ctx.expressionSequence());
@@ -1465,14 +1474,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		}
 	}
 
-	public TypeTable getTypeTable() {
-		return typeTable;
-	}
-
-	public void setTypeTable(TypeTable typeTable) {
-		this.typeTable = typeTable;
-	}
-
 	@Override
 	public Object visitPrintStatement(PrintStatementContext ctx) {
 		Value value = (Value)visit(ctx.expression());
@@ -1485,5 +1486,41 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		return Goto.NORMAL_SIGNAL;
 	}
 
-		
+	@Override
+	public Object visitWhileStatement(WhileStatementContext ctx) {
+		while( true ){
+			Value value = (Value)visit(ctx.expressionSequence());
+
+			if( value.isFalsy() )
+				break;
+
+			int flag = (Integer)visit(ctx.statement());
+
+			if( flag == Goto.BREAK_SIGNAL )
+				break;
+		}
+
+		return Goto.NORMAL_SIGNAL;
+	}
+
+	@Override
+	public Object visitContinueStatement(ContinueStatementContext ctx) {
+		return Goto.CONTINUE_SIGNAL;
+	}
+
+	@Override
+	public Object visitBreakStatement(BreakStatementContext ctx) {
+		return Goto.BREAK_SIGNAL;
+	}
+
+	public TypeTable getTypeTable() {
+		return typeTable;
+	}
+
+	public void setTypeTable(TypeTable typeTable) {
+		this.typeTable = typeTable;
+	}
+
+	
+	
 }

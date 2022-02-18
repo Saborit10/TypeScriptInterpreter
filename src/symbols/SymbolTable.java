@@ -59,8 +59,10 @@ public class SymbolTable{
 		}
 			
 		Entry e = symbols.get(name); 
-		if( !(e instanceof Variable) )
+		if( !(e instanceof Variable) ){
+			// System.out.println("ENTRY: " + e);
 			throw new SyntacticError(name + " no es una vairable");
+		}
 		
 		Variable variable = (Variable)e;
 		return variable.getValue();
@@ -71,11 +73,15 @@ public class SymbolTable{
 			if( parent == null )
 				throw new SyntacticError("El nombre " + name + " no se ha definido");
 			parent.setValueOf(name, value);
+			return;
 		}
 			
+		// System.out.println("symbols: " + symbols);
+
 		Entry e = symbols.get(name);
-		if( !(e instanceof Variable) )
+		if( !(e instanceof Variable) ){
 			throw new SyntacticError(name + " no es una vairable");
+		}
 		
 		Variable variable = (Variable)e;
 

@@ -36,7 +36,7 @@ statement
 	;
 
 printStatement // ** This is not part of the intended grammar and its included only for comatibility pourposes
-	: 'console.log' TK_LPARENT expression TK_RPARENT 
+	: 'console.log' TK_LPARENT expression TK_RPARENT TK_SEMICOLON
 	;
 
 /* Sentencia For */

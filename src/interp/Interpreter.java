@@ -48,6 +48,9 @@ public class Interpreter {
 		
 		ParseTree tree = parser.compilationUnit(); // begin parsing at init rule
 
+		// Comment This to not print the tree
+		// System.out.println(tree.toStringTree(parser)); 
+
 		TSVisitor v = new TSVisitor();
 		v.visit(tree);
 
