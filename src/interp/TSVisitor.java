@@ -21,6 +21,7 @@ import src.gen.TypeScriptParser.ClassHeritageContext;
 import src.gen.TypeScriptParser.ClassMemberMethodContext;
 import src.gen.TypeScriptParser.ClassMemberPropertyContext;
 import src.gen.TypeScriptParser.ClassStatementContext;
+import src.gen.TypeScriptParser.ConditionExpressionSequenceContext;
 import src.gen.TypeScriptParser.ContinueStatementContext;
 import src.gen.TypeScriptParser.ExprAndAsigContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
@@ -54,7 +55,11 @@ import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
 import src.gen.TypeScriptParser.ExprThisContext;
 import src.gen.TypeScriptParser.ExpressionContext;
+import src.gen.TypeScriptParser.ExpressionSequenceContext;
 import src.gen.TypeScriptParser.ExpressionStatementContext;
+import src.gen.TypeScriptParser.ForNormalContext;
+import src.gen.TypeScriptParser.ForVarIteratorContext;
+import src.gen.TypeScriptParser.ForVarNormalContext;
 import src.gen.TypeScriptParser.FormalParameterArgContext;
 import src.gen.TypeScriptParser.FormalParameterListContext;
 import src.gen.TypeScriptParser.FunctionBodyContext;
@@ -63,6 +68,7 @@ import src.gen.TypeScriptParser.FunctionExpressionDeclContext;
 import src.gen.TypeScriptParser.FunctionStatementContext;
 import src.gen.TypeScriptParser.IfStatementContext;
 import src.gen.TypeScriptParser.InitializerContext;
+import src.gen.TypeScriptParser.LastExpressionSequenceContext;
 import src.gen.TypeScriptParser.LiteralContext;
 import src.gen.TypeScriptParser.ObjLiteralContext;
 import src.gen.TypeScriptParser.ObjLiteralEmptyContext;
@@ -81,6 +87,7 @@ import src.gen.TypeScriptParser.StatementContext;
 import src.gen.TypeScriptParser.TypeAnnotationContext;
 import src.gen.TypeScriptParser.TypeNameContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
+import src.gen.TypeScriptParser.VariableDeclListContext;
 import src.gen.TypeScriptParser.WhileStatementContext;
 import src.heap.Heap;
 import src.heap.Reference;
@@ -173,7 +180,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 					// System.out.println(var.getType().undefinedValue());
 					var.setValue(var.getType().undefinedValue());
 				}
-				
+
 				scope.declareVariable(var);
 			}
 		} catch (NullPointerException e) {
@@ -279,11 +286,11 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		try {
 			String typeName = ctx.getText();
 
-			if( typeName.equals("Function") )
+			if (typeName.equals("Function"))
 				return new FunctionObjectType();
-			else if( typeName.equals("String") )
+			else if (typeName.equals("String"))
 				return new StringType();
-			else if( typeName.equals("object") )
+			else if (typeName.equals("object"))
 				return new ObjectType();
 
 			return getTypeByName(typeName);
@@ -793,9 +800,9 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			value = (Value) visit(expList.get(i));
 
 		// if (value == null)
-		// 	System.out.println("[null returned]");
+		// System.out.println("[null returned]");
 		// else
-		// 	System.out.println(value);
+		// System.out.println(value);
 		// System.out.println(value instanceof ArrayObjectValue);
 		// System.out.println(Reference.HEAP);
 		return value;
@@ -960,12 +967,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		// System.out.println("OK");
 		try {
 			Reference ref = (Reference) visit(ctx.expression());
-			
-			if( ctx.functionCall().TK_IDENT() != null ){
+
+			if (ctx.functionCall().TK_IDENT() != null) {
 				Value value = ref.getMethod(thisStackTop(), ctx.functionCall().TK_IDENT().getText());
 
-				if( value instanceof FunctionObjectValue ){
-					FunctionObjectValue f = (FunctionObjectValue)value;
+				if (value instanceof FunctionObjectValue) {
+					FunctionObjectValue f = (FunctionObjectValue) value;
 
 					List<Type> argTypes = new ArrayList<>();
 					List<Value> argVals = getArguments(ctx.functionCall());
@@ -976,19 +983,18 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 					scope.createUnnamedScope();
 					thisStack.add(ref);
 
-					for(int i=0; i < argVals.size(); i++){
+					for (int i = 0; i < argVals.size(); i++) {
 						scope.declareVariable(new Variable(
-							f.getArgNames()[i],
-							0,
-							f.getArgTypes()[i],
-							argVals.get(i)
-						));
+								f.getArgNames()[i],
+								0,
+								f.getArgTypes()[i],
+								argVals.get(i)));
 					}
 
 					visit(f.getBody());
 
 					Value returnValue = null;
-					if( scope.isDeclaredOnTop("[@return]") )
+					if (scope.isDeclaredOnTop("[@return]"))
 						returnValue = scope.getValueOf("[@return]");
 					else
 						returnValue = new BooleanType().undefinedValue();
@@ -997,13 +1003,12 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 					thisStack.pop();
 
 					return returnValue;
-				}
-				else
+				} else
 					throw new SyntacticError(ctx.functionCall().TK_IDENT().getText() + " no es una funcion");
-			
-			}
-			else
-				throw new SyntacticError(ctx.functionCall().getText() + " no se puede llamar desde " + ctx.expression().getText());
+
+			} else
+				throw new SyntacticError(
+						ctx.functionCall().getText() + " no se puede llamar desde " + ctx.expression().getText());
 		} catch (ClassCastException e) {
 			addError(new SyntacticError(
 					"La expresion a la izquierda del operador . no es un objeto"));
@@ -1212,8 +1217,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 							if (init != null)
 								initValues.put(name, init);
 						}
-					}
-					else if (elem.memberDecl() instanceof ClassMemberMethodContext) {
+					} else if (elem.memberDecl() instanceof ClassMemberMethodContext) {
 						ClassMemberMethodContext membCtx = (ClassMemberMethodContext) elem.memberDecl();
 
 						String name = (String) visit(membCtx.propertyName());
@@ -1228,21 +1232,19 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 						fillParamTypesAndNames(membCtx.callSignature(), argTypes, argNames);
 
 						FunctionObjectValue func = new FunctionObjectValue(
-							name,
-							argTypes,
-							argNames,
-							membCtx.functionBody()
-						);
+								name,
+								argTypes,
+								argNames,
+								membCtx.functionBody());
 
 						if ((mods & Mod.STATIC) > 0) {
 							staticValues.put(name, new Variable(name, mods, func.getType(), func));
 						} else {
 							methods.add(new Variable(
-								func.getName(),
-								mods,
-								func.getType(),
-								func
-							));
+									func.getName(),
+									mods,
+									func.getType(),
+									func));
 						}
 					}
 				}
@@ -1397,7 +1399,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			if ((Integer) visit(elems.get(i).statement()) == Goto.RETURN_SIGNAL)
 				break;
 		}
-		
+
 		return Goto.NORMAL_SIGNAL;
 	}
 
@@ -1459,11 +1461,10 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			fillParamTypesAndNames(ctx.callSignature(), argTypes, argNames);
 
 			FunctionObjectValue func = new FunctionObjectValue(
-				name,
-				argTypes,
-				argNames,
-				ctx.functionBody()
-			);
+					name,
+					argTypes,
+					argNames,
+					ctx.functionBody());
 
 			scope.declareVariable(new Variable(name, 0, func.getType(), func));
 
@@ -1476,27 +1477,27 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitPrintStatement(PrintStatementContext ctx) {
-		Value value = (Value)visit(ctx.expression());
+		Value value = (Value) visit(ctx.expression());
 
 		if (value == null)
 			System.out.println("[null returned]");
 		else
 			System.out.println(value);
-		
+
 		return Goto.NORMAL_SIGNAL;
 	}
 
 	@Override
 	public Object visitWhileStatement(WhileStatementContext ctx) {
-		while( true ){
-			Value value = (Value)visit(ctx.expressionSequence());
+		while (true) {
+			Value value = (Value) visit(ctx.expressionSequence());
 
-			if( value.isFalsy() )
+			if (value.isFalsy())
 				break;
 
-			int flag = (Integer)visit(ctx.statement());
+			int flag = (Integer) visit(ctx.statement());
 
-			if( flag == Goto.BREAK_SIGNAL )
+			if (flag == Goto.BREAK_SIGNAL)
 				break;
 		}
 
@@ -1521,6 +1522,125 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		this.typeTable = typeTable;
 	}
 
-	
-	
+	@Override
+	public Object visitForNormal(ForNormalContext ctx) {
+		try {
+			scope.createUnnamedScope();
+
+			if (ctx.expressionSequence() != null)
+				visit(ctx.expressionSequence());
+
+			while (true) {
+				if (ctx.conditionExpressionSequence() != null) {
+					Value value = (Value) visit(ctx.conditionExpressionSequence());
+
+					System.out.println("value = " + value);
+
+					if (value.isFalsy())
+						break;
+				}
+
+				int flag = (Integer) visit(ctx.statement());
+
+				if (flag == Goto.BREAK_SIGNAL)
+					break;
+
+				if (ctx.lastExpressionSequence() != null)
+					visit(ctx.lastExpressionSequence());
+			}
+
+			scope.popScope();
+
+			return Goto.NORMAL_SIGNAL;
+		} catch (NullPointerException e){
+			return Goto.NORMAL_SIGNAL;
+		}
+	}
+
+	@Override
+	public Object visitConditionExpressionSequence(ConditionExpressionSequenceContext ctx) {
+		return visit(ctx.expressionSequence());
+	}
+
+	@Override
+	public Object visitLastExpressionSequence(LastExpressionSequenceContext ctx) {
+		return visit(ctx.expressionSequence());
+	}
+
+	@Override
+	public Object visitForVarNormal(ForVarNormalContext ctx) {
+		try {
+			scope.createUnnamedScope();
+
+			int varModifiers = (Integer) visit(ctx.varModifier());
+
+			List<VariableDeclContext> declList = ctx.variableDeclList().variableDecl();
+
+			for (VariableDeclContext c : declList) {
+				String identifier = c.TK_IDENT().getText();
+				Type type = null;
+
+				if (c.typeAnnotation() != null)
+					type = (Type) visit(c.typeAnnotation());
+
+				Variable var = new Variable(
+						identifier,
+						varModifiers,
+						type);
+
+				if (c.initializer() != null) {
+					Value init = (Value) visit(c.initializer());
+
+					var.setValue(init);
+
+					if (var.getType() == null)
+						var.setType(init.getType());
+				} else {
+					var.setValue(var.getType().undefinedValue());
+				}
+
+				scope.declareVariable(var);
+			}
+
+			while (true) {
+				if (ctx.conditionExpressionSequence() != null) {
+					Value value = (Value) visit(ctx.conditionExpressionSequence());
+
+					if (value.isFalsy())
+						break;
+				}
+
+				int flag = (Integer) visit(ctx.statement());
+
+				if (flag == Goto.BREAK_SIGNAL)
+					break;
+
+				if (ctx.lastExpressionSequence() != null)
+					visit(ctx.lastExpressionSequence());
+			}
+
+			scope.popScope();
+
+			return Goto.NORMAL_SIGNAL;
+		} catch (SyntacticError e) {
+			addError(e);
+			return Goto.NORMAL_SIGNAL;
+		} catch (NullPointerException e){
+			return Goto.NORMAL_SIGNAL;
+		}
+	}
+
+	@Override
+	public Object visitExpressionSequence(ExpressionSequenceContext ctx) {
+		List<ExpressionContext> expList = ctx.expression();
+		Value value = null;
+
+		for (int i = 0; i < expList.size(); i++)
+			value = (Value) visit(expList.get(i));
+
+		// System.out.println(ctx.getText() + " " + value);
+
+		return value;
+	}
+
 }

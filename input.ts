@@ -1,16 +1,7 @@
 
-let i = 1;
-
-let A = ["", "luis", "carlos", "roberto", "noel", "jesus", "maria"];
-
-
-while( i < A.length ){
-	let j = 1;
-	
-	while( j <= 5 ){
-		console.log(A[i] + " " + j);
-		j += 1;
-	}
-	
-	i += 1;
+for(let i=0; i < 5; i+=1){
+	console.log("luis");
 }
+
+for(let i=9, j=7; k<=10; i+=1)
+	console.log("enrique");

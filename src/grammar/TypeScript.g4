@@ -41,10 +41,18 @@ printStatement // ** This is not part of the intended grammar and its included o
 
 /* Sentencia For */
 forStatement
-	: TK_FOR TK_LPARENT expressionSequence? TK_SEMICOLON expressionSequence? TK_SEMICOLON expressionSequence? TK_RPARENT statement
-	| TK_FOR TK_LPARENT varModifier variableDeclList TK_SEMICOLON expressionSequence? TK_SEMICOLON expressionSequence? TK_RPARENT statement
-    | TK_FOR TK_LPARENT expression (TK_IN | TK_OF) expressionSequence TK_RPARENT statement
-    | TK_FOR TK_LPARENT varModifier variableDecl (TK_IN | TK_OF) expressionSequence TK_RPARENT statement
+	: TK_FOR TK_LPARENT expressionSequence? TK_SEMICOLON conditionExpressionSequence? TK_SEMICOLON lastExpressionSequence? TK_RPARENT statement					#ForNormal
+	| TK_FOR TK_LPARENT varModifier variableDeclList TK_SEMICOLON conditionExpressionSequence? TK_SEMICOLON lastExpressionSequence? TK_RPARENT statement			#ForVarNormal
+    | TK_FOR TK_LPARENT expression (TK_IN | TK_OF) expressionSequence TK_RPARENT statement															#ForIterator
+    | TK_FOR TK_LPARENT varModifier variableDecl (TK_IN | TK_OF) expressionSequence TK_RPARENT statement											#ForVarIterator
+	;
+
+conditionExpressionSequence
+	: expressionSequence
+	;
+
+lastExpressionSequence
+	: expressionSequence
 	;
 
 /* Sentencia While */

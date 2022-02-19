@@ -41,11 +41,45 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrintStatement(TypeScriptParser.PrintStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link TypeScriptParser#forStatement}.
+	 * Visit a parse tree produced by the {@code ForNormal}
+	 * labeled alternative in {@link TypeScriptParser#forStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitForStatement(TypeScriptParser.ForStatementContext ctx);
+	T visitForNormal(TypeScriptParser.ForNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ForVarNormal}
+	 * labeled alternative in {@link TypeScriptParser#forStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForVarNormal(TypeScriptParser.ForVarNormalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ForIterator}
+	 * labeled alternative in {@link TypeScriptParser#forStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForIterator(TypeScriptParser.ForIteratorContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ForVarIterator}
+	 * labeled alternative in {@link TypeScriptParser#forStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForVarIterator(TypeScriptParser.ForVarIteratorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TypeScriptParser#conditionExpressionSequence}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConditionExpressionSequence(TypeScriptParser.ConditionExpressionSequenceContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TypeScriptParser#lastExpressionSequence}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLastExpressionSequence(TypeScriptParser.LastExpressionSequenceContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#whileStatement}.
 	 * @param ctx the parse tree
