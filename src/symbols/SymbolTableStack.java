@@ -2,6 +2,7 @@ package src.symbols;
 
 import java.util.ArrayList;
 
+import src.types.Type;
 import src.values.Value;
 
 public class SymbolTableStack {
@@ -42,10 +43,6 @@ public class SymbolTableStack {
 		return ans;
 	}
 
-	// public void setValueOf(ArrayList<String> path, Value value) throws SyntacticError {
-	// 	top().setValueOf(path, value);
-	// }
-
 	public void popScope() {
 		stack.remove(stack.size()-1);
 	}
@@ -60,5 +57,9 @@ public class SymbolTableStack {
 
 	public SymbolTable getTop() {
 		return top();
+	}
+
+	public void setTypeOfLocalVariable(String name, Type type) throws SyntacticError{
+		top().setTypeOfLocalVariable(name, type);
 	}
 }

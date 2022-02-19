@@ -238,45 +238,9 @@ public class ClassInstanceValue extends ObjectValue{
 	public boolean isFalsy() {
 		return undefined;
 	}
+
+	@Override
+	public String[] getPropertyNames() {
+		return prototype.getPropertyNames();
+	}
 }
-
-
-
-
-
-
-	// public ClassInstanceValue(ClassInstanceType proto, ArrayList<Value> propVals) throws SyntacticError{
-	// 	this.prototype = proto;
-	// 	this.undefined = false;
-
-	// 	Type[] types = proto.getPropertyTypes();
-
-	// 	if( propVals.size() != types.length )
-	// 		throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
-
-	// 	for(int i=0; i < types.length; i++){
-	// 		if( !types[i].isExtendedType(propVals.get(i).getType()) )
-	// 			throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
-			
-	// 		propertyValues[i] = propVals.get(i);
-	// 	}
-	// }
-
-	// public ClassInstanceValue(ClassInstanceType proto, LiteralObjectValue obj) throws SyntacticError{
-	// 	this.prototype = proto;
-	// 	this.undefined = false;
-
-	// 	Type[] types = proto.getPropertyTypes();
-
-	// 	if( obj.getPropertyNames().length != types.length )
-	// 		throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
-
-	// 	// TODO: Arreglar para que las propiedades puedan estar en cualquier orden
-
-	// 	for(int i=0; i < types.length; i++){
-	// 		if( !types[i].isExtendedType(obj.getPropertyValues()[i].getType()) )
-	// 			throw new SyntacticError("Los propiedades para el objeto de tipo " + proto.getTypeName() + " son incorrectas");
-		
-	// 		propertyValues[i] = obj.getPropertyValues()[i];
-	// 	}
-	// }

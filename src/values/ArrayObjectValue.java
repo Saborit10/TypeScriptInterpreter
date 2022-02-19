@@ -152,4 +152,13 @@ public class ArrayObjectValue extends ObjectValue{
 	public boolean isFalsy() {
 		return undefined;
 	}
+
+	@Override
+	public String[] getPropertyNames() {
+		String[] ans = new String[length];
+
+		for(int i=0; i < length; i++)
+			ans[i] = String.valueOf(i);
+		return ans;
+	}
 }

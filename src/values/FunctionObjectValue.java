@@ -115,5 +115,10 @@ public class FunctionObjectValue extends ObjectValue{
 		return ans + ")";
 	}
 
+	@Override
+	public String[] getPropertyNames() {
+		return null;
+	}
+
 	
 }

@@ -45,16 +45,9 @@ public class Reference extends ObjectValue{
 		HEAP.access(this).set(thisRef, propName, value);
 	}
 
-	// public boolean isReferenceProperty(String propName) throws SyntacticError {
-	// 	Value prop = HEAP.access(this).get(thisRef, propName);
-		
-	// 	return prop instanceof Reference;
-	// }
-
 	@Override
 	public Value[] getPropertyValues() {
-		// TODO Auto-generated method stub
-		return null;
+		return HEAP.access(this).getPropertyValues();
 	}
 
 	@Override
@@ -104,5 +97,14 @@ public class Reference extends ObjectValue{
 	public FunctionObjectValue getMethod(Reference thisRef, String methName) throws SyntacticError{
 		ClassInstanceValue instancia = (ClassInstanceValue)HEAP.access(this);
 		return instancia.getMethod(thisRef, methName);
+	}
+
+	@Override
+	public String[] getPropertyNames() {
+		return HEAP.access(this).getPropertyNames();
+	}
+
+	public Value dereference() {
+		return HEAP.access(this);
 	}	
 }

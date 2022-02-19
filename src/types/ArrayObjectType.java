@@ -41,9 +41,4 @@ public class ArrayObjectType extends ObjectType{
 	public Type getInnerType(){
 		return innerType;
 	}
-
-	// public void setMainType(Type t){
-	// 	// TODO
-	// }
-
 }

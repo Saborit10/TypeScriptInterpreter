@@ -23,6 +23,7 @@ import src.gen.TypeScriptParser.ClassMemberPropertyContext;
 import src.gen.TypeScriptParser.ClassStatementContext;
 import src.gen.TypeScriptParser.ConditionExpressionSequenceContext;
 import src.gen.TypeScriptParser.ContinueStatementContext;
+import src.gen.TypeScriptParser.EmptyStatementContext;
 import src.gen.TypeScriptParser.ExprAndAsigContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
 import src.gen.TypeScriptParser.ExprBinAndContext;
@@ -106,6 +107,7 @@ import src.types.NumberType;
 import src.types.ObjectType;
 import src.types.StringType;
 import src.types.Type;
+import src.values.ArrayObjectValue;
 import src.values.BooleanValue;
 import src.values.FunctionObjectValue;
 import src.values.NumberValue;
@@ -1534,7 +1536,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 				if (ctx.conditionExpressionSequence() != null) {
 					Value value = (Value) visit(ctx.conditionExpressionSequence());
 
-					System.out.println("value = " + value);
+					// System.out.println("value = " + value);
 
 					if (value.isFalsy())
 						break;
@@ -1643,4 +1645,86 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		return value;
 	}
 
+	@Override
+	public Object visitEmptyStatement(EmptyStatementContext ctx) {
+		return Goto.NORMAL_SIGNAL;
+	}
+
+	@Override
+	public Object visitForVarIterator(ForVarIteratorContext ctx) {
+		try {
+			scope.createUnnamedScope();
+
+			int modifiers = (Integer) visit(ctx.varModifier());
+			String identifier = ctx.variableDecl().TK_IDENT().getText();
+			
+			if (ctx.variableDecl().typeAnnotation() != null)
+				throw new SyntacticError("No se permiten anotaciones de tipo en el for..in o el for..of");
+
+			Variable var = new Variable(
+				identifier,
+				modifiers,
+				new BooleanType());
+
+			if (ctx.variableDecl().initializer() != null)
+				throw new SyntacticError("No se permiten inicializadores en el for..in o el for..of");
+
+			scope.declareVariable(var);
+
+			if( ctx.TK_IN() != null){
+				Value value = (Value)visit(ctx.expressionSequence());
+
+				if( value instanceof Reference )
+					value = ((Reference)value).dereference();
+
+				if( !(new ObjectType()).isInstanceOfThisType(value) )
+					throw new SyntacticError("La expresion " + ctx.expressionSequence().getText() + " no es iterable");
+
+				ObjectValue objectValue = (ObjectValue)value;
+				String[] names = objectValue.getPropertyNames();
+
+				scope.setTypeOfLocalVariable(identifier, new StringType());
+
+				for (int i=0; i < names.length; i++) {
+					scope.setValueOf(identifier, new StringValue(names[i]));
+
+					int flag = (Integer) visit(ctx.statement());
+	
+					if (flag == Goto.BREAK_SIGNAL)
+						break;
+				}
+			}
+			else{
+				Value value = (Value)visit(ctx.expressionSequence());
+
+				if( value instanceof Reference )
+					value = ((Reference)value).dereference();
+
+				if( !(new ArrayObjectType(null)).isInstanceOfThisType(value) )
+					throw new SyntacticError("La expresion " + ctx.expressionSequence().getText() + " no es iterable");
+
+				ArrayObjectValue arrayValue = (ArrayObjectValue)value;
+				Value[] values = arrayValue.getPropertyValues();
+
+				for (int i=0; i < values.length; i++) {
+					scope.setTypeOfLocalVariable(identifier, values[i].getType());
+
+					scope.setValueOf(identifier, values[i]);
+
+					int flag = (Integer) visit(ctx.statement());
+	
+					if (flag == Goto.BREAK_SIGNAL)
+						break;
+				}
+			}
+			scope.popScope();
+
+			return Goto.NORMAL_SIGNAL;
+		} catch (NullPointerException e){
+			return Goto.NORMAL_SIGNAL;
+		} catch (SyntacticError e){
+			addError(e);
+			return Goto.NORMAL_SIGNAL;
+		}
+	}
 }

@@ -3,6 +3,7 @@ package src.symbols;
 import java.util.HashMap;
 import java.util.List;
 
+import src.types.Type;
 import src.values.Value;
 
 // 1 - El nombre ya existe
@@ -80,7 +81,7 @@ public class SymbolTable{
 
 		Entry e = symbols.get(name);
 		if( !(e instanceof Variable) ){
-			throw new SyntacticError(name + " no es una vairable");
+			throw new SyntacticError(name + " no es una variable");
 		}
 		
 		Variable variable = (Variable)e;
@@ -106,4 +107,16 @@ public class SymbolTable{
 		return symbols.containsKey(name);
 	}
 
+	public void setTypeOfLocalVariable(String name, Type type) throws SyntacticError{
+		if( !symbols.containsKey(name) )
+			throw new SyntacticError("El nombre " + name + " no se ha definido");
+	
+		Entry e = symbols.get(name);
+		if( !(e instanceof Variable) )
+			throw new SyntacticError(name + " no es una variable");
+			
+		Variable variable = (Variable)e;
+	
+		variable.setType(type);
+	}
 }

@@ -12,6 +12,8 @@ public abstract class ObjectValue extends Value{
 	public abstract void set(Reference thisRef, String propName, Value value) throws SyntacticError;
 	
 	public abstract Value[] getPropertyValues();
+	
+	public abstract String[] getPropertyNames();
 
 	@Override
 	public Value binAnd(Value v) throws SyntacticError {
