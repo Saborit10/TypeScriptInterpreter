@@ -58,6 +58,7 @@ import src.gen.TypeScriptParser.ExprPlusOpContext;
 import src.gen.TypeScriptParser.ExprPlusPlusOpContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
+import src.gen.TypeScriptParser.ExprTernaryOperatorContext;
 import src.gen.TypeScriptParser.ExprThisContext;
 import src.gen.TypeScriptParser.ExpressionContext;
 import src.gen.TypeScriptParser.ExpressionSequenceContext;
@@ -1552,7 +1553,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			scope.popScope();
 
 			return Goto.NORMAL_SIGNAL;
-		} catch (NullPointerException e){
+		} catch (NullPointerException e) {
 			return Goto.NORMAL_SIGNAL;
 		}
 	}
@@ -1625,7 +1626,7 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		} catch (SyntacticError e) {
 			addError(e);
 			return Goto.NORMAL_SIGNAL;
-		} catch (NullPointerException e){
+		} catch (NullPointerException e) {
 			return Goto.NORMAL_SIGNAL;
 		}
 	}
@@ -1655,62 +1656,61 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 			int modifiers = (Integer) visit(ctx.varModifier());
 			String identifier = ctx.variableDecl().TK_IDENT().getText();
-			
+
 			if (ctx.variableDecl().typeAnnotation() != null)
 				throw new SyntacticError("No se permiten anotaciones de tipo en el for..in o el for..of");
 
 			Variable var = new Variable(
-				identifier,
-				modifiers,
-				new BooleanType());
+					identifier,
+					modifiers,
+					new BooleanType());
 
 			if (ctx.variableDecl().initializer() != null)
 				throw new SyntacticError("No se permiten inicializadores en el for..in o el for..of");
 
 			scope.declareVariable(var);
 
-			if( ctx.TK_IN() != null){
-				Value value = (Value)visit(ctx.expressionSequence());
+			if (ctx.TK_IN() != null) {
+				Value value = (Value) visit(ctx.expressionSequence());
 
-				if( value instanceof Reference )
-					value = ((Reference)value).dereference();
+				if (value instanceof Reference)
+					value = ((Reference) value).dereference();
 
-				if( !(new ObjectType()).isInstanceOfThisType(value) )
+				if (!(new ObjectType()).isInstanceOfThisType(value))
 					throw new SyntacticError("La expresion " + ctx.expressionSequence().getText() + " no es iterable");
 
-				ObjectValue objectValue = (ObjectValue)value;
+				ObjectValue objectValue = (ObjectValue) value;
 				String[] names = objectValue.getPropertyNames();
 
 				scope.setTypeOfLocalVariable(identifier, new StringType());
 
-				for (int i=0; i < names.length; i++) {
+				for (int i = 0; i < names.length; i++) {
 					scope.setValueOf(identifier, new StringValue(names[i]));
 
 					int flag = (Integer) visit(ctx.statement());
-	
+
 					if (flag == Goto.BREAK_SIGNAL)
 						break;
 				}
-			}
-			else{
-				Value value = (Value)visit(ctx.expressionSequence());
+			} else {
+				Value value = (Value) visit(ctx.expressionSequence());
 
-				if( value instanceof Reference )
-					value = ((Reference)value).dereference();
+				if (value instanceof Reference)
+					value = ((Reference) value).dereference();
 
-				if( !(new ArrayObjectType(null)).isInstanceOfThisType(value) )
+				if (!(new ArrayObjectType(null)).isInstanceOfThisType(value))
 					throw new SyntacticError("La expresion " + ctx.expressionSequence().getText() + " no es iterable");
 
-				ArrayObjectValue arrayValue = (ArrayObjectValue)value;
+				ArrayObjectValue arrayValue = (ArrayObjectValue) value;
 				Value[] values = arrayValue.getPropertyValues();
 
-				for (int i=0; i < values.length; i++) {
+				for (int i = 0; i < values.length; i++) {
 					scope.setTypeOfLocalVariable(identifier, values[i].getType());
 
 					scope.setValueOf(identifier, values[i]);
 
 					int flag = (Integer) visit(ctx.statement());
-	
+
 					if (flag == Goto.BREAK_SIGNAL)
 						break;
 				}
@@ -1718,9 +1718,9 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			scope.popScope();
 
 			return Goto.NORMAL_SIGNAL;
-		} catch (NullPointerException e){
+		} catch (NullPointerException e) {
 			return Goto.NORMAL_SIGNAL;
-		} catch (SyntacticError e){
+		} catch (SyntacticError e) {
 			addError(e);
 			return Goto.NORMAL_SIGNAL;
 		}
@@ -1729,48 +1729,47 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	@Override
 	public Object visitExprOpPlusPlus(ExprOpPlusPlusContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.expression());
+			Value value = (Value) visit(ctx.expression());
 
-			if( !NumberType.isOfThisType(value) )
-				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+			if (!NumberType.isOfThisType(value))
+				throw new SyntacticError(
+						"No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
 
-			Value ans = new NumberValue(1 + ((NumberValue)value).getValue());
+			Value ans = new NumberValue(1 + ((NumberValue) value).getValue());
 
-			if( ctx.expression() instanceof ExprIdentifierContext ){
-				ExprIdentifierContext context = (ExprIdentifierContext)ctx.expression();
+			if (ctx.expression() instanceof ExprIdentifierContext) {
+				ExprIdentifierContext context = (ExprIdentifierContext) ctx.expression();
 
 				scope.setValueOf(context.TK_IDENT().getText(), ans);
-			}
-			else if( ctx.expression() instanceof ExprDotIdentContext ){
-				ExprDotIdentContext context = (ExprDotIdentContext)ctx.expression();
+			} else if (ctx.expression() instanceof ExprDotIdentContext) {
+				ExprDotIdentContext context = (ExprDotIdentContext) ctx.expression();
 
-				Reference ref = (Reference)visit(context.expression());
+				Reference ref = (Reference) visit(context.expression());
 				String property = context.identifier().getText();
 
 				ref.set(thisStackTop(), property, ans);
-			}
-			else if( ctx.expression() instanceof ExprObjectIndexContext ){
-				ExprObjectIndexContext context = (ExprObjectIndexContext)ctx.expression();
+			} else if (ctx.expression() instanceof ExprObjectIndexContext) {
+				ExprObjectIndexContext context = (ExprObjectIndexContext) ctx.expression();
 
-				Reference ref = (Reference)visit(context.expression());
-				Value property = (Value)visit(context.expressionSequence());
+				Reference ref = (Reference) visit(context.expression());
+				Value property = (Value) visit(context.expressionSequence());
 
 				if (StringType.isOfThisType(property) || NumberType.isOfThisType(property))
 					ref.set(thisStackTop(), property.toString(), ans);
 				else
 					throw new SyntacticError(
 							"El indice " + context.expressionSequence().getText() + " no es valido");
-			}
-			else
-				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+			} else
+				throw new SyntacticError(
+						"No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
 
 			return value;
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			return null;
-		} catch(ClassCastException e){
+		} catch (ClassCastException e) {
 			addError(new SyntacticError("La expresion a la izquierda del operador . no es un objeto"));
 			return null;
 		}
@@ -1779,46 +1778,45 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	@Override
 	public Object visitExprPlusPlusOp(ExprPlusPlusOpContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.expression());
+			Value value = (Value) visit(ctx.expression());
 
-			if( !NumberType.isOfThisType(value) )
-				throw new SyntacticError("No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+			if (!NumberType.isOfThisType(value))
+				throw new SyntacticError(
+						"No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
 
-			Value ans = new NumberValue(1 + ((NumberValue)value).getValue());
+			Value ans = new NumberValue(1 + ((NumberValue) value).getValue());
 
-			if( ctx.expression() instanceof ExprIdentifierContext ){
-				ExprIdentifierContext context = (ExprIdentifierContext)ctx.expression();
+			if (ctx.expression() instanceof ExprIdentifierContext) {
+				ExprIdentifierContext context = (ExprIdentifierContext) ctx.expression();
 
 				scope.setValueOf(context.TK_IDENT().getText(), ans);
-			}
-			else if( ctx.expression() instanceof ExprDotIdentContext ){
-				ExprDotIdentContext context = (ExprDotIdentContext)ctx.expression();
+			} else if (ctx.expression() instanceof ExprDotIdentContext) {
+				ExprDotIdentContext context = (ExprDotIdentContext) ctx.expression();
 
-				Reference ref = (Reference)visit(context.expression());
+				Reference ref = (Reference) visit(context.expression());
 				String property = context.identifier().getText();
 
 				ref.set(thisStackTop(), property, ans);
-			}
-			else if( ctx.expression() instanceof ExprObjectIndexContext ){
-				ExprObjectIndexContext context = (ExprObjectIndexContext)ctx.expression();
+			} else if (ctx.expression() instanceof ExprObjectIndexContext) {
+				ExprObjectIndexContext context = (ExprObjectIndexContext) ctx.expression();
 
-				Reference ref = (Reference)visit(context.expression());
-				Value property = (Value)visit(context.expressionSequence());
+				Reference ref = (Reference) visit(context.expression());
+				Value property = (Value) visit(context.expressionSequence());
 
 				if (StringType.isOfThisType(property) || NumberType.isOfThisType(property))
 					ref.set(thisStackTop(), property.toString(), ans);
 				else
 					throw new SyntacticError(
 							"El indice " + context.expressionSequence().getText() + " no es valido");
-			}
-			else
-				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+			} else
+				throw new SyntacticError(
+						"No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
 
 			return ans;
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -1826,46 +1824,45 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	@Override
 	public Object visitExprMinusMinusOp(ExprMinusMinusOpContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.expression());
+			Value value = (Value) visit(ctx.expression());
 
-			if( !NumberType.isOfThisType(value) )
-				throw new SyntacticError("No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+			if (!NumberType.isOfThisType(value))
+				throw new SyntacticError(
+						"No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
 
-			Value ans = new NumberValue(((NumberValue)value).getValue() - 1);
+			Value ans = new NumberValue(((NumberValue) value).getValue() - 1);
 
-			if( ctx.expression() instanceof ExprIdentifierContext ){
-				ExprIdentifierContext context = (ExprIdentifierContext)ctx.expression();
+			if (ctx.expression() instanceof ExprIdentifierContext) {
+				ExprIdentifierContext context = (ExprIdentifierContext) ctx.expression();
 
 				scope.setValueOf(context.TK_IDENT().getText(), ans);
-			}
-			else if( ctx.expression() instanceof ExprDotIdentContext ){
-				ExprDotIdentContext context = (ExprDotIdentContext)ctx.expression();
+			} else if (ctx.expression() instanceof ExprDotIdentContext) {
+				ExprDotIdentContext context = (ExprDotIdentContext) ctx.expression();
 
-				Reference ref = (Reference)visit(context.expression());
+				Reference ref = (Reference) visit(context.expression());
 				String property = context.identifier().getText();
 
 				ref.set(thisStackTop(), property, ans);
-			}
-			else if( ctx.expression() instanceof ExprObjectIndexContext ){
-				ExprObjectIndexContext context = (ExprObjectIndexContext)ctx.expression();
+			} else if (ctx.expression() instanceof ExprObjectIndexContext) {
+				ExprObjectIndexContext context = (ExprObjectIndexContext) ctx.expression();
 
-				Reference ref = (Reference)visit(context.expression());
-				Value property = (Value)visit(context.expressionSequence());
+				Reference ref = (Reference) visit(context.expression());
+				Value property = (Value) visit(context.expressionSequence());
 
 				if (StringType.isOfThisType(property) || NumberType.isOfThisType(property))
 					ref.set(thisStackTop(), property.toString(), ans);
 				else
 					throw new SyntacticError(
 							"El indice " + context.expressionSequence().getText() + " no es valido");
-			}
-			else
-				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+			} else
+				throw new SyntacticError(
+						"No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
 
 			return ans;
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
@@ -1873,49 +1870,61 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	@Override
 	public Object visitExprOpMinusMinus(ExprOpMinusMinusContext ctx) {
 		try {
-			Value value = (Value)visit(ctx.expression());
+			Value value = (Value) visit(ctx.expression());
 
-			if( !NumberType.isOfThisType(value) )
-				throw new SyntacticError("No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+			if (!NumberType.isOfThisType(value))
+				throw new SyntacticError(
+						"No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
 
-			Value ans = new NumberValue(((NumberValue)value).getValue() - 1);
+			Value ans = new NumberValue(((NumberValue) value).getValue() - 1);
 
-			if( ctx.expression() instanceof ExprIdentifierContext ){
-				ExprIdentifierContext context = (ExprIdentifierContext)ctx.expression();
+			if (ctx.expression() instanceof ExprIdentifierContext) {
+				ExprIdentifierContext context = (ExprIdentifierContext) ctx.expression();
 
 				scope.setValueOf(context.TK_IDENT().getText(), ans);
-			}
-			else if( ctx.expression() instanceof ExprDotIdentContext ){
-				ExprDotIdentContext context = (ExprDotIdentContext)ctx.expression();
+			} else if (ctx.expression() instanceof ExprDotIdentContext) {
+				ExprDotIdentContext context = (ExprDotIdentContext) ctx.expression();
 
-				Reference ref = (Reference)visit(context.expression());
+				Reference ref = (Reference) visit(context.expression());
 				String property = context.identifier().getText();
 
 				ref.set(thisStackTop(), property, ans);
-			}
-			else if( ctx.expression() instanceof ExprObjectIndexContext ){
-				ExprObjectIndexContext context = (ExprObjectIndexContext)ctx.expression();
+			} else if (ctx.expression() instanceof ExprObjectIndexContext) {
+				ExprObjectIndexContext context = (ExprObjectIndexContext) ctx.expression();
 
-				Reference ref = (Reference)visit(context.expression());
-				Value property = (Value)visit(context.expressionSequence());
+				Reference ref = (Reference) visit(context.expression());
+				Value property = (Value) visit(context.expressionSequence());
 
 				if (StringType.isOfThisType(property) || NumberType.isOfThisType(property))
 					ref.set(thisStackTop(), property.toString(), ans);
 				else
 					throw new SyntacticError(
 							"El indice " + context.expressionSequence().getText() + " no es valido");
-			}
-			else
-				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+			} else
+				throw new SyntacticError(
+						"No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
 
 			return value;
 		} catch (SyntacticError e) {
 			addError(e);
 			return null;
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			return null;
 		}
 	}
 
-		
+	@Override
+	public Object visitExprTernaryOperator(ExprTernaryOperatorContext ctx) {
+		try {
+			Value condition = (Value) visit(ctx.expression(0));
+
+			if (condition.isFalsy())
+				return (Value) visit(ctx.expression(2));
+			else
+				return (Value) visit(ctx.expression(1));
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
 }
