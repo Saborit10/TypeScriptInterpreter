@@ -1,35 +1,21 @@
 
-let obj = {
-	a: 1,
-	b: 2,
-	3: 3
+class A{
+	p = 1;
+	q = 0;
+
+	constructor(p: number, q: number){
+		this.p = p;
+		this.q = q;
+	}
+
+	f(a: number){
+		return a + 1;
+	}
 }
 
-let arr = [10, 2, 5, 3];
+let obj = new A(2, 3);
 
-let variable = obj;
-
-for(let i in variable){
-	console.log(i);
-}
-
-for(let i of variable){
-	console.log(i);
-}
+console.log(obj.f(5));
 
 
-// class A{
-// 	p: number;
-
-// 	constructor(){
-// 		this.p = 5;
-// 	}
-
-// 	getP(){
-// 		return this.p;
-// 	}
-// }
-
-// let a = new A();
-
-// console.log(a);
+//revisar los metodos declarados en literales

@@ -364,11 +364,11 @@ expression
 	: functionExpressionDecl														#ExprFunctionObject //
 	| expression '[' expressionSequence ']'											#ExprObjectIndex //
     | expression '.' identifier														#ExprDotIdent //
-    | expression '.' functionCall													#ExprDotFunctionCall
-	| TK_PLUSPLUS expression														#ExprPlusPlusOp
-	| TK_MINUSMINUS expression														#ExprMinusMinusOp
-	| expression TK_PLUSPLUS														#ExprOpPlusPlus
-	| expression TK_MINUSMINUS														#ExprOpMinusMinus
+    | expression '.' functionCall													#ExprDotFunctionCall //
+	| TK_PLUSPLUS expression														#ExprPlusPlusOp //
+	| TK_MINUSMINUS expression														#ExprMinusMinusOp //
+	| expression TK_PLUSPLUS														#ExprOpPlusPlus //
+	| expression TK_MINUSMINUS														#ExprOpMinusMinus //
 	| TK_PLUS expression															#ExprPlusOp //
     | TK_MINUS expression															#ExprMinusOp //
     | TK_BINNOT expression															#ExprBinaryNot //

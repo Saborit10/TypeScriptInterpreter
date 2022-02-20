@@ -40,6 +40,7 @@ import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprLogicAndContext;
 import src.gen.TypeScriptParser.ExprLogicOrContext;
 import src.gen.TypeScriptParser.ExprMinusAsigContext;
+import src.gen.TypeScriptParser.ExprMinusMinusOpContext;
 import src.gen.TypeScriptParser.ExprMinusOpContext;
 import src.gen.TypeScriptParser.ExprMultAsigContext;
 import src.gen.TypeScriptParser.ExprMultDivPercContext;
@@ -47,11 +48,14 @@ import src.gen.TypeScriptParser.ExprNewContext;
 import src.gen.TypeScriptParser.ExprNotContext;
 import src.gen.TypeScriptParser.ExprObjectIndexContext;
 import src.gen.TypeScriptParser.ExprObjectLiteralContext;
+import src.gen.TypeScriptParser.ExprOpMinusMinusContext;
+import src.gen.TypeScriptParser.ExprOpPlusPlusContext;
 import src.gen.TypeScriptParser.ExprOrAsigContext;
 import src.gen.TypeScriptParser.ExprParentContext;
 import src.gen.TypeScriptParser.ExprPercentAsigContext;
 import src.gen.TypeScriptParser.ExprPlusAsigContext;
 import src.gen.TypeScriptParser.ExprPlusOpContext;
+import src.gen.TypeScriptParser.ExprPlusPlusOpContext;
 import src.gen.TypeScriptParser.ExprPrimitiveLiteralContext;
 import src.gen.TypeScriptParser.ExprSumSubsContext;
 import src.gen.TypeScriptParser.ExprThisContext;
@@ -801,12 +805,6 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		for (int i = 0; i < expList.size(); i++)
 			value = (Value) visit(expList.get(i));
 
-		// if (value == null)
-		// System.out.println("[null returned]");
-		// else
-		// System.out.println(value);
-		// System.out.println(value instanceof ArrayObjectValue);
-		// System.out.println(Reference.HEAP);
 		return value;
 	}
 
@@ -1727,4 +1725,197 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			return Goto.NORMAL_SIGNAL;
 		}
 	}
+
+	@Override
+	public Object visitExprOpPlusPlus(ExprOpPlusPlusContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.expression());
+
+			if( !NumberType.isOfThisType(value) )
+				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+
+			Value ans = new NumberValue(1 + ((NumberValue)value).getValue());
+
+			if( ctx.expression() instanceof ExprIdentifierContext ){
+				ExprIdentifierContext context = (ExprIdentifierContext)ctx.expression();
+
+				scope.setValueOf(context.TK_IDENT().getText(), ans);
+			}
+			else if( ctx.expression() instanceof ExprDotIdentContext ){
+				ExprDotIdentContext context = (ExprDotIdentContext)ctx.expression();
+
+				Reference ref = (Reference)visit(context.expression());
+				String property = context.identifier().getText();
+
+				ref.set(thisStackTop(), property, ans);
+			}
+			else if( ctx.expression() instanceof ExprObjectIndexContext ){
+				ExprObjectIndexContext context = (ExprObjectIndexContext)ctx.expression();
+
+				Reference ref = (Reference)visit(context.expression());
+				Value property = (Value)visit(context.expressionSequence());
+
+				if (StringType.isOfThisType(property) || NumberType.isOfThisType(property))
+					ref.set(thisStackTop(), property.toString(), ans);
+				else
+					throw new SyntacticError(
+							"El indice " + context.expressionSequence().getText() + " no es valido");
+			}
+			else
+				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+
+			return value;
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		} catch(ClassCastException e){
+			addError(new SyntacticError("La expresion a la izquierda del operador . no es un objeto"));
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprPlusPlusOp(ExprPlusPlusOpContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.expression());
+
+			if( !NumberType.isOfThisType(value) )
+				throw new SyntacticError("No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+
+			Value ans = new NumberValue(1 + ((NumberValue)value).getValue());
+
+			if( ctx.expression() instanceof ExprIdentifierContext ){
+				ExprIdentifierContext context = (ExprIdentifierContext)ctx.expression();
+
+				scope.setValueOf(context.TK_IDENT().getText(), ans);
+			}
+			else if( ctx.expression() instanceof ExprDotIdentContext ){
+				ExprDotIdentContext context = (ExprDotIdentContext)ctx.expression();
+
+				Reference ref = (Reference)visit(context.expression());
+				String property = context.identifier().getText();
+
+				ref.set(thisStackTop(), property, ans);
+			}
+			else if( ctx.expression() instanceof ExprObjectIndexContext ){
+				ExprObjectIndexContext context = (ExprObjectIndexContext)ctx.expression();
+
+				Reference ref = (Reference)visit(context.expression());
+				Value property = (Value)visit(context.expressionSequence());
+
+				if (StringType.isOfThisType(property) || NumberType.isOfThisType(property))
+					ref.set(thisStackTop(), property.toString(), ans);
+				else
+					throw new SyntacticError(
+							"El indice " + context.expressionSequence().getText() + " no es valido");
+			}
+			else
+				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+
+			return ans;
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprMinusMinusOp(ExprMinusMinusOpContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.expression());
+
+			if( !NumberType.isOfThisType(value) )
+				throw new SyntacticError("No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+
+			Value ans = new NumberValue(((NumberValue)value).getValue() - 1);
+
+			if( ctx.expression() instanceof ExprIdentifierContext ){
+				ExprIdentifierContext context = (ExprIdentifierContext)ctx.expression();
+
+				scope.setValueOf(context.TK_IDENT().getText(), ans);
+			}
+			else if( ctx.expression() instanceof ExprDotIdentContext ){
+				ExprDotIdentContext context = (ExprDotIdentContext)ctx.expression();
+
+				Reference ref = (Reference)visit(context.expression());
+				String property = context.identifier().getText();
+
+				ref.set(thisStackTop(), property, ans);
+			}
+			else if( ctx.expression() instanceof ExprObjectIndexContext ){
+				ExprObjectIndexContext context = (ExprObjectIndexContext)ctx.expression();
+
+				Reference ref = (Reference)visit(context.expression());
+				Value property = (Value)visit(context.expressionSequence());
+
+				if (StringType.isOfThisType(property) || NumberType.isOfThisType(property))
+					ref.set(thisStackTop(), property.toString(), ans);
+				else
+					throw new SyntacticError(
+							"El indice " + context.expressionSequence().getText() + " no es valido");
+			}
+			else
+				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+
+			return ans;
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprOpMinusMinus(ExprOpMinusMinusContext ctx) {
+		try {
+			Value value = (Value)visit(ctx.expression());
+
+			if( !NumberType.isOfThisType(value) )
+				throw new SyntacticError("No se le puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+
+			Value ans = new NumberValue(((NumberValue)value).getValue() - 1);
+
+			if( ctx.expression() instanceof ExprIdentifierContext ){
+				ExprIdentifierContext context = (ExprIdentifierContext)ctx.expression();
+
+				scope.setValueOf(context.TK_IDENT().getText(), ans);
+			}
+			else if( ctx.expression() instanceof ExprDotIdentContext ){
+				ExprDotIdentContext context = (ExprDotIdentContext)ctx.expression();
+
+				Reference ref = (Reference)visit(context.expression());
+				String property = context.identifier().getText();
+
+				ref.set(thisStackTop(), property, ans);
+			}
+			else if( ctx.expression() instanceof ExprObjectIndexContext ){
+				ExprObjectIndexContext context = (ExprObjectIndexContext)ctx.expression();
+
+				Reference ref = (Reference)visit(context.expression());
+				Value property = (Value)visit(context.expressionSequence());
+
+				if (StringType.isOfThisType(property) || NumberType.isOfThisType(property))
+					ref.set(thisStackTop(), property.toString(), ans);
+				else
+					throw new SyntacticError(
+							"El indice " + context.expressionSequence().getText() + " no es valido");
+			}
+			else
+				throw new SyntacticError("No se puede aplicar el operador ++ a la expresion " + ctx.expression().getText());
+
+			return value;
+		} catch (SyntacticError e) {
+			addError(e);
+			return null;
+		} catch(NullPointerException e){
+			return null;
+		}
+	}
+
+		
 }

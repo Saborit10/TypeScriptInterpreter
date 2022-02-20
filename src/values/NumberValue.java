@@ -346,5 +346,4 @@ public class NumberValue extends Value{
 	public boolean isFalsy() {
 		return undefined || value == 0;
 	}
-
 }
