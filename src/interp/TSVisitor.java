@@ -1112,15 +1112,19 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitIfStatement(IfStatementContext ctx) {
-		Value conditionValue = (Value) visit(ctx.expressionSequence());
-		List<StatementContext> statements = ctx.statement();
+		try {
+			Value conditionValue = (Value) visit(ctx.expressionSequence());
+			List<StatementContext> statements = ctx.statement();
 
-		if (!conditionValue.isFalsy())
-			return visit(statements.get(0));
-		else if (statements.size() > 1)
-			return visit(statements.get(1));
+			if (!conditionValue.isFalsy())
+				return visit(statements.get(0));
+			else if (statements.size() > 1)
+				return visit(statements.get(1));
 
-		return Goto.NORMAL_SIGNAL;
+			return Goto.NORMAL_SIGNAL;
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -1512,16 +1516,20 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 
 	@Override
 	public Object visitStatementList(StatementListContext ctx) {
-		List<StatementContext> statements = ctx.statement();
+		try {
+			List<StatementContext> statements = ctx.statement();
 
-		for (int i = 0; i < statements.size(); i++) {
-			int flag = (Integer) visit(statements.get(i));
+			for (int i = 0; i < statements.size(); i++) {
+				int flag = (Integer) visit(statements.get(i));
 
-			if (flag != Goto.NORMAL_SIGNAL)
-				return flag;
+				if (flag != Goto.NORMAL_SIGNAL)
+					return flag;
+			}
+
+			return Goto.NORMAL_SIGNAL;
+		} catch (NullPointerException e) {
+			return null;
 		}
-
-		return Goto.NORMAL_SIGNAL;
 	}
 
 	@Override
@@ -2003,22 +2011,22 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 	@Override
 	public Object visitExprMathFunc(ExprMathFuncContext ctx) {
 		try {
-			NumberValue value = (NumberValue)visit(ctx.expression());
+			NumberValue value = (NumberValue) visit(ctx.expression());
 			// System.out.println(value);
-			if( ctx.mathFunctionName().getText().equals("Math.sin") )
+			if (ctx.mathFunctionName().getText().equals("Math.sin"))
 				return new NumberValue(Math.sin(value.getValue()));
-			else if( ctx.mathFunctionName().getText().equals("Math.tan") )
+			else if (ctx.mathFunctionName().getText().equals("Math.tan"))
 				return new NumberValue(Math.tan(value.getValue()));
-			else if( ctx.mathFunctionName().getText().equals("Math.exp") )
+			else if (ctx.mathFunctionName().getText().equals("Math.exp"))
 				return new NumberValue(Math.exp(value.getValue()));
 			return null;
-		// } catch (SyntacticError e) {
-		// 	addError(e);
-		// 	return null;
-		} catch(NullPointerException e){
+			// } catch (SyntacticError e) {
+			// addError(e);
+			// return null;
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 			return null;
-		} catch(ClassCastException e){
+		} catch (ClassCastException e) {
 			addError(new SyntacticError("El argumento no es un numero"));
 			return null;
 		}
