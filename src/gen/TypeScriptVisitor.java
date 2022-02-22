@@ -520,6 +520,13 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprNot(TypeScriptParser.ExprNotContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ExprMathFunc}
+	 * labeled alternative in {@link TypeScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMathFunc(TypeScriptParser.ExprMathFuncContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code ExprDivAsig}
 	 * labeled alternative in {@link TypeScriptParser#expression}.
 	 * @param ctx the parse tree
@@ -743,6 +750,12 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprFunctionObject(TypeScriptParser.ExprFunctionObjectContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TypeScriptParser#mathFunctionName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMathFunctionName(TypeScriptParser.MathFunctionNameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#formalParameterList}.
 	 * @param ctx the parse tree

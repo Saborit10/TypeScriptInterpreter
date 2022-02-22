@@ -43,7 +43,7 @@ public class BooleanValue extends Value{
 	@Override
 	public Value sum(Value v) throws SyntacticError {
 		if( StringType.isOfThisType(v) )
-			return v.sum(this);
+			return new StringValue(this.toString()).sum(v);
 		throw new SyntacticError("El operador + no es aplicable a los tipos " + this.getType() + " y " + v.getType());
 	}
 

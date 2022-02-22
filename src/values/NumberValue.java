@@ -45,9 +45,12 @@ public class NumberValue extends Value{
 
 	@Override
 	public Value sum(Value v) throws SyntacticError {
-		if( StringType.isOfThisType(v) )
-			return v.sum(this);
-		
+		// if( StringType.isOfThisType(v) )
+		// 	return v.sum(this);
+		if( StringType.isOfThisType(v) ){
+			return new StringValue(String.valueOf(this.getValue())).sum(v);
+		}
+
 		try {
 			NumberValue numberValue = (NumberValue)v;
 

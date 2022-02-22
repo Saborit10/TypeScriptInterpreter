@@ -365,7 +365,8 @@ assignmentOperator
 	;
 
 expression
-	: functionExpressionDecl														#ExprFunctionObject //
+	: mathFunctionName TK_LPARENT expression TK_RPARENT									#ExprMathFunc
+	| functionExpressionDecl														#ExprFunctionObject //
 	| expression '[' expressionSequence ']'											#ExprObjectIndex //
     | expression '.' identifier														#ExprDotIdent //
     | expression '.' functionCall													#ExprDotFunctionCall //
@@ -402,6 +403,12 @@ expression
 	| literal																		#ExprPrimitiveLiteral //
 	| TK_IDENT																		#ExprIdentifier //
 	| TK_THIS																		#ExprThis //
+	;
+
+mathFunctionName  // 
+	: 'Math.sin'
+	| 'Math.tan'
+	| 'Math.exp'
 	;
 
 formalParameterList

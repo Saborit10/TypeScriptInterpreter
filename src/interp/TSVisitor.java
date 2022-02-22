@@ -41,6 +41,7 @@ import src.gen.TypeScriptParser.ExprFunctionObjectContext;
 import src.gen.TypeScriptParser.ExprIdentifierContext;
 import src.gen.TypeScriptParser.ExprLogicAndContext;
 import src.gen.TypeScriptParser.ExprLogicOrContext;
+import src.gen.TypeScriptParser.ExprMathFuncContext;
 import src.gen.TypeScriptParser.ExprMinusAsigContext;
 import src.gen.TypeScriptParser.ExprMinusMinusOpContext;
 import src.gen.TypeScriptParser.ExprMinusOpContext;
@@ -1995,6 +1996,30 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 			else
 				return (Value) visit(ctx.expression(1));
 		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Object visitExprMathFunc(ExprMathFuncContext ctx) {
+		try {
+			NumberValue value = (NumberValue)visit(ctx.expression());
+			// System.out.println(value);
+			if( ctx.mathFunctionName().getText().equals("Math.sin") )
+				return new NumberValue(Math.sin(value.getValue()));
+			else if( ctx.mathFunctionName().getText().equals("Math.tan") )
+				return new NumberValue(Math.tan(value.getValue()));
+			else if( ctx.mathFunctionName().getText().equals("Math.exp") )
+				return new NumberValue(Math.exp(value.getValue()));
+			return null;
+		// } catch (SyntacticError e) {
+		// 	addError(e);
+		// 	return null;
+		} catch(NullPointerException e){
+			e.printStackTrace();
+			return null;
+		} catch(ClassCastException e){
+			addError(new SyntacticError("El argumento no es un numero"));
 			return null;
 		}
 	}
