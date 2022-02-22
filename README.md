@@ -1,4 +1,4 @@
-# TypeScriptInterpreter
+# TypeScript Interpreter
 
 ## Compilation
 Run `compile.sh` on main folder.
