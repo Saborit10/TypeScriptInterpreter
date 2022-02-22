@@ -22,10 +22,10 @@ statement
 	| block //
 	| variableStatement //
 	| ifStatement //
-	| forStatement 
+	| forStatement //
 	| whileStatement //
 	| doStatement
-	| switchStatement
+	| switchStatement 
 	| classStatement //*
 	| continueStatement
     | breakStatement //
@@ -71,7 +71,11 @@ switchStatement
 	;
 
 caseBlock
-	: TK_LCURLY (caseClause+)? (defaultClause (caseClause+)?)? TK_RCURLY
+	: TK_LCURLY (caseClause+)? (defaultClause afterCaseClauseList?)? TK_RCURLY
+	;
+
+afterCaseClauseList
+	: caseClause+
 	;
 
 caseClause

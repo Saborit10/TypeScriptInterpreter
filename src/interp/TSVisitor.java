@@ -1,6 +1,5 @@
 package src.interp;
 
-import java.beans.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +15,8 @@ import src.gen.TypeScriptParser.ArrayTypeContext;
 import src.gen.TypeScriptParser.BlockContext;
 import src.gen.TypeScriptParser.BreakStatementContext;
 import src.gen.TypeScriptParser.CallSignatureContext;
+import src.gen.TypeScriptParser.CaseBlockContext;
+import src.gen.TypeScriptParser.CaseClauseContext;
 import src.gen.TypeScriptParser.ClassElementContext;
 import src.gen.TypeScriptParser.ClassHeritageContext;
 import src.gen.TypeScriptParser.ClassMemberMethodContext;
@@ -23,6 +24,7 @@ import src.gen.TypeScriptParser.ClassMemberPropertyContext;
 import src.gen.TypeScriptParser.ClassStatementContext;
 import src.gen.TypeScriptParser.ConditionExpressionSequenceContext;
 import src.gen.TypeScriptParser.ContinueStatementContext;
+import src.gen.TypeScriptParser.DefaultClauseContext;
 import src.gen.TypeScriptParser.EmptyStatementContext;
 import src.gen.TypeScriptParser.ExprAndAsigContext;
 import src.gen.TypeScriptParser.ExprAsigContext;
@@ -90,6 +92,8 @@ import src.gen.TypeScriptParser.ReturnStatementContext;
 import src.gen.TypeScriptParser.SimpleTypeContext;
 import src.gen.TypeScriptParser.SourceElemContext;
 import src.gen.TypeScriptParser.StatementContext;
+import src.gen.TypeScriptParser.StatementListContext;
+import src.gen.TypeScriptParser.SwitchStatementContext;
 import src.gen.TypeScriptParser.TypeAnnotationContext;
 import src.gen.TypeScriptParser.TypeNameContext;
 import src.gen.TypeScriptParser.VariableDeclContext;
@@ -1503,6 +1507,74 @@ public class TSVisitor extends TypeScriptBaseVisitor<Object> {
 		}
 
 		return Goto.NORMAL_SIGNAL;
+	}
+
+	@Override
+	public Object visitStatementList(StatementListContext ctx) {
+		List<StatementContext> statements = ctx.statement();
+
+		for (int i = 0; i < statements.size(); i++) {
+			int flag = (Integer) visit(statements.get(i));
+
+			if (flag != Goto.NORMAL_SIGNAL)
+				return flag;
+		}
+
+		return Goto.NORMAL_SIGNAL;
+	}
+
+	@Override
+	public Object visitSwitchStatement(SwitchStatementContext ctx) {
+		try {
+			Value value = (Value) visit(ctx.expressionSequence());
+			List<CaseClauseContext> beforeDefualt = ctx.caseBlock().caseClause();
+
+			for (int i = 0; i < beforeDefualt.size(); i++) {
+				Value caseValue = (Value) visit(beforeDefualt.get(i).expressionSequence());
+
+				if (!value.equals(caseValue).isFalsy()) {
+					int flag = (Integer) visit(beforeDefualt.get(i).statementList());
+
+					if (flag != Goto.NORMAL_SIGNAL) {
+						if (flag == Goto.BREAK_SIGNAL)
+							return Goto.NORMAL_SIGNAL;
+						throw new SyntacticError("En el bloque while solo se permiten sentencias break");
+					}
+				}
+			}
+
+			if (ctx.caseBlock().defaultClause() != null) {
+				int flag = (Integer) visit(ctx.caseBlock().defaultClause().statementList());
+
+				if (flag != Goto.NORMAL_SIGNAL) {
+					if (flag == Goto.BREAK_SIGNAL)
+						return Goto.NORMAL_SIGNAL;
+					throw new SyntacticError("En el bloque while solo se permiten sentencias break");
+				}
+			}
+
+			if (ctx.caseBlock().afterCaseClauseList() != null) {
+				List<CaseClauseContext> afterDefualt = ctx.caseBlock().afterCaseClauseList().caseClause();
+
+				for (int i = 0; i < afterDefualt.size(); i++) {
+					Value caseValue = (Value) visit(afterDefualt.get(i).expressionSequence());
+
+					if (!value.equals(caseValue).isFalsy()) {
+						int flag = (Integer) visit(afterDefualt.get(i).statementList());
+
+						if (flag != Goto.NORMAL_SIGNAL) {
+							if (flag == Goto.BREAK_SIGNAL)
+								return Goto.NORMAL_SIGNAL;
+							throw new SyntacticError("En el bloque while solo se permiten sentencias break");
+						}
+					}
+				}
+			}
+			return Goto.NORMAL_SIGNAL;
+		} catch (SyntacticError e) {
+			addError(e);
+			return Goto.NORMAL_SIGNAL;
+		}
 	}
 
 	@Override

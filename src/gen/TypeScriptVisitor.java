@@ -105,6 +105,12 @@ public interface TypeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCaseBlock(TypeScriptParser.CaseBlockContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link TypeScriptParser#afterCaseClauseList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAfterCaseClauseList(TypeScriptParser.AfterCaseClauseListContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link TypeScriptParser#caseClause}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
